@@ -1,0 +1,214 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    
+    <parent>
+        <groupId>com.codeferm</groupId>
+        <artifactId>javauio</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+    </parent>        
+
+    <groupId>com.codeferm</groupId>
+    <artifactId>u8g2</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+    
+    <name>U8g2</name>
+    <description>JNI interface for U8g2</description>    
+    
+    <properties>
+    </properties>
+    
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.8.1</version>
+                <configuration>
+                    <source>${maven.compiler.source}</source>
+                    <target>${maven.compiler.target}</target>
+                    <!-- Picocli annotation processor -->                    
+                    <annotationProcessorPaths>
+                        <path>
+                            <groupId>info.picocli</groupId>
+                            <artifactId>picocli-codegen</artifactId>
+                            <version>4.6.1</version>
+                        </path>
+                    </annotationProcessorPaths>
+                    <compilerArgs>
+                        <arg>-Aproject=${project.groupId}/${project.artifactId}</arg>
+                    </compilerArgs>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>3.0.0-M5</version>
+                <configuration>
+                    <trimStackTrace>false</trimStackTrace>
+                </configuration>            
+            </plugin>
+            <plugin>
+                <groupId>com.github.maven-nar</groupId>
+                <artifactId>nar-maven-plugin</artifactId>
+                <version>3.10.1</version>
+                <extensions>true</extensions>
+                <configuration>
+                    <libraries>
+                        <library>
+                            <type>jni</type>
+                            <narSystemPackage>test</narSystemPackage>
+                            <linkCPP>false</linkCPP>
+                        </library>
+                    </libraries>
+                    <javah>
+                        <includes>
+                            <include></include>
+                        </includes>
+                    </javah>
+                </configuration>
+            </plugin>            
+            <!-- Generate JNI code -->    
+            <plugin>
+                <groupId>org.fusesource.hawtjni</groupId>
+                <artifactId>hawtjni-maven-plugin</artifactId>
+                <version>${hawtjni.version}</version>
+                <executions>
+                    <execution>
+                        <configuration>
+                            <!--
+                            Have to change default or it conflicts with u8g2.h
+                            -->
+                            <name>java-u8g2</name>
+                            <!--
+                            To compile for GPIO device use -DPERIPHERY_GPIO_CDEV_SUPPORT=1 and remove this for sysfs only.
+                            The rest of the CFLAGS come from the actual c-periphery Makefile. If you would like to use the
+                            gpio.h header that matches your distribution you can add it to CFLAGS.
+                            
+                            First locate gpio.h with bias definitions:
+                            
+                            grep -R -i "GPIOHANDLE_REQUEST_BIAS_DISABLE" /usr/src
+                            
+                            Then add to CFLAGS (use actual path):
+                            
+                            -I/usr/src/linux-headers-5.9.6-meson64/include/uapi/linux/gpio.h
+                            
+                            The default include path for gcc may contain older gpio.h header file.
+                            -->
+                            <configureArgs>
+                                <arg>CFLAGS=-O3 -std=gnu99 -pedantic -Wall -Wextra -Wno-unused-parameter -fPIC -DPERIPHERY_GPIO_CDEV_SUPPORT=1 -D__ARM_LINUX__</arg>
+                            </configureArgs>
+                        </configuration>                        
+                        <goals>
+                            <goal>generate</goal>
+                            <goal>build</goal>
+                            <goal>package-jar</goal>
+                            <goal>package-source</goal>
+                        </goals>
+                    </execution>
+                </executions>        
+            </plugin>
+            <!-- Include all the dependencies in the jar so it can run standalone -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>3.2.4</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                        <configuration>
+                            <artifactSet>
+                                <excludes>
+                                    <exclude>junit:junit</exclude>
+                                </excludes>
+                            </artifactSet>
+                            <filters>
+                                <filter>
+                                    <artifact>*:*</artifact>
+                                    <excludes>
+                                        <exclude>META-INF/DEPENDENCIES</exclude>
+                                        <exclude>META-INF/LICENSE*</exclude>
+                                        <exclude>META-INF/NOTICE</exclude>
+                                        <exclude>META-INF/MANIFEST.MF</exclude>
+                                        <exclude>META-INF/versions/9/module-info.*</exclude>
+                                    </excludes>
+                                </filter>
+                            </filters>              
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+    
+    <profiles>
+        <!-- Profile which enables Universal binaries on OS X -->
+        <profile>
+            <id>mac</id>
+            <activation>
+                <os>
+                    <family>mac</family>
+                </os>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.fusesource.hawtjni</groupId>
+                        <artifactId>hawtjni-maven-plugin</artifactId>
+                        <configuration>
+                            <osgiPlatforms>
+                                <osgiPlatform>osname=MacOS;processor=x86-64</osgiPlatform>
+                                <osgiPlatform>osname=MacOS;processor=x86</osgiPlatform>
+                                <osgiPlatform>*</osgiPlatform>
+                            </osgiPlatforms>
+                            <configureArgs>
+                                <arg>--with-universal</arg>
+                            </configureArgs>
+                            <platform>osx</platform>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>    
+    
+    <dependencies>
+        <!-- Compile -->
+        <dependency>
+            <groupId>info.picocli</groupId>
+            <artifactId>picocli</artifactId>
+            <version>4.6.1</version>
+        </dependency>        
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-api</artifactId>
+            <version>2.14.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-core</artifactId>
+            <version>2.14.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.fusesource.hawtjni</groupId>
+            <artifactId>hawtjni-runtime</artifactId>
+            <version>${hawtjni.version}</version>
+        </dependency>             
+        <!-- Test -->
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-api</artifactId>
+            <version>5.8.0</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-engine</artifactId>
+            <version>5.8.0</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>    
+</project>
