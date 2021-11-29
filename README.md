@@ -13,6 +13,10 @@ C, C++, Python, Lua and Dart.
 * [U8g2](https://github.com/sgjava/javauio/tree/master/u8g2) API for monochrome
 displays. Based on [U8g2](https://github.com/olikraus/u8g2): Library for
 monochrome displays, version 2.
+* [Tools](https://github.com/sgjava/javauio/tree/master/tools) provides tools
+for mapping MMIO GPIO register mapping, code generation, etc.
+* [Demo](https://github.com/sgjava/javauio/tree/master/demo) provides CLI based
+demos instead of using mocks or hard coded pins, busses, etc.
 
 * An install script gives you a complete install of [JDK](https://www.azul.com/products/core),
 [Maven](https://maven.apache.org), [HawtJNI](https://github.com/fusesource/hawtjni)
