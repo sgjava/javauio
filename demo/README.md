@@ -1,6 +1,6 @@
 ![Title](images/title.png)
 
-Java UIO Demos provides CLI programs, so you do not have to compile code with
+Java UIO Demo provides CLI programs, so you do not have to compile code with
 hard coded pins, ports, etc. Note that the native library jar has a suffix such
 as linux32, so depending on your target platform it could be different.
  
