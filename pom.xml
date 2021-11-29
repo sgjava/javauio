@@ -13,6 +13,8 @@
     <modules>
         <module>periphery</module>
         <module>u8g2</module>
+        <module>tools</module>
+        <module>demo</module>
     </modules>    
     
     <properties>

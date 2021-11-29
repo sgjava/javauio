@@ -21,8 +21,6 @@
         <!-- devel branch
         <c.periphery>https://raw.githubusercontent.com/vsergeev/c-periphery/devel/src</c.periphery>
         -->
-        <!-- Change CFLAGS here or pass on mvn command line to override -->
-        <cflags></cflags>
     </properties>
     
     <build>
@@ -261,7 +259,7 @@
                             The default include path for gcc may contain older gpio.h header file.
                             -->
                             <configureArgs>
-                                <arg>CFLAGS=${cflags} -O3 -std=gnu99 -pedantic -Wall -Wextra -Wno-unused-parameter -fPIC -DPERIPHERY_GPIO_CDEV_SUPPORT=1</arg>
+                                <arg>CFLAGS=-O3 -std=gnu99 -pedantic -Wall -Wextra -Wno-unused-parameter -fPIC -DPERIPHERY_GPIO_CDEV_SUPPORT=1</arg>
                             </configureArgs>
                         </configuration>                        
                         <goals>
@@ -272,39 +270,6 @@
                         </goals>
                     </execution>
                 </executions>        
-            </plugin>
-            <!-- Include all the dependencies in the jar so it can run standalone -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-shade-plugin</artifactId>
-                <version>3.2.4</version>
-                <executions>
-                    <execution>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>shade</goal>
-                        </goals>
-                        <configuration>
-                            <artifactSet>
-                                <excludes>
-                                    <exclude>junit:junit</exclude>
-                                </excludes>
-                            </artifactSet>
-                            <filters>
-                                <filter>
-                                    <artifact>*:*</artifact>
-                                    <excludes>
-                                        <exclude>META-INF/DEPENDENCIES</exclude>
-                                        <exclude>META-INF/LICENSE*</exclude>
-                                        <exclude>META-INF/NOTICE</exclude>
-                                        <exclude>META-INF/MANIFEST.MF</exclude>
-                                        <exclude>META-INF/versions/9/module-info.*</exclude>
-                                    </excludes>
-                                </filter>
-                            </filters>              
-                        </configuration>
-                    </execution>
-                </executions>
             </plugin>
         </plugins>
     </build>
@@ -342,11 +307,6 @@
     
     <dependencies>
         <!-- Compile -->
-        <dependency>
-            <groupId>info.picocli</groupId>
-            <artifactId>picocli</artifactId>
-            <version>4.6.2</version>
-        </dependency>        
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-api</artifactId>

@@ -156,14 +156,6 @@ GPIO character devices always starts at 0 and calculate the offset. Thus gpiochi
 starts at 352 and the on board button is at 355, so 355 - 352 = 3 for GPIO
 character device.
 
-## Run demos
-* `java -cp $HOME/javauio/periphery/target/periphery-1.0.0-SNAPSHOT.jar:$HOME/javauio/periphery/target/periphery-1.0.0-SNAPSHOT-linux32.jar com.codeferm.periphery.demo.LedBlink --help`
-
-Note that the native library jar has a suffix such as linux32, so depending on
-your target platform it could be different. To see a list of demos 
-[browse](https://github.com/sgjava/periphery/tree/master/src/main/java/com/codeferm/periphery/demo)
-code. Just pass in --help to get list of command line arguments.
-
 ## Use Periphery in your own Maven projects
 After bulding Periphery simpily add the following artifact:
 ```

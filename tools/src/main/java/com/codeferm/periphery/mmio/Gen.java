@@ -38,12 +38,12 @@ public class Gen implements Callable<Integer> {
     /**
      * Input file.
      */
-    @CommandLine.Option(names = {"-i", "--in"}, description = "Input property file name")
+    @CommandLine.Option(names = {"-i", "--in"}, description = "Input property file name, ${DEFAULT-VALUE} by default.")
     private String inFileName = "duo.properties";
     /**
      * Ouptut file.
      */
-    @CommandLine.Option(names = {"-o", "--out"}, description = "Output property file name")
+    @CommandLine.Option(names = {"-o", "--out"}, description = "Output property file name, ${DEFAULT-VALUE} by default.")
     private String outFileName = "out.properties";
 
     /**

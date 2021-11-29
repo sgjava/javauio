@@ -32,17 +32,17 @@ public class Perf implements Callable<Integer> {
     /**
      * Input file.
      */
-    @CommandLine.Option(names = {"-i", "--in"}, description = "Input property file name")
+    @CommandLine.Option(names = {"-i", "--in"}, description = "Input property file name, ${DEFAULT-VALUE} by default.")
     private String inFileName = "duo-map.properties";
     /**
      * Device option.
      */
-    @CommandLine.Option(names = {"-d", "--device"}, description = "GPIO device defaults to 0")
+    @CommandLine.Option(names = {"-d", "--device"}, description = "GPIO device, ${DEFAULT-VALUE} by default.")
     private int device = 0;
     /**
      * Line option.
      */
-    @CommandLine.Option(names = {"-l", "--line"}, description = "GPIO line defaults to 203 IOG11 for NanoPi Duo")
+    @CommandLine.Option(names = {"-l", "--line"}, description = "GPIO line, ${DEFAULT-VALUE} by default.")
     private int line = 203;
 
     /**

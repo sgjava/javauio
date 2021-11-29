@@ -37,12 +37,12 @@ public class CodeGen implements Callable<Integer> {
      * u8g2.h file.
      */
     @Option(names = {"-u", "--u8g2"}, description = "File to process")
-    private String u8g2FileName = "src/main/native-package/src/u8g2.h";
+    private String u8g2FileName = "../u8g2/src/main/native-package/src/u8g2.h";
     /**
      * u8x8.h file.
      */
     @Option(names = {"-x", "--u8x8"}, description = "File to process")
-    private String u8x8FileName = "src/main/native-package/src/u8x8.h";
+    private String u8x8FileName = "../u8g2/src/main/native-package/src/u8x8.h";
     /**
      * C to Java mapping.
      */

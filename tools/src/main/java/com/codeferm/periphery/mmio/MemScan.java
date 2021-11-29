@@ -41,27 +41,27 @@ public class MemScan implements Callable<Integer> {
     /**
      * MMIO path.
      */
-    @CommandLine.Option(names = {"-p", "--path"}, description = "Path defaults to /dev/mem")
+    @CommandLine.Option(names = {"-p", "--path"}, description = "Path defaults to /dev/mem, ${DEFAULT-VALUE} by default.")
     private String path = "/dev/mem";
     /**
      * Memory address.
      */
-    @CommandLine.Option(names = {"-a", "--address"}, description = "Memorry address defaults to 0x00")
+    @CommandLine.Option(names = {"-a", "--address"}, description = "Memorry address, ${DEFAULT-VALUE} by default.")
     private long address = 0x00;
     /**
      * Memory size to scan.
      */
-    @CommandLine.Option(names = {"-w", "--words"}, description = "32 bit words to read defaults to 0x01")
+    @CommandLine.Option(names = {"-w", "--words"}, description = "32 bit words to read, ${DEFAULT-VALUE} by default.")
     private long words = 0x01;
     /**
      * Device option.
      */
-    @CommandLine.Option(names = {"-d", "--device"}, description = "GPIO device defaults to 0")
+    @CommandLine.Option(names = {"-d", "--device"}, description = "GPIO device, ${DEFAULT-VALUE} by default.")
     private int device = 0;
     /**
      * Line option.
      */
-    @CommandLine.Option(names = {"-l", "--line"}, description = "GPIO line defaults to 1")
+    @CommandLine.Option(names = {"-l", "--line"}, description = "GPIO line, ${DEFAULT-VALUE} by default.")
     private int line = 1;
 
     /**
@@ -198,7 +198,9 @@ public class MemScan implements Callable<Integer> {
      * @param args Argument list.
      */
     public static void main(String... args) {
-        System.exit(new CommandLine(new MemScan()).registerConverter(Long.class, Long::decode).registerConverter(Long.TYPE,
-                Long::decode).execute(args));
+        System.exit(new CommandLine(new MemScan()).registerConverter(Byte.class, Byte::decode).registerConverter(Byte.TYPE,
+                Byte::decode).registerConverter(Short.class, Short::decode).registerConverter(Short.TYPE, Short::decode).
+                registerConverter(Integer.class, Integer::decode).registerConverter(Integer.TYPE, Integer::decode).
+                registerConverter(Long.class, Long::decode).registerConverter(Long.TYPE, Long::decode).execute(args));
     }
 }
