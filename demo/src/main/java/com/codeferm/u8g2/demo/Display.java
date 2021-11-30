@@ -88,7 +88,7 @@ public class Display {
             final long gpioAndDelayCb) {
         switch (setupType) {
             case SSD1306NONAME:
-                U8g2.setupSsd1306128x64NonameF(u8g2, U8G2_R0, u8x8_byte_arm_linux_hw_spi, u8x8_arm_linux_gpio_and_delay);
+                U8g2.setupSsd1306128x64NonameF(u8g2, U8G2_R0, byteCb, gpioAndDelayCb);
                 break;
             default:
                 throw new RuntimeException(String.format("Setup type %s not supported for SPI", setupType));
