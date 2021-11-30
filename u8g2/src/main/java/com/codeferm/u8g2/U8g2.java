@@ -23,9 +23,9 @@ import static org.fusesource.hawtjni.runtime.MethodFlag.CONSTANT_INITIALIZER;
 public class U8g2 {
 
     /**
-     * u8g2 library.
+     * java-u8g2 library.
      */
-    private static final Library LIBRARY = new Library("u8g2", U8g2.class);
+    private static final Library LIBRARY = new Library("java-u8g2", U8g2.class);
 
     /**
      * Load library.

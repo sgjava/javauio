@@ -21,9 +21,9 @@ import static org.fusesource.hawtjni.runtime.MethodFlag.CONSTANT_INITIALIZER;
 public class U8x8 {
 
     /**
-     * java-periphery library.
+     * java-u8g2 library.
      */
-    private static final Library LIBRARY = new Library("u8g2", U8x8.class);
+    private static final Library LIBRARY = new Library("java-u8g2", U8x8.class);
 
     /**
      * Load library.

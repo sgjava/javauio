@@ -21,9 +21,9 @@ import static org.fusesource.hawtjni.runtime.MethodFlag.CONSTANT_INITIALIZER;
 public class Fonts {
 
     /**
-     * u8g2 library.
+     * java-u8g2 library.
      */
-    private static final Library LIBRARY = new Library("u8g2", Fonts.class);
+    private static final Library LIBRARY = new Library("java-u8g2", Fonts.class);
 
     /**
      * Load library.

@@ -26,9 +26,9 @@ public class Common {
      */
     static final int MAX_CHAR_ARRAY_LEN = 256;
     /**
-     * java-periphery library.
+     * java-u8g2 library.
      */
-    private static final Library LIBRARY = new Library("u8g2", Common.class);
+    private static final Library LIBRARY = new Library("java-u8g2", Common.class);
 
     /**
      * Load library.
