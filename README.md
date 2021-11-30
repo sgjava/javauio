@@ -44,7 +44,7 @@ Periphery.
 * Why Zulu OpenJDK? Because it's easy to download without all the crap Oracle
 puts you through. You can always use another JDK 17 vendor, but you will have to
 do that manually. [Liberica JDK](https://bell-sw.com/pages/downloads/?version=java-17-lts)
-offers an ARM32 version of JDK 17, but it's 50% slower than Zulu JDK 11. At This
+offers an ARM32 version of JDK 17, but it's 50% slower than Zulu JDK 11. At yhis
 point in time there are few JDK 17 choices for ARM32. I will update the project
 once a decent JDK 17 is available for ARM32.
 
