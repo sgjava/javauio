@@ -162,4 +162,4 @@ cp -a "$HOME/u8g2/sys/arm-linux/port/." "$HOME/javauio/u8g2/src/main/native-pack
 cd >> $logfile 2>&1
 cd javauio >> $logfile 2>&1
 log "Building Java UIO..."
-mvn clean install -Dmaven.compiler.source=$jdk -Dmaven.compiler.target=$jdk --log-file="scripts/periphery.log" >> $logfile 2>&1
+mvn clean install -Dmaven.compiler.source=$jdk -Dmaven.compiler.target=$jdk --log-file="scripts/javauio.log" >> $logfile 2>&1
