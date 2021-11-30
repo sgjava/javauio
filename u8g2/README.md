@@ -37,14 +37,6 @@ U8g2.doneI2c();
 
 ![Duo tith 3 displays](images/duo.jpg)
 
-## Run demos
-* `java -cp $HOME/javauio/u8g2/target/u8g2-1.0.0-SNAPSHOT.jar:$HOME/javauio/u8g2/target/u8g2-1.0.0-SNAPSHOT-linux64.jar com.codeferm.u8g2.demo.Graphics --help`
-
-Note that the native library jar has a suffix such as linux32, so depending on
-your target platform it could be different. To see a list of demos 
-[browse](https://github.com/sgjava/u8g2/tree/master/src/main/java/com/codeferm/u8g2/demo)
-code.
-
 ## Use Java u8g2 in your own Maven projects
 After bulding Java u8g2 simpily add the following artifact:
 ```
