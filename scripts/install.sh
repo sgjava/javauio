@@ -32,6 +32,36 @@ log "Installing dependencies..."
 # Install build/dev tools
 sudo apt-get -y install build-essential autoconf automake libtool git >> $logfile 2>&1
 
+log "Installing UIO Permissions Service..."
+# Install UIO Permissions service
+sudo usermod -a -G dialout $LOGNAME >> $logfile 2>&1
+sudo groupadd uio >> $logfile 2>&1
+sudo usermod -a -G uio $LOGNAME >> $logfile 2>&1
+# Copy permission script
+sudo cp uio-permissions.sh /usr/local/bin/. >> $logfile 2>&1
+sudo rm /etc/systemd/system/uio-permissions.service
+sudo tee -a /etc/systemd/system/uio-permissions.service > /dev/null <<EOT
+[Unit]
+Description=UIO Permissions
+ 
+[Service]
+Type=oneshot
+ExecStart=/usr/local/bin/uio-permissions.sh
+RemainAfterExit=no
+
+[Install]
+WantedBy=multi-user.target
+EOT
+
+sudo -E systemctl enable uio-permissions >> $logfile 2>&1
+
+# Start up UIO Permissions
+log "Starting UIO Permissions..."
+sudo -E service uio-permissions start >> $logfile 2>&1
+
+# Copy PWM udev rule 
+sudo cp 99-pwm.rules /etc/udev/rules.d/. >> $logfile 2>&1
+
 #Default JDK
 javahome=/usr/lib/jvm/jdk17
 jdk=17

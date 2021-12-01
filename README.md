@@ -64,27 +64,9 @@ the case of the Raspberry Pi Ubuntu Server. The ability to switch seamlessly
 between boards gives you a wide range of SBC choices.
 
 ## Non-root access
-If you want to access devices without root do the following (you can try udev
-rules instead if you wish):
-* `sudo usermod -a -G dialout username` (Use a non-root username)
-* `sudo groupadd uio`
-* `sudo usermod -a -G uio username` (Use a non-root username)
-* `sudo nano /etc/rc.local`
-<pre><code>chown -R root:uio /dev/gpiochip* #/dev/gpiomem for sandbox
-chmod -R ug+rw /dev/gpiochip* #/dev/gpiomem for sandbox
-chown -R root:uio /dev/i2c*
-chmod -R ug+rw /dev/i2c*
-chown -R root:uio /dev/spidev*
-chmod -R ug+rw /dev/spidev*
-chown -R root:uio /sys/devices/platform/leds/leds
-chmod -R ug+rw /sys/devices/platform/leds/leds</code></pre>
-* PWM udev rules
-    * You need kernel 4.16 or greater to use non-root access for PWM.
-    * `sudo nano /etc/udev/rules.d/99-pwm.rules`
-    <pre><code>SUBSYSTEM=="pwm*", PROGRAM="/bin/sh -c '\
-  chown -R root:uio /sys/class/pwm && chmod -R 770 /sys/class/pwm;\
-  chown -R root:uio /sys/devices/platform/soc/*.pwm/pwm/pwmchip* && chmod -R 770 /sys/devices/platform/soc/*.pwm/pwm/pwmchip*\
-  '"</code></pre>
+Non-root access is provided by a systemd service called uio-permissions that
+applies permissions for GPIO, I2C, SPI and system LEDs. PWM permissions are
+provided by a udev rule.
 
 ## Download project
 * `sudo apt install git`
@@ -95,8 +77,9 @@ chmod -R ug+rw /sys/devices/platform/leds/leds</code></pre>
 The install script assumes a clean OS install. If you would like to install on
 a OS with your own version of Java 17, etc. then you can look at what install.sh
 does and do it manually. What does the script do?
-* Install build dependencies for HawtJNI 
-* Installs Zulu JDK 17 (JDK 11 for ARM 32) to /usr/lib/jvm
+* Install build dependencies
+* Install UIO Permissions Service and udev rules
+  Installs Zulu JDK 17 (JDK 11 for ARM 32) to /usr/lib/jvm
 * Installs Maven to /opt
 * Build HawtJNI (using my fork that works with JDK 17)
 * Build Java UIO
