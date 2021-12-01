@@ -1,0 +1,5 @@
+# udev rule for deprecated sysfs gpio. See https://linux-sunxi.org/GPIO and tweak as needed
+SUBSYSTEM=="gpio", ACTION=="add", PROGRAM="/bin/sh -c '\
+chown -R root:uio /sys/class/gpio && chmod -R g+w /sys/class/gpio && \
+chown -R root:uio /sys/devices/platform/soc/*.pinctrl && chmod -R g+w /sys/devices/platform/soc/*.pinctrl\
+'"

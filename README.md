@@ -65,9 +65,10 @@ between boards gives you a wide range of SBC choices.
 
 ## Non-root access
 Non-root access is provided by a systemd service called [uio-permissions](https://github.com/sgjava/javauio/blob/6ea3ef5155f3158d92eb16b5f428372ec8adda3d/scripts/install.sh#L44) that
-applies permissions for GPIO, I2C, SPI, serial and system LEDs. PWM permissions
-are provided by a udev rule. Tweak [uio-permissions.sh](https://github.com/sgjava/javauio/blob/main/scripts/uio-permissions.sh)
-and [99-pwm.rules](https://github.com/sgjava/javauio/blob/main/scripts/99-pwm.rules)
+applies permissions for GPIO, I2C, SPI, serial and system LEDs. GPIO
+sysfs (eprecated) and PWM permissions are provided by udev rules. Tweak [uio-permissions.sh](https://github.com/sgjava/javauio/blob/main/scripts/uio-permissions.sh)
+[98-sysfs.rules](https://github.com/sgjava/javauio/blob/main/scripts/98-sysfs.rules) and
+[99-pwm.rules](https://github.com/sgjava/javauio/blob/main/scripts/99-pwm.rules)
 as needed.
 
 ## Download project

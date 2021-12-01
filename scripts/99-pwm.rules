@@ -1,4 +1,5 @@
+# udev rule tweak as needed
 SUBSYSTEM=="pwm*", PROGRAM="/bin/sh -c '\
-chown -R root:uio /sys/class/pwm && chmod -R 770 /sys/class/pwm;\
-chown -R root:uio /sys/devices/platform/soc/*.pwm/pwm/pwmchip* && chmod -R 770 /sys/devices/platform/soc/*.pwm/pwm/pwmchip*\
+chown -R root:uio /sys/class/pwm && chmod -R g+w /sys/class/pwm;\
+chown -R root:uio /sys/devices/platform/soc/*.pwm/pwm/pwmchip* && chmod -R g+w /sys/devices/platform/soc/*.pwm/pwm/pwmchip*\
 '"

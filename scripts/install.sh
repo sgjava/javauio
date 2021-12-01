@@ -59,7 +59,8 @@ sudo -E systemctl enable uio-permissions >> $logfile 2>&1
 log "Starting UIO Permissions..."
 sudo -E service uio-permissions start >> $logfile 2>&1
 
-# Copy PWM udev rule 
+# Copy udev rules 
+sudo cp 98-sysfs.rules /etc/udev/rules.d/. >> $logfile 2>&1
 sudo cp 99-pwm.rules /etc/udev/rules.d/. >> $logfile 2>&1
 
 #Default JDK
