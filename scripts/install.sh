@@ -39,7 +39,7 @@ sudo groupadd uio >> $logfile 2>&1
 sudo usermod -a -G uio $LOGNAME >> $logfile 2>&1
 # Copy permission script
 sudo cp uio-permissions.sh /usr/local/bin/. >> $logfile 2>&1
-sudo rm /etc/systemd/system/uio-permissions.service
+sudo rm -f /etc/systemd/system/uio-permissions.service
 sudo tee -a /etc/systemd/system/uio-permissions.service > /dev/null <<EOT
 [Unit]
 Description=UIO Permissions
