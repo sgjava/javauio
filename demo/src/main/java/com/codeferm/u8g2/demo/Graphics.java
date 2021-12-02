@@ -4,11 +4,13 @@
 package com.codeferm.u8g2.demo;
 
 import com.codeferm.u8g2.Common;
-import static com.codeferm.u8g2.Fonts.u8g2_font_10x20_tr;
+import com.codeferm.u8g2.Display;
+import com.codeferm.u8g2.Display.FontType;
+import static com.codeferm.u8g2.Display.FontType.FONT_PROFONT10_TF;
+import com.codeferm.u8g2.Display.SetupType;
+import static com.codeferm.u8g2.Display.SetupType.SSD1306_I2C_128X64_NONAME;
 import com.codeferm.u8g2.U8g2;
 import static com.codeferm.u8g2.U8x8.U8X8_PIN_NONE;
-import com.codeferm.u8g2.demo.Display.SetupType;
-import static com.codeferm.u8g2.demo.Display.SetupType.SSD1306NONAME;
 import static com.codeferm.u8g2.demo.Graphics.DisplayType.I2CHW;
 import java.util.Random;
 import java.util.concurrent.Callable;
@@ -47,7 +49,13 @@ public class Graphics implements Callable<Integer> {
      */
     @Option(names = {"--setup"}, description
             = "Setup function to call, ${DEFAULT-VALUE} by default.")
-    private SetupType setup = SSD1306NONAME;
+    private SetupType setup = SSD1306_I2C_128X64_NONAME;
+    /**
+     * Font to use.
+     */
+    @Option(names = {"--font"}, description
+            = "Font, ${DEFAULT-VALUE} by default.")
+    private FontType font = FONT_PROFONT10_TF;
     /**
      * Type allows hardware and software I2C and SPI.
      */
@@ -338,21 +346,22 @@ public class Graphics implements Callable<Integer> {
     @Override
     public Integer call() throws InterruptedException {
         var exitCode = 0;
-        display = new Display(setup);
+        display = new Display();
         // Initialize user_data_struct based on display type
+        logger.debug(String.format("Setup %s", setup));
         logger.debug(String.format("Type %s", type));
         switch (type) {
             case I2CHW:
-                u8g2 = display.initHwI2c(bus, address);
+                u8g2 = display.initHwI2c(setup, bus, address);
                 break;
             case I2CSW:
-                u8g2 = display.initSwI2c(gpio, scl, sda, U8X8_PIN_NONE, delay);
+                u8g2 = display.initSwI2c(setup, gpio, scl, sda, U8X8_PIN_NONE, delay);
                 break;
             case SPIHW:
-                u8g2 = display.initHwSpi(gpio, bus, dc, reset, U8X8_PIN_NONE);
+                u8g2 = display.initHwSpi(setup, gpio, bus, dc, reset, U8X8_PIN_NONE);
                 break;
             case SPISW:
-                u8g2 = display.initSwSpi(gpio, dc, reset, mosi, sck, cs, delay);
+                u8g2 = display.initSwSpi(setup, gpio, dc, reset, mosi, sck, cs, delay);
                 break;
             default:
                 throw new RuntimeException(String.format("%s is not a valid type", type));
@@ -360,7 +369,7 @@ public class Graphics implements Callable<Integer> {
         width = U8g2.getDisplayWidth(u8g2);
         height = U8g2.getDisplayHeight(u8g2);
         U8g2.setPowerSave(u8g2, 0);
-        U8g2.setFont(u8g2, u8g2_font_10x20_tr);
+        U8g2.setFont(u8g2, display.getFontPtr(font));
         xbm();
         lines();
         ellipses();

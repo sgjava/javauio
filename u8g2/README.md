@@ -5,6 +5,8 @@ I used some custom code to generate the HawtJNI methods and font constants.
 This makes life easier going forawrd as changes are simple to keep in sync.
 * Java code follows C API, so if you used U8g2 in C, C++ or even NodeMcu with Lua it
 will immediately be familar. No goofy Java wrapper with a totally different API.
+* The Display class allows for runtime setup and font selection, so you can make
+applications that do not need to know the display or font type ahead of time.
 
 I've been submitting PRs to U8g2 for
 [arm-linux](https://github.com/olikraus/u8g2/tree/master/sys/arm-linux) port and
@@ -34,7 +36,6 @@ U8g2.setPowerSave(u8g2, 1);
 U8g2.doneUserData(u8g2);
 U8g2.doneI2c();
 ```
-
 ![Duo tith 3 displays](images/duo.jpg)
 
 ## Use Java u8g2 in your own Maven projects
