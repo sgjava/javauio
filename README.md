@@ -6,16 +6,16 @@ generation techniques to provide a best of breed cross platform approach. It
 does not make sense to recreate the wheel like so many other IO libraries. JDK
 17 LTS is supported out of the box (JDK 11 for ARM 32 until Zulu JDK 17 released).
 
-* [Periphery](https://github.com/sgjava/javauio/tree/master/periphery) API for
+* [Periphery](https://github.com/sgjava/javauio/tree/main/periphery) API for
 GPIO, LED, PWM, SPI, I2C, MMIO and Serial peripheral I/O interface access. Based
 on [c-periphery](https://github.com/vsergeev/c-periphery) API which also covers
 C, C++, Python, Lua and Dart.
-* [U8g2](https://github.com/sgjava/javauio/tree/master/u8g2) API for monochrome
+* [U8g2](https://github.com/sgjava/javauio/tree/main/u8g2) API for monochrome
 displays. Based on [U8g2](https://github.com/olikraus/u8g2): Library for
 monochrome displays, version 2.
-* [Tools](https://github.com/sgjava/javauio/tree/master/tools) provides tools
+* [Tools](https://github.com/sgjava/javauio/tree/main/tools) provides tools
 for mapping MMIO GPIO register mapping, code generation, etc.
-* [Demo](https://github.com/sgjava/javauio/tree/master/demo) provides CLI based
+* [Demo](https://github.com/sgjava/javauio/tree/main/demo) provides CLI based
 demos instead of using mocks or hard coded pins, busses, etc.
 
 * An install script gives you a complete install of [JDK](https://www.azul.com/products/core),
