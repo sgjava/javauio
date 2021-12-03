@@ -5,10 +5,10 @@ package com.codeferm.u8g2.demo;
 
 import com.codeferm.u8g2.Common;
 import com.codeferm.u8g2.Display;
-import com.codeferm.u8g2.Display.FontType;
-import static com.codeferm.u8g2.Display.FontType.FONT_PROFONT10_TF;
-import com.codeferm.u8g2.Display.SetupType;
-import static com.codeferm.u8g2.Display.SetupType.SSD1306_I2C_128X64_NONAME;
+import com.codeferm.u8g2.FontType;
+import static com.codeferm.u8g2.FontType.FONT_8X13_TF;
+import com.codeferm.u8g2.SetupType;
+import static com.codeferm.u8g2.SetupType.SSD1306_I2C_128X64_NONAME;
 import com.codeferm.u8g2.U8g2;
 import static com.codeferm.u8g2.U8x8.U8X8_PIN_NONE;
 import static com.codeferm.u8g2.demo.Graphics.DisplayType.I2CHW;
@@ -55,7 +55,7 @@ public class Graphics implements Callable<Integer> {
      */
     @Option(names = {"--font"}, description
             = "Font, ${DEFAULT-VALUE} by default.")
-    private FontType font = FONT_PROFONT10_TF;
+    private FontType font = FONT_8X13_TF;
     /**
      * Type allows hardware and software I2C and SPI.
      */
@@ -350,6 +350,7 @@ public class Graphics implements Callable<Integer> {
         // Initialize user_data_struct based on display type
         logger.debug(String.format("Setup %s", setup));
         logger.debug(String.format("Type %s", type));
+        logger.debug(String.format("Font %s", font));
         switch (type) {
             case I2CHW:
                 u8g2 = display.initHwI2c(setup, bus, address);
