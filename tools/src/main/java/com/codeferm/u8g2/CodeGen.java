@@ -8,6 +8,7 @@ import static com.codeferm.u8g2.CodeGen.ListType.ENUMS;
 import static com.codeferm.u8g2.CodeGen.ListType.FONTS;
 import static com.codeferm.u8g2.CodeGen.ListType.FONT_SWITCH;
 import static com.codeferm.u8g2.CodeGen.ListType.I2C_SWITCH;
+import static com.codeferm.u8g2.CodeGen.ListType.METHODS;
 import static com.codeferm.u8g2.CodeGen.ListType.SPI_SWITCH;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -54,7 +55,7 @@ public class CodeGen implements Callable<Integer> {
      * Output type.
      */
     @Option(names = {"--output"}, description = "Output type, ${DEFAULT-VALUE} by default.")
-    private OutputType outputType = OutputType.FONTS;
+    private OutputType outputType = OutputType.METHODS;
 
     /**
      * Types of generated output.
@@ -63,7 +64,8 @@ public class CodeGen implements Callable<Integer> {
         ENUMS,
         SWITCH,
         CONSTANTS,
-        FONTS
+        FONTS,
+        METHODS
     }
 
     /**
@@ -342,6 +344,7 @@ public class CodeGen implements Callable<Integer> {
         final var setupEnumList = u8g2MethodMap.get(ENUMS);
         final var i2cSwitch = u8g2MethodMap.get(I2C_SWITCH);
         final var spiSwitch = u8g2MethodMap.get(SPI_SWITCH);
+        final var methods = u8g2MethodMap.get(METHODS);
         switch (outputType) {
             case ENUMS:
                 System.out.println("public enum FontType {");
@@ -394,6 +397,12 @@ public class CodeGen implements Callable<Integer> {
                 });
                 System.out.println("    // u8g2 fonts");
                 u8g2Fonts.forEach(string -> {
+                    System.out.println(string);
+                });
+                break;
+            case METHODS:
+                System.out.println("    // u8g2 methods");
+                methods.forEach(string -> {
                     System.out.println(string);
                 });
                 break;
