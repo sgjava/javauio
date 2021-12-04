@@ -13,7 +13,8 @@ import java.util.concurrent.TimeUnit;
 import org.apache.logging.log4j.LogManager;
 
 /**
- * Display allows dynamic selection of setup and fonts at run time. THis is a monster class because the switch statements
+ * Display allows dynamic selection of setup and fonts at run time. This is a monster class because of the generated switch
+ * statements.
  *
  * @author Steven P. Goldsmith
  * @version 1.0.0
@@ -5624,6 +5625,7 @@ public class Display {
     public void setupSpi(final SetupType setupType, final long u8g2, final long rotation, final long byteCb,
             final long gpioAndDelayCb) {
         switch (setupType) {
+
             case SSD1305_128X32_NONAME:
                 U8g2.setupSsd1305128x32NonameF(u8g2, rotation, byteCb, gpioAndDelayCb);
                 break;
