@@ -173,7 +173,7 @@ cd hawtjni >> $logfile 2>&1
 log "Building HawtJNI..."
 # Callback assert fails on 32 bit ARM, so skipping tests until I can fix
 # hawtjni-example fails to build on armv7l
-mvn clean install -Dmaven.compiler.source=$jdk -Dmaven.compiler.target=$jdk -DskipTests -pl '!hawtjni-example' --log-file="../periphery/scripts/hawtjni.log" >> $logfile 2>&1
+mvn clean install -Dmaven.compiler.source=$jdk -Dmaven.compiler.target=$jdk -DskipTests -pl '!hawtjni-example' --log-file="../javauio/scripts/hawtjni.log" >> $logfile 2>&1
 
 # Copy U8g2 source
 cd >> $logfile 2>&1
