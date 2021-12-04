@@ -194,3 +194,4 @@ cd >> $logfile 2>&1
 cd javauio >> $logfile 2>&1
 log "Building Java UIO..."
 mvn clean install -Dmaven.compiler.source=$jdk -Dmaven.compiler.target=$jdk --log-file="scripts/javauio.log" >> $logfile 2>&1
+log "Done"
