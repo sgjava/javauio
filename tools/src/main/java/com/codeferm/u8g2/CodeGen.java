@@ -26,7 +26,7 @@ import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 
 /**
- * Code generator for U8g2 to HawtJNI Java methods. Also generates code for Display.java.
+ * Code generator for U8g2 to HawtJNI Java methods. Also generates code for Display.java and Enum types.
  *
  * @author Steven P. Goldsmith
  * @version 1.0.0
