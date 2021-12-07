@@ -12,7 +12,6 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 import java.util.TreeMap;
@@ -94,6 +93,7 @@ public class MultiDisplay implements Callable<Integer> {
      * @return Pointer to u8g2 struct.
      */
     public long setup(final int displayNum, final Properties properties) {
+        logger.debug(String.format("Display %d", displayNum));
         final var keys = properties.stringPropertyNames();
         final var intMap = new HashMap<String, Integer>();
         final var strMap = new HashMap<String, String>();
@@ -111,6 +111,9 @@ public class MultiDisplay implements Callable<Integer> {
                 }
             }
         });
+        logger.debug(String.format("Setup %s", strMap.get("setup")));
+        logger.debug(String.format("Type %s", strMap.get("type")));
+        logger.debug(String.format("Font %s", strMap.get("font")));
         long u8g2 = 0;
         switch (DisplayType.valueOf(strMap.get("type"))) {
             case I2CHW:
