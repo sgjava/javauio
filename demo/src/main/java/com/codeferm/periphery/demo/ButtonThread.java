@@ -9,7 +9,6 @@ import static com.codeferm.periphery.Gpio.GPIO_EDGE_BOTH;
 import static com.codeferm.periphery.Gpio.GPIO_EDGE_FALLING;
 import static com.codeferm.periphery.Gpio.GPIO_EDGE_RISING;
 import static com.codeferm.periphery.Gpio.GPIO_POLL_EVENT;
-import java.time.format.DateTimeFormatter;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -53,11 +52,10 @@ public class ButtonThread implements Callable<Integer> {
      *
      * @param executor Executor service.
      */
-    public void submitWaitForEdge(final ExecutorService executor) {
-        // Submit lambda
-        executor.submit(() -> {
+    public void executeWaitForEdge(final ExecutorService executor) {
+        // Execute lambda
+        executor.execute(() -> {
             try (final var gpio = new Gpio(device, line, GPIO_DIR_IN)) {
-                final var formatter = DateTimeFormatter.ofPattern("MM/dd/yyyy HH:mm:ss");
                 final var edge = new int[1];
                 final var timestamp = new long[1];
                 Gpio.gpioSetEdge(gpio.getHandle(), GPIO_EDGE_BOTH);
@@ -87,7 +85,7 @@ public class ButtonThread implements Callable<Integer> {
     public Integer call() {
         var exitCode = 0;
         final var executor = Executors.newSingleThreadExecutor();
-        submitWaitForEdge(executor);
+        executeWaitForEdge(executor);
         try {
             // Initiate shutdown
             executor.shutdown();
