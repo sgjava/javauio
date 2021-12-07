@@ -4,7 +4,7 @@ Java UIO provides high performance Java interfaces for Linux Userspace IO. Java
 UIO was built from the ground up to use modern kernel APIs, libraries and code
 generation techniques to provide a best of breed cross platform approach. It
 does not make sense to recreate the wheel like so many other IO libraries. JDK
-17 LTS is supported out of the box (JDK 11 for ARM 32 until Zulu JDK 17 released).
+17 LTS is supported out of the box.
 
 * [Periphery](https://github.com/sgjava/javauio/tree/main/periphery) API for
 GPIO, LED, PWM, SPI, I2C, MMIO and Serial peripheral I/O interface access. Based
@@ -44,9 +44,7 @@ Periphery.
 * Why Zulu OpenJDK? Because it's easy to download without all the crap Oracle
 puts you through. You can always use another JDK 17 vendor, but you will have to
 do that manually. [Liberica JDK](https://bell-sw.com/pages/downloads/?version=java-17-lts)
-offers an ARM32 version of JDK 17, but it's 50% slower than Zulu JDK 11. At this
-point in time there are few JDK 17 choices for ARM32. I will update the project
-once a decent JDK 17 is available for ARM32.
+offers an ARM32 version of JDK 17, so that is used instead 
 
 ## SBC configuration
 * If you are using Armbian then use `armbian-config` or edit `/boot/armbianEnv.txt`
@@ -93,5 +91,5 @@ does and do it manually. What does the script do?
 * Check various log files if you have issues running the demo code. Something
 could have gone wrong during the build/bindings generation processes.
 * If you need to recompile use
+    * `cd ~/javauio`
     * `mvn clean install`
-    * Add `-Dmaven.compiler.source=11 -Dmaven.compiler.target=11` for ARM32

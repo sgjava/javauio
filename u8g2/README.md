@@ -12,7 +12,9 @@ that do not need to know the display or font type ahead of time.
 I've been submitting PRs to U8g2 for
 [arm-linux](https://github.com/olikraus/u8g2/tree/master/sys/arm-linux) port and
 made it thread safe and multi-display capable. I also greatly improved
-performance of the I2C and SPI software drivers. 
+performance of the I2C and SPI software drivers.
+
+Do it all yourself U8g2 style.
 
 ```
 final var u8g2 = U8g2.initU8g2();
@@ -37,6 +39,15 @@ U8g2.setPowerSave(u8g2, 1);
 U8g2.doneUserData(u8g2);
 U8g2.doneI2c();
 ```
+
+Or look at Base class in Demo module.
+
+```
+var exitCode = super.call();
+showText("Hello world.");
+done();
+```
+
 ![Duo tith 3 displays](images/duo.jpg)
 
 ## Use Java u8g2 in your own Maven projects

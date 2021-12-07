@@ -4,7 +4,7 @@
 #
 # @author: sgoldsmith
 #
-# Install dependencies, Zulu OpenJDK 11/17, Maven and HawtJNI for Ubuntu/Debian.
+# Install dependencies, Zulu/Liberica OpenJDK 17, Maven and HawtJNI for Ubuntu/Debian.
 # If JDK or Maven was already installed with this script then they will be replaced.
 #
 # Steven P. Goldsmith
@@ -68,10 +68,8 @@ javahome=/usr/lib/jvm/jdk17
 jdk=17
 # ARM 32
 if [ "$arch" = "armv7l" ]; then
-    jdkurl="https://cdn.azul.com/zulu-embedded/bin/zulu11.52.13-ca-jdk11.0.13-linux_aarch32hf.tar.gz"
     #  No Zulu JDK 17 for ARM32 yet
-    javahome=/usr/lib/jvm/jdk11
-    jdk=11
+    jdkurl="https://download.bell-sw.com/java/17+35/bellsoft-jdk17+35-linux-arm32-vfp-hflt-full.tar.gz"
 # ARM 64
 elif [ "$arch" = "aarch64" ]; then
     jdkurl="https://cdn.azul.com/zulu/bin/zulu17.30.15-ca-jdk17.0.1-linux_aarch64.tar.gz"
@@ -100,10 +98,15 @@ log "Extracting $jdkarchive to $tmpdir"
 tar -xf "$tmpdir/$jdkarchive" -C "$tmpdir" >> $logfile 2>&1
 log "Removing $javahome"
 sudo -E rm -rf "$javahome" >> $logfile 2>&1
-# Remove .gz
-filename="${jdkarchive%.*}"
-# Remove .tar
-filename="${filename%.*}"
+# ARM32 has different file name
+if [ "$arch" = "armv7l" ]; then
+    filename="jdk-17-full"
+else
+    # Remove .gz
+    filename="${jdkarchive%.*}"
+    # Remove .tar
+    filename="${filename%.*}"
+fi
 sudo mkdir -p /usr/lib/jvm >> $logfile 2>&1
 log "Moving $tmpdir/$filename to $javahome"
 sudo mv "$tmpdir/$filename" "$javahome" >> $logfile 2>&1

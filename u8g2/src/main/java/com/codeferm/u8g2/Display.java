@@ -6236,7 +6236,5 @@ public class Display {
         logger.debug("Done");
         U8g2.doneUserData(u8g2);
         U8g2.done(u8g2);
-        U8g2.doneI2c();
-        U8g2.doneSpi();
     }
 }
