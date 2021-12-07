@@ -6228,7 +6228,7 @@ public class Display {
     }
 
     /**
-     * Free u8g2_t structure from memory, close down GPIO, I2C and SPI.
+     * Free u8g2_t structure from memory and close down GPIO.
      *
      * @param u8g2 Pointer to u8g2_t structure.
      */
