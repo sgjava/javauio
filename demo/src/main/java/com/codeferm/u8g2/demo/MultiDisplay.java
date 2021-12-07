@@ -178,10 +178,12 @@ public class MultiDisplay implements Callable<Integer> {
                 });
         display.sleep(5000);
         // Shut down displays
-        for (final var entry : map.entrySet()) {
+        map.entrySet().stream().map(entry -> {
             U8g2.setPowerSave(entry.getValue(), 1);
+            return entry;
+        }).forEachOrdered(entry -> {
             display.done(entry.getValue());
-        }
+        });
         U8g2.doneI2c();
         U8g2.doneSpi();
         return exitCode;
