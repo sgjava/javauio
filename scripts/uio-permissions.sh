@@ -10,6 +10,8 @@
 # sgjava@gmail.com
 #
 
+chown -R root:uio /dev/mem
+chmod -R ug+rw /dev/mem
 chown -R root:uio /dev/gpiochip* #/dev/gpiomem for sandbox
 chmod -R ug+rw /dev/gpiochip* #/dev/gpiomem for sandbox
 chown -R root:uio /dev/i2c*
