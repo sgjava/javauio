@@ -44,6 +44,17 @@ but you'll need to know the correct dtb file and section to remove) :
 * `sudo dtc -@ -I dts -O dtb -o sun8i-h2-plus-nanopi-duo.dtb sun8i-h2-plus-nanopi-duo.dts`
 * `reboot`
 
+## Armbian I2C frequency
+On the NanoPi Duo you can change I2c frequency. Seems only 100 KHz and 400 KHz
+is supported by kernel.
+* Use same steps as above to copy dtb and edit it.
+* `sudo nano sun8i-h2-plus-nanopi-duo.dts`
+    * Search for `i2c@` sections and add 400 KHz clock frequency.
+    * `clock-frequency = <400000>;`
+* `sudo dtc -@ -I dts -O dtb -o sun8i-h2-plus-nanopi-duo.dtb sun8i-h2-plus-nanopi-duo.dts`
+* `reboot`
+
+
 ## Modify POM as needed
 The Periphery POM uses download-maven-plugin to download c-periphery source
 to `src/main/native-package/src`. The files are cached in
