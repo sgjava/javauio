@@ -127,7 +127,7 @@ public class MultiDisplay implements Callable<Integer> {
                 break;
             case SPIHW:
                 u8g2 = display.initHwSpi(SetupType.valueOf(strMap.get("setup")), intMap.get("gpio"), intMap.get("bus"), intMap.get(
-                        "dc"), intMap.get("reset"), U8X8_PIN_NONE);
+                        "dc"), intMap.get("reset"), U8X8_PIN_NONE, intMap.get("mode").shortValue(), intMap.get("speed").longValue());
                 break;
             case SPISW:
                 u8g2 = display.initSwSpi(SetupType.valueOf(strMap.get("setup")), intMap.get("gpio"), intMap.get("dc"), intMap.get(

@@ -106,6 +106,16 @@ public class Base implements Callable<Integer> {
     @Option(names = {"--cs"}, description = "SPI CS pin, ${DEFAULT-VALUE} by default.")
     private int cs = 13;
     /**
+     * Mode for SPI.
+     */
+    @Option(names = {"--mode"}, description = "SPI mode, ${DEFAULT-VALUE} by default.")
+    private short mode = 0;
+    /**
+     * CS pin for SPI.
+     */
+    @Option(names = {"--speed"}, description = "SPI maximum speed, ${DEFAULT-VALUE} by default.")
+    private long speed = 500000;
+    /**
      * Nanosecond delay or 0 for none for software I2C and SPI.
      */
     @Option(names = {"--delay"}, description = "Nanosecond delay for software I2C and SPI, ${DEFAULT-VALUE} by default.")
@@ -246,7 +256,7 @@ public class Base implements Callable<Integer> {
                 u8g2 = display.initSwI2c(setup, gpio, scl, sda, U8X8_PIN_NONE, delay);
                 break;
             case SPIHW:
-                u8g2 = display.initHwSpi(setup, gpio, bus, dc, reset, U8X8_PIN_NONE);
+                u8g2 = display.initHwSpi(setup, gpio, bus, dc, reset, U8X8_PIN_NONE, mode, speed);
                 break;
             case SPISW:
                 u8g2 = display.initSwSpi(setup, gpio, dc, reset, mosi, sck, cs, delay);

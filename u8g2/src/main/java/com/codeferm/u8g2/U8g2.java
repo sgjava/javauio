@@ -3175,7 +3175,7 @@ public class U8g2 {
 
     @JniMethod(accessor = "init_spi_hw_advanced")
     public static native void initSpiHwAdvanced(final long u8g2, final int gpioChip, final int bus, final int dc, final int res,
-            final int cs, short spi_mode, long max_speed);
+            final int cs, short spiMode, long maxSpeed);
 
     @JniMethod(accessor = "init_spi_hw")
     public static native void initSpiHw(final long u8g2, final int gpioChip, final int bus, final int dc, final int res,

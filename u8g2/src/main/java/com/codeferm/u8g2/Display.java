@@ -6174,12 +6174,15 @@ public class Display {
      * @param dc DC pin.
      * @param res RESET pin.
      * @param cs CS pin.
+     * @param spiMode SPI mode.
+     * @param maxSpeed Maximum speed.
      * @return Pointer to u8g2_t structure.
      */
-    public long initHwSpi(final SetupType setupType, final int gpio, final int bus, final int dc, final int res, final int cs) {
+    public long initHwSpi(final SetupType setupType, final int gpio, final int bus, final int dc, final int res, final int cs,
+            final short spiMode, final long maxSpeed) {
         final var u8g2 = U8g2.initU8g2();
         setupSpi(setupType, u8g2, U8G2_R0, u8x8_byte_arm_linux_hw_spi, u8x8_arm_linux_gpio_and_delay);
-        U8g2.initSpiHw(u8g2, gpio, bus, dc, res, cs);
+        U8g2.initSpiHwAdvanced(u8g2, gpio, bus, dc, res, cs, spiMode, maxSpeed);
         U8g2.initDisplay(u8g2);
         logger.debug(String.format("Size %d x %d, draw color %d", U8g2.getDisplayWidth(u8g2), U8g2.getDisplayHeight(u8g2), U8g2.
                 getDrawColor(u8g2)));
