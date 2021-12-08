@@ -21,7 +21,7 @@ import picocli.CommandLine;
  * @version 1.0.0
  * @since 1.0.0
  */
-@CommandLine.Command(name = "perf", mixinStandardHelpOptions = true, version = "perf 1.0.0",
+@CommandLine.Command(name = "Perf", mixinStandardHelpOptions = true, version = "1.0.0-SNAPSHOT",
         description = "Show performance of MMIO based GPIO")
 public class Perf implements Callable<Integer> {
 

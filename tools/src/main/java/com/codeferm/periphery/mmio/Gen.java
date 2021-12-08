@@ -29,6 +29,8 @@ import picocli.CommandLine;
  * @version 1.0.0
  * @since 1.0.0
  */
+@CommandLine.Command(name = "Gen", mixinStandardHelpOptions = true, version = "1.0.0-SNAPSHOT",
+        description = "GPIO data register offset and mask generator")
 public class Gen implements Callable<Integer> {
 
     /**

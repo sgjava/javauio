@@ -33,8 +33,8 @@ import picocli.CommandLine.Option;
  * @version 1.0.0
  * @since 1.0.0
  */
-@Command(name = "codegen", mixinStandardHelpOptions = true, version = "codegen 1.0.0",
-        description = "Generate Java code")
+@Command(name = "CodeGen", mixinStandardHelpOptions = true, version = "1.0.0-SNAPSHOT",
+        description = "Generate Java code from U8g2 header files")
 public class CodeGen implements Callable<Integer> {
 
     /**

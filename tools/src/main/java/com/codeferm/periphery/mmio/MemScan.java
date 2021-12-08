@@ -30,7 +30,7 @@ import picocli.CommandLine;
  * @version 1.0.0
  * @since 1.0.0
  */
-@CommandLine.Command(name = "memscan", mixinStandardHelpOptions = true, version = "memscan 1.0.0",
+@CommandLine.Command(name = "MemScan", mixinStandardHelpOptions = true, version = "1.0.0-SNAPSHOT",
         description = "Use GPIO device to detect memory changes")
 public class MemScan implements Callable<Integer> {
 
