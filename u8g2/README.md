@@ -50,7 +50,7 @@ done();
 
 ![Duo tith 3 displays](images/duo.jpg)
 
-SSD1306 sendBuffer performance based on JDK 17 snd Nano Pi Duo.
+SSD1306 sendBuffer performance based on JDK 17 and Nano Pi Duo.
 
 |Setup                    |Type |Bus KHz | FPS |
 | ----------------------- | --- | ------ | --- |
