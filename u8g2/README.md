@@ -52,16 +52,16 @@ done();
 
 SSD1306 sendBuffer performance based on JDK 17 and Nano Pi Duo.
 
-|Setup                    |Type |Bus KHz | FPS  |
-| ----------------------- | --- | ------ | ---- |
-|SSD1306_I2C_128X64_NONAME|HW   |     100|  8.85|
-|SSD1306_I2C_128X64_NONAME|HW   |     400| 30.30|
-|SSD1306_I2C_128X64_NONAME|SW   |     189| 14.49|
-|SSD1306_128X64_NONAME    |HW   |     500| 50.00|
-|SSD1306_128X64_NONAME    |HW   |    1000|100.00|
-|SSD1306_128X64_NONAME    |HW   |    2000|200.00|
-|SSD1306_128X64_NONAME    |SW   |     189| 19.61|
-
+|Setup                       |Type |Bus KHz | FPS  |
+| -------------------------- | --- | ------ | ---- |
+|SSD1306_I2C_128X64_NONAME   |HW   |     100|  8.85|
+|SSD1306_I2C_128X64_NONAME   |HW   |     400| 30.30|
+|SSD1306_I2C_128X64_NONAME   |SW   |     189| 14.49|
+|SSD1306_I2C_128X32_UNIVISION|SW   |     189| 28.57|
+|SSD1306_128X64_NONAME       |HW   |     500| 50.00|
+|SSD1306_128X64_NONAME       |HW   |    1000|100.00|
+|SSD1306_128X64_NONAME       |HW   |    2000|200.00|
+|SSD1306_128X64_NONAME       |SW   |     189| 19.61|
 
 ## Use Java u8g2 in your own Maven projects
 After bulding Java u8g2 simpily add the following artifact:
