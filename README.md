@@ -40,7 +40,7 @@ SBC cross platform. See [downloads](https://www.armbian.com/download).
 * Why Java 17? Because Java 17 is the current LTS version of Java. Java 11 the
 previous LTS release is end of life September 2023. I'm only moving forward
 with Java. You can always create a fork and make a Java 8 or Java 11 version of
-Periphery.
+Java UIO.
 * Why Zulu OpenJDK? Because it's easy to download without all the crap Oracle
 puts you through. You can always use another JDK 17 vendor, but you will have to
 do that manually. [Liberica JDK](https://bell-sw.com/pages/downloads/?version=java-17-lts)
