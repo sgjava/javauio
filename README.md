@@ -12,7 +12,9 @@ on [c-periphery](https://github.com/vsergeev/c-periphery) API which also covers
 C, C++, Python, Lua and Dart.
 * [U8g2](https://github.com/sgjava/javauio/tree/main/u8g2) API for monochrome
 displays. Based on [U8g2](https://github.com/olikraus/u8g2): Library for
-monochrome displays, version 2.
+monochrome displays, version 2. I added ability to use multiple displays in a
+thread safe way and dramatically improved software driven I2C and SPI performance
+at the C level.
 * [Tools](https://github.com/sgjava/javauio/tree/main/tools) provides tools
 for mapping MMIO GPIO register mapping, code generation, etc.
 * [Demo](https://github.com/sgjava/javauio/tree/main/demo) provides CLI based
@@ -20,8 +22,8 @@ demos instead of using mocks or hard coded pins, busses, etc.
 
 * An install script gives you a complete install of [JDK](https://www.azul.com/products/core),
 [Maven](https://maven.apache.org), [HawtJNI](https://github.com/fusesource/hawtjni)
-fork and any required projects. This can be run on the target platform such as
-[Armbian](https://www.armbian.com) using Ubuntu. All testing has been done on
+fork and any required projects, so there is no guessing. This can be run on the target platform
+such as [Armbian](https://www.armbian.com) using Ubuntu. All testing has been done on
 Armbian and Ubuntu targets while development is done on x86 and Ubuntu.
 * HawtJNI generates JNI code to reduce errors and time hand coding. Updating code
 is also much easier.
