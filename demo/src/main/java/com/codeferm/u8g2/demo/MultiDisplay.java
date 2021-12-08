@@ -16,13 +16,15 @@ import java.util.Properties;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.concurrent.Callable;
+import java.util.concurrent.Executors;
+import static java.util.concurrent.TimeUnit.NANOSECONDS;
 import java.util.regex.Pattern;
 import org.apache.logging.log4j.LogManager;
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
 
 /**
- * Simple text demo.
+ * Multiple displays using threads.
  *
  * @author Steven P. Goldsmith
  * @version 1.0.0
@@ -39,16 +41,16 @@ public class MultiDisplay implements Callable<Integer> {
     /**
      * Integer regex.
      */
-    private Pattern pattern = Pattern.compile("-?\\d+(\\.\\d+)?");
+    private final Pattern pattern = Pattern.compile("-?\\d+(\\.\\d+)?");
     /**
      * Input file.
      */
     @CommandLine.Option(names = {"-f", "--file"}, description = "Input property file name, ${DEFAULT-VALUE} by default.")
-    private String fileName = "display.properties";
+    private String fileName = "display-hw.properties";
     /**
      * Display helper.
      */
-    private Display display = new Display();
+    private final Display display = new Display();
 
     /**
      * Add display types here and in setup method.
@@ -142,7 +144,7 @@ public class MultiDisplay implements Callable<Integer> {
     }
 
     /**
-     * Return a Set of display numbers base on property key suffix.
+     * Return a Set of display numbers based on property key suffix.
      *
      * @param properties Properties.
      * @return Set of display numbers.
@@ -157,7 +159,7 @@ public class MultiDisplay implements Callable<Integer> {
     }
 
     /**
-     * Simple text display.
+     * Update multiple displays using threads.
      *
      * @return Exit code.
      * @throws InterruptedException Possible exception.
@@ -172,14 +174,44 @@ public class MultiDisplay implements Callable<Integer> {
         set.forEach(displayNum -> {
             map.put(displayNum, setup(displayNum, properties));
         });
+        // Set thread pool to number of displays
+        final var executor = Executors.newFixedThreadPool(set.size());
         // Write string to each display
-        map.entrySet().
-                forEach(entry -> {
-                    U8g2.drawStr(entry.getValue(), 1, U8g2.getMaxCharHeight(entry.getValue()), String.format("Display %d", entry.
-                            getKey()));
+        map.entrySet().forEach((var entry) -> {
+            executor.execute(() -> {
+                final var u8g2 = entry.getValue();
+                final var height = U8g2.getDisplayHeight(u8g2);
+                final var width = U8g2.getDisplayWidth(u8g2);
+                // Draw discs in a loop switching drawing colors
+                for (int i = 0; i < 10; i++) {
+                    U8g2.setDrawColor(u8g2, 1);
+                    for (int r = 4; r < height; r += 4) {
+                        U8g2.drawDisc(u8g2, width / 2, height / 2, r / 2, U8g2.U8G2_DRAW_ALL);
+                        U8g2.sendBuffer(u8g2);
+                    }
                     U8g2.sendBuffer(entry.getValue());
-                });
-        display.sleep(5000);
+                    U8g2.setDrawColor(u8g2, 0);
+                    for (int r = 4; r < height; r += 4) {
+                        U8g2.drawDisc(u8g2, width / 2, height / 2, r / 2, U8g2.U8G2_DRAW_ALL);
+                        U8g2.sendBuffer(u8g2);
+                    }
+                    U8g2.sendBuffer(entry.getValue());
+                }
+            });
+        });
+        try {
+            // Initiate shutdown
+            executor.shutdown();
+            // Wait for threads to finish
+            if (!executor.isTerminated()) {
+                logger.info("Waiting for threads to finish");
+                executor.awaitTermination(Long.MAX_VALUE, NANOSECONDS);
+            }
+        } catch (InterruptedException e) {
+            logger.error("Tasks interrupted");
+        } finally {
+            executor.shutdownNow();
+        }
         // Shut down displays
         map.entrySet().stream().map(entry -> {
             U8g2.setPowerSave(entry.getValue(), 1);
@@ -198,13 +230,9 @@ public class MultiDisplay implements Callable<Integer> {
      * @param args Argument list.
      */
     public static void main(String... args) {
-        System.exit(new CommandLine(new MultiDisplay()).registerConverter(Byte.class,
-                Byte::decode).registerConverter(Byte.TYPE,
-                        Byte::decode).registerConverter(Short.class,
-                        Short::decode).registerConverter(Short.TYPE, Short::decode).
-                registerConverter(Integer.class,
-                        Integer::decode).registerConverter(Integer.TYPE, Integer::decode).
-                registerConverter(Long.class,
-                        Long::decode).registerConverter(Long.TYPE, Long::decode).execute(args));
+        System.exit(new CommandLine(new MultiDisplay()).registerConverter(Byte.class, Byte::decode).registerConverter(Byte.TYPE,
+                Byte::decode).registerConverter(Short.class, Short::decode).registerConverter(Short.TYPE, Short::decode).
+                registerConverter(Integer.class, Integer::decode).registerConverter(Integer.TYPE, Integer::decode).
+                registerConverter(Long.class, Long::decode).registerConverter(Long.TYPE, Long::decode).execute(args));
     }
 }

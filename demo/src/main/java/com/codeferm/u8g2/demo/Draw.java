@@ -16,8 +16,8 @@ import picocli.CommandLine.Command;
  * @version 1.0.0
  * @since 1.0.0
  */
-@Command(name = "Shapes", mixinStandardHelpOptions = true, version = "1.0.0-SNAPSHOT",
-        description = "Shapes demo")
+@Command(name = "Draw", mixinStandardHelpOptions = true, version = "1.0.0-SNAPSHOT",
+        description = "Draw demo")
 public class Draw extends Base {
 
     /**
