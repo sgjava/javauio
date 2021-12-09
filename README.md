@@ -82,7 +82,7 @@ a OS with your own version of Java 17, etc. then you can look at what install.sh
 does and do it manually. What does the script do?
 * Install build dependencies
 * Install UIO Permissions Service and udev rules
-  Installs Zulu JDK 17 (JDK 11 for ARM 32) to /usr/lib/jvm
+* Installs Zulu JDK 17 (JDK 11 for ARM 32) to /usr/lib/jvm
 * Installs Maven to /opt
 * Build HawtJNI (using my fork that works with JDK 17)
 * Build Java UIO
