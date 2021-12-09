@@ -45,7 +45,7 @@ with Java. You can always create a fork and make a Java 8 or Java 11 version of
 Java UIO.
 * Why Zulu OpenJDK? Because it's easy to download without all the crap Oracle
 puts you through. You can always use another JDK 17 vendor, but you will have to
-do that manually. [Liberica JDK](https://bell-sw.com/pages/downloads/?version=java-17-lts)
+do that manually. [Liberica Full JDK](https://bell-sw.com/pages/downloads/?version=java-17-lts)
 offers an ARM32 version of JDK 17, so that is used instead.
 
 ## SBC configuration
@@ -82,7 +82,7 @@ a OS with your own version of Java 17, etc. then you can look at what install.sh
 does and do it manually. What does the script do?
 * Install build dependencies
 * Install UIO Permissions Service and udev rules
-* Installs Zulu JDK 17 (JDK 11 for ARM 32) to /usr/lib/jvm
+* Installs Zulu JDK 17 (Liberica JDK for ARM 32) to /usr/lib/jvm
 * Installs Maven to /opt
 * Build HawtJNI (using my fork that works with JDK 17)
 * Build Java UIO
