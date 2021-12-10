@@ -48,7 +48,7 @@ showText("Hello world.");
 done();
 ```
 
-<img src="images/u8g2.png" width="300"/>
+<img src="images/u8g2.jpg" width="300"/>
 
 SSD1306 sendBuffer performance based on JDK 17 and Nano Pi Duo.
 
