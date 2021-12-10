@@ -50,7 +50,7 @@ but you'll need to know the correct dtb file and section to remove) :
 * `reboot`
 
 ## Armbian I2C frequency
-On the Armbian you can change I2c frequency. Seems only 100 KHz and 400 KHz
+On Armbian you can change I2c frequency. Seems only 100 KHz and 400 KHz
 is supported by kernel. Here we do it on the NanoPi Duo.
 * Use same steps as above to copy dtb and edit it.
 * `sudo nano sun8i-h2-plus-nanopi-duo.dts`
