@@ -6,7 +6,7 @@ generation techniques to provide a best of breed cross platform approach. It
 does not make sense to recreate the wheel like so many other IO libraries. JDK
 17 LTS is supported out of the box.
 
-<img src="periphery/images/periphery.png" width="100"/>
+<img src="periphery/images/periphery.png" width="100"/><img src="u8g2/images/u8g2.png" width="100"/>
 
 * [Periphery](https://github.com/sgjava/javauio/tree/main/periphery) API for
 GPIO, LED, PWM, SPI, I2C, MMIO and Serial peripheral I/O interface access. Based
