@@ -20,6 +20,11 @@ try (final var spi = new Spi("/dev/spidev1.0", 0, 500000)) {
 }
 ```
 
+![Duo](images/periphery.png)
+
+NanoPi Duo rigged up to test Periphery including serial and SPI loopbacks, MPU6050 to test I2C and Led.
+Built in button and system Led can also be tested all without mocks.
+
 Periphery will be targeting Armbian, but the code should work with most
 Linux distributions. Demo apps are included that illustrate how to leverage the
 bindings. The idea is to have consistent APIs across
@@ -53,7 +58,6 @@ is supported by kernel.
     * `clock-frequency = <400000>;`
 * `sudo dtc -@ -I dts -O dtb -o sun8i-h2-plus-nanopi-duo.dtb sun8i-h2-plus-nanopi-duo.dts`
 * `reboot`
-
 
 ## Modify POM as needed
 The Periphery POM uses download-maven-plugin to download c-periphery source
