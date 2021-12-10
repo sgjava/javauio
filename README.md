@@ -5,9 +5,9 @@ UIO was built from the ground up to use modern kernel APIs, libraries and code
 generation techniques to provide a best of breed cross platform approach. It
 does not make sense to recreate the wheel like so many other IO libraries. JDK
 17 LTS is supported out of the box.
-
+***
 <img src="periphery/images/periphery.png" width="100"/><img src="u8g2/images/u8g2.jpg" width="100"/>
-
+***
 * [Periphery](https://github.com/sgjava/javauio/tree/main/periphery) API for
 GPIO, LED, PWM, SPI, I2C, MMIO and Serial peripheral I/O interface access. Based
 on [c-periphery](https://github.com/vsergeev/c-periphery) API which also covers
