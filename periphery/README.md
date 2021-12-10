@@ -20,7 +20,7 @@ try (final var spi = new Spi("/dev/spidev1.0", 0, 500000)) {
 }
 ```
 
-![Duo](images/periphery.png)
+<img src="images/periphery.png" width="300"/>
 
 NanoPi Duo rigged up to test Periphery including serial and SPI loopbacks, MPU6050 to test I2C and Led.
 Built in button and system Led can also be tested all without mocks.
