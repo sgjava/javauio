@@ -10,7 +10,7 @@ import picocli.CommandLine;
 import picocli.CommandLine.Command;
 
 /**
- * XBM demo.
+ * Drawing demo.
  *
  * @author Steven P. Goldsmith
  * @version 1.0.0
@@ -108,7 +108,7 @@ public class Draw extends Base {
     }
 
     /**
-     * Simple text display.
+     * Run through graphics examples.
      *
      * @return Exit code.
      * @throws InterruptedException Possible exception.

@@ -127,7 +127,7 @@ public class Xbm extends Base {
     }    
 
     /**
-     * Simple text display.
+     * Show XBM image.
      *
      * @return Exit code.
      * @throws InterruptedException Possible exception.

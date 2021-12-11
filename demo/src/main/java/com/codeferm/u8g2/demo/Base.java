@@ -235,7 +235,7 @@ public class Base implements Callable<Integer> {
     }
 
     /**
-     * Run graphics routines.
+     * Sub class should call this to setup display.
      *
      * @return Exit code.
      * @throws InterruptedException Possible exception.

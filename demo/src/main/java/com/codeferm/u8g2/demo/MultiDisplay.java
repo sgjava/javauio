@@ -219,6 +219,7 @@ public class MultiDisplay implements Callable<Integer> {
         }).forEachOrdered(entry -> {
             display.done(entry.getValue());
         });
+        // Free global I2C and SPI handles
         U8g2.doneI2c();
         U8g2.doneSpi();
         return exitCode;

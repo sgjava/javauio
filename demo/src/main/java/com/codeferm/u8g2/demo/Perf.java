@@ -11,7 +11,7 @@ import picocli.CommandLine;
 import picocli.CommandLine.Command;
 
 /**
- * Simple text demo.
+ * sendBuffer performance.
  *
  * @author Steven P. Goldsmith
  * @version 1.0.0
@@ -32,7 +32,7 @@ public class Perf extends Base {
     private int samples = 1000;
 
     /**
-     * Simple text display.
+     * Calculate sendBuffer FPS.
      *
      * @return Exit code.
      * @throws InterruptedException Possible exception.
