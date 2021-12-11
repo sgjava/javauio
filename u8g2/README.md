@@ -40,7 +40,7 @@ U8g2.doneUserData(u8g2);
 U8g2.doneI2c();
 ```
 
-Or look at Base class in Demo module.
+Or look at [Base](https://github.com/sgjava/javauio/blob/main/demo/src/main/java/com/codeferm/u8g2/demo/Base.java) class in Demo module.
 
 ```
 var exitCode = super.call();
