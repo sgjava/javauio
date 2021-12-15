@@ -6,17 +6,18 @@ generation techniques to provide a best of breed cross platform approach. It
 does not make sense to recreate the wheel like so many other IO libraries. JDK
 17 LTS is supported out of the box.
 ***
-<img src="periphery/images/periphery.png" width="100"/><img src="u8g2/images/u8g2.jpg" width="100"/><img src="u8g2/images/java.png" width="100"/>
+<img src="periphery/images/periphery.png" width="100"/><img src="u8g2/images/u8g2.jpg" width="100"/><img src="u8g2/images/java.png" width="100"/><img src="u8g2/images/sdl.png" width="100"/>
 ***
 * [Periphery](https://github.com/sgjava/javauio/tree/main/periphery) API for
 GPIO, LED, PWM, SPI, I2C, MMIO and Serial peripheral I/O interface access. Based
 on [c-periphery](https://github.com/vsergeev/c-periphery) API which also covers
-C, C++, Python, Lua and Dart.
+C, C++, Python, Lua and Dart. Cross platform high speed MMIO based GPIO included.
 * [U8g2](https://github.com/sgjava/javauio/tree/main/u8g2) API for monochrome
 displays. Based on [U8g2](https://github.com/olikraus/u8g2): Library for
 monochrome displays, version 2. I added ability to use multiple displays in a
 thread safe way and dramatically improved software driven I2C and SPI performance
-at the C level.
+at the C level. You can also use SDL 2 based diaplsy to develop on desktop without
+physical display attached.
 * [Tools](https://github.com/sgjava/javauio/tree/main/tools) provides tools
 for mapping MMIO GPIO register mapping, code generation, etc.
 * [Demo](https://github.com/sgjava/javauio/tree/main/demo) provides CLI based
@@ -87,6 +88,8 @@ does and do it manually. What does the script do?
 * Installs Zulu JDK 17 (Liberica JDK for ARM 32) to /usr/lib/jvm
 * Installs Maven to /opt
 * Build HawtJNI (using my fork that works with JDK 17)
+* Download and copy c-periphery source to Maven module
+* Download and copy U8g2 source to Maven module
 * Build Java UIO
 
 ### Run script

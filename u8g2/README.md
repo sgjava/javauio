@@ -8,6 +8,7 @@ will immediately be familar. No goofy Java wrapper with a totally different API.
 * The [Display](https://github.com/sgjava/javauio/blob/main/u8g2/src/main/java/com/codeferm/u8g2/Display.java)
 class allows for runtime setup and font selection, so you can make applications
 that do not need to know the display or font type ahead of time.
+* Works with SDL 2, so you can develop code on desktop without the need for a physical display.
 
 I've been submitting PRs to U8g2 for
 [arm-linux](https://github.com/olikraus/u8g2/tree/master/sys/arm-linux) port and
