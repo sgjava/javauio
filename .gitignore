@@ -154,3 +154,5 @@ buildNumber.properties
 /u8g2/src/main/native-package/src/u8x8_gpio.c
 /u8g2/src/main/native-package/src/u8x8_sdl_key.c
 /u8g2/src/main/native-package/src/u8x8_d_sdl_128x64.c
+/periphery/src/main/native-package/src/version.c
+/periphery/src/main/native-package/src/version.h
