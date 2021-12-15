@@ -16,6 +16,31 @@
     <description>JNI interface for U8g2</description>    
     
     <properties>
+        <!--
+        To compile for GPIO device use -DPERIPHERY_GPIO_CDEV_SUPPORT=1 and remove this for sysfs only.
+        If you would like to use the gpio.h header that matches your distribution you can add it to CFLAGS.
+        
+        First locate gpio.h with bias definitions:
+        
+        grep -R -i "GPIOHANDLE_REQUEST_BIAS_DISABLE" /usr/src
+        
+        Then add to CFLAGS (use actual path):
+        
+        -I/usr/src/linux-headers-5.9.6-meson64/include/uapi/linux/gpio.h
+        
+        The default include path for gcc may contain older gpio.h header file.
+        
+        -D__ARM_LINUX__ required for U8g2 arm-linux port.
+        
+        sdl2-config provides CFLAGS for SDL.
+        
+        -DNO_SDL to not include SDL code.
+        -->        
+        <cflags>CFLAGS=-I/usr/include/SDL2 -D_REENTRANT -DPERIPHERY_GPIO_CDEV_SUPPORT=1 -D__ARM_LINUX__</cflags>
+        <!--
+        sdl2-config provides LDFLAGS for SDL. Remove SDL LDFLAGS is -DNO_SDL used in CFLAGS
+        -->
+        <ldflags>LDFLAGS=-lSDL2</ldflags>
     </properties>
     
     <build>
@@ -69,23 +94,9 @@
                             Have to change default or it conflicts with u8g2.h
                             -->
                             <name>java-u8g2</name>
-                            <!--
-                            To compile for GPIO device use -DPERIPHERY_GPIO_CDEV_SUPPORT=1 and remove this for sysfs only.
-                            The rest of the CFLAGS come from the actual c-periphery Makefile. If you would like to use the
-                            gpio.h header that matches your distribution you can add it to CFLAGS.
-                            
-                            First locate gpio.h with bias definitions:
-                            
-                            grep -R -i "GPIOHANDLE_REQUEST_BIAS_DISABLE" /usr/src
-                            
-                            Then add to CFLAGS (use actual path):
-                            
-                            -I/usr/src/linux-headers-5.9.6-meson64/include/uapi/linux/gpio.h
-                            
-                            The default include path for gcc may contain older gpio.h header file.
-                            -->
                             <configureArgs>
-                                <arg>CFLAGS=-O3 -std=gnu99 -pedantic -Wall -Wextra -Wno-unused-parameter -fPIC -DPERIPHERY_GPIO_CDEV_SUPPORT=1 -D__ARM_LINUX__</arg>
+                                <arg>${cflags}</arg>
+                                <arg>${ldflags}</arg>
                             </configureArgs>
                         </configuration>                        
                         <goals>

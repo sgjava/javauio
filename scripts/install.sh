@@ -29,8 +29,8 @@ log(){
 }
 
 log "Installing dependencies..."
-# Install build/dev tools
-sudo apt-get -y install build-essential autoconf automake libtool git >> $logfile 2>&1
+# Install build/dev tools/libs
+sudo apt-get -y install build-essential autoconf automake libtool git libsdl2-dev >> $logfile 2>&1
 
 log "Installing UIO Permissions Service..."
 # Install UIO Permissions service
@@ -178,6 +178,16 @@ log "Building HawtJNI..."
 # hawtjni-example fails to build on armv7l
 mvn clean install -Dmaven.compiler.source=$jdk -Dmaven.compiler.target=$jdk -DskipTests -pl '!hawtjni-example' --log-file="../javauio/scripts/hawtjni.log" >> $logfile 2>&1
 
+# Copy c-periphery source
+cd >> $logfile 2>&1
+log "Removing c-periphery"
+rm -rf c-periphery >> $logfile 2>&1
+log "Cloning c-periphery..."
+git clone --depth 1 https://github.com/vsergeev/c-periphery.git >> $logfile 2>&1
+log "Copying files into periphery..."
+cp -a "$HOME/c-periphery/src/"*.c "$HOME/javauio/periphery/src/main/native-package/src/"
+cp -a "$HOME/c-periphery/src/"*.h "$HOME/javauio/periphery/src/main/native-package/src/"
+
 # Copy U8g2 source
 cd >> $logfile 2>&1
 log "Removing u8g2"
@@ -188,6 +198,7 @@ log "Copying files into u8g2..."
 # Order is important here because some files will be overwritten
 cp -a "$HOME/u8g2/csrc/." "$HOME/javauio/u8g2/src/main/native-package/src/"
 cp -a "$HOME/u8g2/cppsrc/." "$HOME/javauio/u8g2/src/main/native-package/src/"
+cp -a "$HOME/u8g2/sys/sdl/common/." "$HOME/javauio/u8g2/src/main/native-package/src/"
 cp -a "$HOME/u8g2/sys/arm-linux/drivers/." "$HOME/javauio/u8g2/src/main/native-package/src/"
 cp -a "$HOME/u8g2/sys/arm-linux/drivers/." "$HOME/javauio/u8g2/src/main/native-package/src/"
 cp -a "$HOME/u8g2/sys/arm-linux/port/." "$HOME/javauio/u8g2/src/main/native-package/src/"

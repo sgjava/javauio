@@ -11,6 +11,7 @@ import static com.codeferm.u8g2.SetupType.SSD1306_I2C_128X64_NONAME;
 import com.codeferm.u8g2.U8g2;
 import static com.codeferm.u8g2.U8x8.U8X8_PIN_NONE;
 import static com.codeferm.u8g2.demo.Base.DisplayType.I2CHW;
+import static com.codeferm.u8g2.demo.Base.DisplayType.SDL;
 import java.util.concurrent.Callable;
 import org.apache.logging.log4j.LogManager;
 import picocli.CommandLine.Option;
@@ -36,7 +37,8 @@ public class Base implements Callable<Integer> {
         I2CHW,
         I2CSW,
         SPIHW,
-        SPISW;
+        SPISW,
+        SDL;
     }
     /**
      * Type allows hardware and software I2C and SPI.
@@ -229,9 +231,14 @@ public class Base implements Callable<Integer> {
      */
     public void done() {
         U8g2.setPowerSave(u8g2, 1);
-        display.done(u8g2);
-        U8g2.doneI2c();
-        U8g2.doneSpi();
+        // No need to free up hardware
+        if (type == SDL) {
+            U8g2.done(u8g2);
+        } else {
+            display.done(u8g2);
+            U8g2.doneI2c();
+            U8g2.doneSpi();
+        }
     }
 
     /**
@@ -260,6 +267,9 @@ public class Base implements Callable<Integer> {
                 break;
             case SPISW:
                 u8g2 = display.initSwSpi(setup, gpio, dc, reset, mosi, sck, cs, delay);
+                break;
+            case SDL:
+                u8g2 = display.initSdl();
                 break;
             default:
                 throw new RuntimeException(String.format("%s is not a valid type", type));

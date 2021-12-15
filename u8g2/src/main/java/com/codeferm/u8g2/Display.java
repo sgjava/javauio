@@ -6218,6 +6218,20 @@ public class Display {
     }
 
     /**
+     * Initialize SDL display and return pointer to u8g2_t structure.
+     *
+     * @return Pointer to u8g2_t structure.
+     */
+    public long initSdl() {
+        final var u8g2 = U8g2.initU8g2();
+        U8g2.setupbufferSdl128x64(u8g2, U8G2_R0);
+        U8g2.initDisplay(u8g2);
+        logger.debug(String.format("Size %d x %d, draw color %d", U8g2.getDisplayWidth(u8g2), U8g2.getDisplayHeight(u8g2), U8g2.
+                getDrawColor(u8g2)));
+        return u8g2;
+    }
+
+    /**
      * Sleep for desired milliseconds.
      *
      * @param milliseconds Milliseconds to sleep.
