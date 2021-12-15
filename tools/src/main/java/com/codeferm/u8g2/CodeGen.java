@@ -21,7 +21,8 @@ import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import org.apache.logging.log4j.LogManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
@@ -40,7 +41,7 @@ public class CodeGen implements Callable<Integer> {
     /**
      * Logger.
      */
-    private final org.apache.logging.log4j.Logger logger = LogManager.getLogger(CodeGen.class);
+    private static final Logger logger = LoggerFactory.getLogger(CodeGen.class);
     /**
      * u8g2.h file.
      */

@@ -6,7 +6,8 @@ package com.codeferm.periphery.demo;
 import com.codeferm.periphery.I2c;
 import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
-import org.apache.logging.log4j.LogManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
@@ -120,7 +121,7 @@ public class Mpu6050 implements Callable<Integer> {
     /**
      * Logger.
      */
-    private final org.apache.logging.log4j.Logger logger = LogManager.getLogger(Mpu6050.class);
+    private static final Logger logger = LoggerFactory.getLogger(Mpu6050.class);
     /**
      * Device option.
      */

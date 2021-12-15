@@ -6,7 +6,8 @@ package com.codeferm.u8g2.demo;
 import com.codeferm.u8g2.U8g2;
 import java.time.Duration;
 import java.time.Instant;
-import org.apache.logging.log4j.LogManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
 
@@ -24,7 +25,7 @@ public class Perf extends Base {
     /**
      * Logger.
      */
-    private final org.apache.logging.log4j.Logger logger = LogManager.getLogger(Perf.class);
+    private static final Logger logger = LoggerFactory.getLogger(Perf.class);
     /**
      * Line option.
      */

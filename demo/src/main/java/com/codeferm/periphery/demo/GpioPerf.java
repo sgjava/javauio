@@ -9,7 +9,8 @@ import static com.codeferm.periphery.Gpio.GPIO_DIR_OUT;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.concurrent.Callable;
-import org.apache.logging.log4j.LogManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
@@ -28,7 +29,7 @@ public class GpioPerf implements Callable<Integer> {
     /**
      * Logger.
      */
-    private final org.apache.logging.log4j.Logger logger = LogManager.getLogger(GpioPerf.class);
+    private static final Logger logger = LoggerFactory.getLogger(GpioPerf.class);
     /**
      * Device option.
      */

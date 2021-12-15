@@ -16,7 +16,8 @@ import java.util.Properties;
 import java.util.TreeMap;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
-import org.apache.logging.log4j.LogManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Parse property files containing board specific information.
@@ -30,7 +31,7 @@ public class File {
     /**
      * Logger.
      */
-    private final org.apache.logging.log4j.Logger logger = LogManager.getLogger(File.class);
+    private static final Logger logger = LoggerFactory.getLogger(File.class);
 
     /**
      * File description.

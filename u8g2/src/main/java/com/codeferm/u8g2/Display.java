@@ -10,7 +10,8 @@ import static com.codeferm.u8g2.U8g2.u8x8_byte_arm_linux_hw_i2c;
 import static com.codeferm.u8g2.U8g2.u8x8_byte_arm_linux_hw_spi;
 import static com.codeferm.u8g2.U8g2.u8x8_byte_sw_i2c;
 import java.util.concurrent.TimeUnit;
-import org.apache.logging.log4j.LogManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Display allows dynamic selection of setup and fonts at run time. This is a monster class because of the generated switch
@@ -25,7 +26,7 @@ public class Display {
     /**
      * Logger.
      */
-    private final org.apache.logging.log4j.Logger logger = LogManager.getLogger(Display.class);
+    private static final Logger logger = LoggerFactory.getLogger(Display.class);
 
     /**
      * Return font pointer based on enum.

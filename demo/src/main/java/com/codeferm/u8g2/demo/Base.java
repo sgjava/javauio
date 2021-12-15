@@ -13,7 +13,8 @@ import static com.codeferm.u8g2.U8x8.U8X8_PIN_NONE;
 import static com.codeferm.u8g2.demo.Base.DisplayType.I2CHW;
 import static com.codeferm.u8g2.demo.Base.DisplayType.SDL;
 import java.util.concurrent.Callable;
-import org.apache.logging.log4j.LogManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import picocli.CommandLine.Option;
 
 /**
@@ -28,7 +29,7 @@ public class Base implements Callable<Integer> {
     /**
      * Logger.
      */
-    private final org.apache.logging.log4j.Logger logger = LogManager.getLogger(Base.class);
+    private static final Logger logger = LoggerFactory.getLogger(Base.class);
 
     /**
      * Add display types here and in setup method.

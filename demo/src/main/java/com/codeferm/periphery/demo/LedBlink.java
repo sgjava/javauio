@@ -12,7 +12,8 @@ import static com.codeferm.periphery.Gpio.GPIO_EDGE_NONE;
 import com.codeferm.periphery.Gpio.GpioConfig;
 import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
-import org.apache.logging.log4j.LogManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
@@ -34,7 +35,7 @@ public class LedBlink implements Callable<Integer> {
     /**
      * Logger.
      */
-    private final org.apache.logging.log4j.Logger logger = LogManager.getLogger(LedBlink.class);
+    private static final Logger logger = LoggerFactory.getLogger(LedBlink.class);
     /**
      * Device option.
      */

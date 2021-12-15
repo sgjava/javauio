@@ -5,7 +5,8 @@ package com.codeferm.periphery.demo;
 
 import com.codeferm.periphery.Serial;
 import java.util.concurrent.Callable;
-import org.apache.logging.log4j.LogManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
@@ -26,7 +27,7 @@ public class SerialLoopback implements Callable<Integer> {
     /**
      * Logger.
      */
-    private final org.apache.logging.log4j.Logger logger = LogManager.getLogger(SerialLoopback.class);
+    private static final Logger logger = LoggerFactory.getLogger(SerialLoopback.class);
     /**
      * Device option.
      */

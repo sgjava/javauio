@@ -5,7 +5,8 @@ package com.codeferm.u8g2.demo;
 
 import com.codeferm.u8g2.U8g2;
 import java.util.Random;
-import org.apache.logging.log4j.LogManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
 
@@ -23,7 +24,7 @@ public class Draw extends Base {
     /**
      * Logger.
      */
-    private final org.apache.logging.log4j.Logger logger = LogManager.getLogger(Draw.class);
+    private static final Logger logger = LoggerFactory.getLogger(Draw.class);
 
     /**
      * Line examples.

@@ -11,7 +11,8 @@ import java.time.Instant;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.Callable;
-import org.apache.logging.log4j.LogManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import picocli.CommandLine;
 
 /**
@@ -28,7 +29,7 @@ public class Perf implements Callable<Integer> {
     /**
      * Logger.
      */
-    private final org.apache.logging.log4j.Logger logger = LogManager.getLogger(Perf.class);
+        private static final Logger logger = LoggerFactory.getLogger(Perf.class);
     /**
      * Input file.
      */

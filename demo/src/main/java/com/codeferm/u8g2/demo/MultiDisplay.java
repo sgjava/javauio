@@ -19,7 +19,8 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.Executors;
 import static java.util.concurrent.TimeUnit.NANOSECONDS;
 import java.util.regex.Pattern;
-import org.apache.logging.log4j.LogManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
 
@@ -37,7 +38,7 @@ public class MultiDisplay implements Callable<Integer> {
     /**
      * Logger.
      */
-    private final org.apache.logging.log4j.Logger logger = LogManager.getLogger(MultiDisplay.class);
+    private static final Logger logger = LoggerFactory.getLogger(MultiDisplay.class);
     /**
      * Integer regex.
      */

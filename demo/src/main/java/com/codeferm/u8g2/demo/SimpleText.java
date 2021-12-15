@@ -3,7 +3,8 @@
  */
 package com.codeferm.u8g2.demo;
 
-import org.apache.logging.log4j.LogManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
 
@@ -21,7 +22,7 @@ public class SimpleText extends Base {
     /**
      * Logger.
      */
-    private final org.apache.logging.log4j.Logger logger = LogManager.getLogger(SimpleText.class);
+    private static final Logger logger = LoggerFactory.getLogger(SimpleText.class);
 
     /**
      * Simple text display.

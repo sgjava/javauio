@@ -5,7 +5,8 @@ package com.codeferm.u8g2.demo;
 
 import com.codeferm.u8g2.Common;
 import com.codeferm.u8g2.U8g2;
-import org.apache.logging.log4j.LogManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
 
@@ -23,7 +24,7 @@ public class Xbm extends Base {
     /**
      * Logger.
      */
-    private final org.apache.logging.log4j.Logger logger = LogManager.getLogger(Xbm.class);
+    private static final Logger logger = LoggerFactory.getLogger(Xbm.class);
     /**
      * XBM Java logo.
      */
