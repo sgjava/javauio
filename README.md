@@ -16,7 +16,7 @@ C, C++, Python, Lua and Dart. Cross platform high speed MMIO based GPIO included
 displays. Based on [U8g2](https://github.com/olikraus/u8g2): Library for
 monochrome displays, version 2. I added ability to use multiple displays in a
 thread safe way and dramatically improved software driven I2C and SPI performance
-at the C level. You can also use SDL 2 based diaplsy to develop on desktop without
+at the C level. You can also use SDL 2 based display to develop on a desktop without
 physical display attached.
 * [Tools](https://github.com/sgjava/javauio/tree/main/tools) provides tools
 for mapping MMIO GPIO register mapping, code generation, etc.
