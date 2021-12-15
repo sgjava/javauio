@@ -152,3 +152,5 @@ buildNumber.properties
 /u8g2/src/main/native-package/src/u8x8_d_ssd1306_64x48.c
 /u8g2/src/main/native-package/src/u8log_u8x8.c
 /u8g2/src/main/native-package/src/u8x8_gpio.c
+/u8g2/src/main/native-package/src/u8x8_sdl_key.c
+/u8g2/src/main/native-package/src/u8x8_d_sdl_128x64.c
