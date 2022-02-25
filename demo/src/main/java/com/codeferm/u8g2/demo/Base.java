@@ -54,7 +54,7 @@ public class Base implements Callable<Integer> {
             = "Font, ${DEFAULT-VALUE} by default.")
     private FontType font = FONT_COURB10_TF;
     /**
-     * Type allows hardware and software I2C and SPI.
+     * Type allows hardware and software I2C and SPI plus SDL.
      */
     @Option(names = {"--type"}, description = "Type of display, ${DEFAULT-VALUE} by default.")
     private DisplayType type = I2CHW;
