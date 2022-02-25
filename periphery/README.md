@@ -76,7 +76,7 @@ correct gpio.h include. After the install.sh script completes:
 * `mkdir -p $HOME/include/linux`
 * `cp /usr/src/linux-headers-5.9.11-sunxi/include/uapi/linux/gpio.h $HOME/include/linux/.` (use actual path)
 * `cd ~/javauio/periphery`
-* `mvn clean install "-Dcflags=-I$HOME/include"`
+* `mvn clean install "-DCFLAGS=-I$HOME/include"`
 * Add `-Dmaven.compiler.source=11 -Dmaven.compiler.target=11` for ARM32
 
 ## High performance GPIO using MMIO
