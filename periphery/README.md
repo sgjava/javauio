@@ -122,7 +122,7 @@ defaults.
 |Odroid C2         |Armbian Focal|1.5 GHz |365            |2346          |25%        |
 |Odroid XU4        |Armbian Focal|2.0 GHz | 44            | 300          |12%        |
 |Raspberry Pi 3    |Ubuntu Focal |1.2 GHz |119            |4541          |25%        |
-|Orange Pi PC Plus |Armbian Focal|1.3 GHz |314            |2298          |25%        |
+|Orange Pi PC Plus |Armbian Focal|1.3 GHz |314            | 886          |25%        |
 
 ## How GPIO pins are mapped
 This is based on testing on a NanoPi Duo. gpiochip0 starts at 0 and gpiochip1
