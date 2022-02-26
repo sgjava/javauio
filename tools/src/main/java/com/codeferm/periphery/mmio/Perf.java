@@ -45,6 +45,11 @@ public class Perf implements Callable<Integer> {
      */
     @CommandLine.Option(names = {"-l", "--line"}, description = "GPIO line, ${DEFAULT-VALUE} by default.")
     private int line = 203;
+    /**
+     * How many samples to run.
+     */
+    @CommandLine.Option(names = {"-s", "--samples"}, description = "Samples to run, ${DEFAULT-VALUE} by default.")
+    private int samples = 10000000;
 
     /**
      * Read pin value.
@@ -205,9 +210,9 @@ public class Perf implements Callable<Integer> {
                 entry.getValue().setMmioHadle(mmioHandle.get(entry.getKey().getChip()));
             });
             final var pin = pinMap.get(new PinKey(device, line));
-            perfGpiod(pin, 10000000);
-            perfGood(pin, 10000000);
-            perfBest(pin, 10000000);
+            perfGpiod(pin, samples);
+            perfGood(pin, samples);
+            perfBest(pin, samples);
             // Close all MMIO handles
             mmioHandle.entrySet().forEach((entry) -> {
                 Mmio.mmioClose(entry.getValue());
