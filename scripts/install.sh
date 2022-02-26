@@ -4,7 +4,7 @@
 #
 # @author: sgoldsmith
 #
-# Install dependencies, Zulu/Liberica OpenJDK 17, Maven and HawtJNI for Ubuntu/Debian.
+# Install dependencies, Zulu OpenJDK 17, Maven and HawtJNI for Ubuntu/Debian.
 # If JDK or Maven was already installed with this script then they will be replaced.
 #
 # Steven P. Goldsmith
@@ -66,30 +66,28 @@ sudo cp 99-pwm.rules /etc/udev/rules.d/. >> $logfile 2>&1
 #Default JDK
 javahome=/usr/lib/jvm/jdk17
 jdk=17
+
 # ARM 32
 if [ "$arch" = "armv7l" ]; then
-    #  No Zulu JDK 17 for ARM32 yet
-    jdkurl="https://download.bell-sw.com/java/17+35/bellsoft-jdk17+35-linux-arm32-vfp-hflt-full.tar.gz"
+    # Uncomment next three lines for JDK 11
+    #jdkurl="https://cdn.azul.com/zulu-embedded/bin/zulu11.54.25-ca-jdk11.0.14.1-linux_aarch32hf.tar.gz"
+    #javahome=/usr/lib/jvm/jdk11
+    #jdk=11
+    # Comment next line if using JDK 11
+    jdkurl="https://cdn.azul.com/zulu-embedded/bin/zulu17.32.13-ca-jdk17.0.2-linux_aarch32hf.tar.gz"
 # ARM 64
 elif [ "$arch" = "aarch64" ]; then
-    jdkurl="https://cdn.azul.com/zulu/bin/zulu17.30.15-ca-jdk17.0.1-linux_aarch64.tar.gz"
+	jdkurl="https://cdn.azul.com/zulu/bin/zulu17.32.13-ca-jdk17.0.2-linux_aarch64.tar.gz"
 # X86_32
 elif [ "$arch" = "i586" ] || [ "$arch" = "i686" ]; then
-    jdkurl="https://cdn.azul.com/zulu/bin/zulu17.30.15-ca-jdk17.0.1-linux_i686.tar.gz"
+	jdkurl="https://cdn.azul.com/zulu/bin/zulu17.32.13-ca-jdk17.0.2-linux_i686.tar.gz"
 # X86_64	
 elif [ "$arch" = "x86_64" ]; then
-    jdkurl="https://cdn.azul.com/zulu/bin/zulu17.30.15-ca-jdk17.0.1-linux_x64.tar.gz"
+    jdkurl="https://cdn.azul.com/zulu/bin/zulu17.32.13-ca-jdk17.0.2-linux_x64.tar.gz"
 fi
 export javahome
 # Just JDK archive name
 jdkarchive=$(basename "$jdkurl")
-
-
-log "Installing Java..."
-# Remove temp dir
-log "Removing temp dir $tmpdir"
-rm -rf "$tmpdir" >> $logfile 2>&1
-mkdir -p "$tmpdir" >> $logfile 2>&1
 
 # Install Zulu Java JDK
 log "Downloading $jdkarchive to $tmpdir"
@@ -98,18 +96,13 @@ log "Extracting $jdkarchive to $tmpdir"
 tar -xf "$tmpdir/$jdkarchive" -C "$tmpdir" >> $logfile 2>&1
 log "Removing $javahome"
 sudo -E rm -rf "$javahome" >> $logfile 2>&1
-# ARM32 has different file name
-if [ "$arch" = "armv7l" ]; then
-    filename="jdk-17-full"
-else
-    # Remove .gz
-    filename="${jdkarchive%.*}"
-    # Remove .tar
-    filename="${filename%.*}"
-fi
+# Remove .gz
+filename="${jdkarchive%.*}"
+# Remove .tar
+filename="${filename%.*}"
 sudo mkdir -p /usr/lib/jvm >> $logfile 2>&1
 log "Moving $tmpdir/$filename to $javahome"
-sudo mv "$tmpdir/$filename" "$javahome" >> $logfile 2>&1
+sudo -E mv "$tmpdir/$filename" "$javahome" >> $logfile 2>&1
 sudo -E update-alternatives --install "/usr/bin/java" "java" "$javahome/bin/java" 1 >> $logfile 2>&1
 sudo -E update-alternatives --install "/usr/bin/javac" "javac" "$javahome/bin/javac" 1 >> $logfile 2>&1
 sudo -E update-alternatives --install "/usr/bin/jar" "jar" "$javahome/bin/jar" 1 >> $logfile 2>&1
@@ -193,13 +186,12 @@ cd >> $logfile 2>&1
 log "Removing u8g2"
 rm -rf u8g2 >> $logfile 2>&1
 log "Cloning U8g2..."
-git clone --depth 1 https://github.com/sgjava/u8g2.git >> $logfile 2>&1
+git clone --depth 1 https://github.com/sgjava/u8g2 >> $logfile 2>&1
 log "Copying files into u8g2..."
 # Order is important here because some files will be overwritten
 cp -a "$HOME/u8g2/csrc/." "$HOME/javauio/u8g2/src/main/native-package/src/"
 cp -a "$HOME/u8g2/cppsrc/." "$HOME/javauio/u8g2/src/main/native-package/src/"
 cp -a "$HOME/u8g2/sys/sdl/common/." "$HOME/javauio/u8g2/src/main/native-package/src/"
-cp -a "$HOME/u8g2/sys/arm-linux/drivers/." "$HOME/javauio/u8g2/src/main/native-package/src/"
 cp -a "$HOME/u8g2/sys/arm-linux/drivers/." "$HOME/javauio/u8g2/src/main/native-package/src/"
 cp -a "$HOME/u8g2/sys/arm-linux/port/." "$HOME/javauio/u8g2/src/main/native-package/src/"
 
