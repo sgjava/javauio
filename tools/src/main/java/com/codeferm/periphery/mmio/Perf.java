@@ -29,7 +29,7 @@ public class Perf implements Callable<Integer> {
     /**
      * Logger.
      */
-        private static final Logger logger = LoggerFactory.getLogger(Perf.class);
+    private static final Logger logger = LoggerFactory.getLogger(Perf.class);
     /**
      * Input file.
      */
@@ -50,6 +50,11 @@ public class Perf implements Callable<Integer> {
      */
     @CommandLine.Option(names = {"-s", "--samples"}, description = "Samples to run, ${DEFAULT-VALUE} by default.")
     private int samples = 10000000;
+    /**
+     * Run fast only.
+     */
+    @CommandLine.Option(names = {"-f", "--fast"}, description = "Fast test only, ${DEFAULT-VALUE} by default.")
+    private boolean fast = true;
 
     /**
      * Read pin value.
@@ -210,8 +215,11 @@ public class Perf implements Callable<Integer> {
                 entry.getValue().setMmioHadle(mmioHandle.get(entry.getKey().getChip()));
             });
             final var pin = pinMap.get(new PinKey(device, line));
-            perfGpiod(pin, samples);
-            perfGood(pin, samples);
+            // Run slower tests?
+            if (!fast) {
+                perfGpiod(pin, samples);
+                perfGood(pin, samples);
+            }
             perfBest(pin, samples);
             // Close all MMIO handles
             mmioHandle.entrySet().forEach((entry) -> {
