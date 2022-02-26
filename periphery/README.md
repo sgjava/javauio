@@ -112,7 +112,8 @@ hard to compare. Technically you will actually be doing something like bit
 banging to simulate a protocol, so you need extra CPU bandwidth to do that.
 Please note write frequency is based on square wave (rapid on/off). You can
 increase clock speed to improve performance on some boards. I used the OS
-defaults.
+defaults. Speed was validated on an oscilloscope, so Perf test may show better
+performance.
 
 |SBC               |OS           |CPU Freq|GPIOD Write KHz|MMIO Write KHz|Average CPU|
 | ---------------- | ----------- | ------ | ------------- | ------------ | --------- |
