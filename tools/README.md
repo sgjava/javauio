@@ -14,25 +14,11 @@ NanoPi Neo Plus2 (H5) example:
 * `sudo java -cp $HOME/javauio/tools/target/tools-1.0.0-SNAPSHOT.jar:$HOME/javauio/periphery/target/periphery-1.0.0-SNAPSHOT-linux64.jar com.codeferm.periphery.mmio.Gen -i neoplus2.properties -o neoplus2-map.properties`
 * `sudo java -cp $HOME/javauio/tools/target/tools-1.0.0-SNAPSHOT.jar:$HOME/javauio/periphery/target/periphery-1.0.0-SNAPSHOT-linux64.jar com.codeferm.periphery.mmio.Perf -i neoplus2-map.properties -d 1 -l 203`
 
-MemScan tool to help map registers:
+Lets try a real MemScan tool example with the Orange Pi PC Plus. For this exercise I'm using latest Armbian Focal.
 
-For example on the ODROID C2 lets look at chip 0 and line 9
-* `sudo java -cp $HOME/javauio/tools/target/tools-1.0.0-SNAPSHOT.jar:$HOME/javauio/periphery/target/periphery-1.0.0-SNAPSHOT-linux32.jar com.codeferm.periphery.mmio.MemScan -a 0xc8100024 -w 0x03 -d 0 -l 9`
+Install [Java UIO](https://github.com/sgjava/javauio#download-project)
+Compile with latest GPIO header file
 
-Output:
-
-```11:55:39.342 [main] DEBUG MemScan - Memory address 0xc8100024 words 0x00000003
-11:55:39.538 [main] INFO  MemScan - Mode difference found at offset 0x00000000 before 0xa0003ef7 after 0xa0003cf7 difference 0x00000200
-11:55:39.540 [main] INFO  MemScan - Mode difference found at offset 0x00000004 before 0x80003ef7 after 0x80003cf7 difference 0x00000200
-11:55:39.543 [main] INFO  MemScan - Data difference found at offset 0x00000000 before 0xa0003cf7 after 0xa2003cf7 difference 0x02000000
-11:55:39.545 [main] INFO  MemScan - Data difference found at offset 0x00000004 before 0x80003cf7 after 0x80003ef7 difference 0x00000200
-11:55:39.548 [main] ERROR MemScan - Device 0 line 9 Error Kernel version does not support configuring GPIO line bias
-```
-
-Note the bias error is due to no compiling with latest gpio.h header.
-
-Lets try a real example with the Orange Pi PC Plus. For this exercise I'm using latest Armbian Focal.
-* Install [Java UIO](https://github.com/sgjava/javauio#download-project)
 * `sudo armbian-config` Software, Headers_install
 * `grep -R -i "GPIOHANDLE_REQUEST_BIAS_DISABLE" /usr/src`
 * `mkdir -p $HOME/include/linux`
@@ -40,15 +26,20 @@ Lets try a real example with the Orange Pi PC Plus. For this exercise I'm using 
 * `cd ~/javauio/periphery`
 * `mvn clean install "-DCFLAGS=-I$HOME/include"`
 * Add `-Dmaven.compiler.source=11 -Dmaven.compiler.target=11` for ARM32
-* Exit and login again, so permissions from install script take effect.
+* Exit and login again, so permissions from install script take effect
+
+Install gpiod
+
 * `sudo apt install -y gpiod`
-Let's find the GPIO chip addresses.
+
+Find the GPIO chip addresses.
 * `gpiodetect`
     * `gpiochip0 [1c20800.pinctrl] (224 lines)`
     * `gpiochip1 [1f02c00.pinctrl] (32 lines)`
     * Here we see the chips and addresses.
-* Then let's have a look at the [pin names](https://linux-sunxi.org/Xunlong_Orange_Pi_PC#Expansion_Port)
-* Lets take PA0 with A being group name. So group A data register offset is 0x10 for the H3. You can calculate
+
+Have a look at the [pin names](https://linux-sunxi.org/Xunlong_Orange_Pi_PC#Expansion_Port)
+* Start with PA0 with A being group name. So group A data register offset is 0x10 for the H3. You can calculate
 the sysfs number (should be the same for GPIOD chip 0) using (position of letter in alphabet - 1) * 32 + pin number. Thus
 PA0 should be at 1(A)-1 = 0 * 32 + 0 or 0. To test this use the following command:
 * `sudo java -cp $HOME/javauio/tools/target/tools-1.0.0-SNAPSHOT.jar:$HOME/javauio/periphery/target/periphery-1.0.0-SNAPSHOT-linux32.jar com.codeferm.periphery.mmio.MemScan -a 0x1c20800 -w 0x10 -d 0 -l 0`
@@ -61,7 +52,7 @@ PA0 should be at 1(A)-1 = 0 * 32 + 0 or 0. To test this use the following comman
 16:14:09.391 [main] INFO com.codeferm.periphery.mmio.MemScan - Pull down difference found at offset 0x00000010 before 0x00000001 after 0x00000000 difference 0x00000001
 16:14:09.393 [main] INFO com.codeferm.periphery.mmio.MemScan - Pull down difference found at offset 0x0000001c before 0x0000a6a9 after 0x0000a6aa difference 0x00000001
 ```
-* Now take PG9 with G being group name. So group G data register offset is 0xe8. PG9 should be at 7(G)-1 = 6 * 32 + 9 or 201. To test this use the following command:
+Now take PG9 with G being group name. So group G data register offset is 0xe8. PG9 should be at 7(G)-1 = 6 * 32 + 9 or 201. To test this use the following command:
 * `sudo java -cp $HOME/javauio/tools/target/tools-1.0.0-SNAPSHOT.jar:$HOME/javauio/periphery/target/periphery-1.0.0-SNAPSHOT-linux32.jar com.codeferm.periphery.mmio.MemScan -a 0x1c208e8 -w 0x20 -d 0 -l 201`
 * Notice we add pin group to address (0x1c208e8) and scan 0x20 words?
 ```
@@ -75,6 +66,7 @@ PA0 should be at 1(A)-1 = 0 * 32 + 0 or 0. To test this use the following comman
 I usually test every pin this way to make sure I'm on the right track. So now
 lets copy our register properties to our test device and generate the map file.
 * `sudo java -cp $HOME/javauio/tools/target/tools-1.0.0-SNAPSHOT.jar:$HOME/javauio/periphery/target/periphery-1.0.0-SNAPSHOT-linux32.jar com.codeferm.periphery.mmio.Gen -i opiplus.properties -o opiplus-map.properties`
+
 And finally lets run the performance test
 * `sudo java -cp $HOME/javauio/tools/target/tools-1.0.0-SNAPSHOT.jar:$HOME/javauio/periphery/target/periphery-1.0.0-SNAPSHOT-linux32.jar com.codeferm.periphery.mmio.Perf -i opiplus-map.properties -d 0 -l 0`
 ```
@@ -99,8 +91,9 @@ So one thing to note is JDK 17 on ARM32 seems to be much slower than JDK 11. Let
 ```
 I'll leave it up to you how important that performance delta is. In some cases
 it's overkill and you'll want to stick with JDK 17. For now I'm keeping the code
-compatible with JDK11, so it's really just a compile time issue.
-
+compatible with JDK11, so it's really just a compile time issue. Using an oscilloscope
+is the only way to know the true speed. In this case JDK 17 allowed around 900 KHz
+GPIO toggle.
 
 ## Run u8g2 tools
 This utility generates code for u8g2 library instead of manually dealing with updates all the time. 
