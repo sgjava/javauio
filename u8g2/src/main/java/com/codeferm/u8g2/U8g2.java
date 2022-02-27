@@ -2107,29 +2107,14 @@ public class U8g2 {
     @JniMethod(accessor = "u8g2_Setup_st7567_hem6432_f")
     public static native void setupSt7567Hem6432F(final long u8g2, final long rotation, final long byteCb, final long gpioAndDelayCb);
 
-    @JniMethod(accessor = "u8g2_Setup_st7567_i2c_64x32_1")
-    public static native void setupSt7567I2c64x321(final long u8g2, final long rotation, final long byteCb,
-            final long gpioAndDelayCb);
+    @JniMethod(accessor = "u8g2_Setup_st7567_122x32_1")
+    public static native void setupSt7567122x321(final long u8g2, final long rotation, final long byteCb, final long gpioAndDelayCb);
 
-    @JniMethod(accessor = "u8g2_Setup_st7567_i2c_hem6432_1")
-    public static native void setupSt7567I2cHem64321(final long u8g2, final long rotation, final long byteCb,
-            final long gpioAndDelayCb);
+    @JniMethod(accessor = "u8g2_Setup_st7567_122x32_2")
+    public static native void setupSt7567122x322(final long u8g2, final long rotation, final long byteCb, final long gpioAndDelayCb);
 
-    @JniMethod(accessor = "u8g2_Setup_st7567_i2c_64x32_2")
-    public static native void setupSt7567I2c64x322(final long u8g2, final long rotation, final long byteCb,
-            final long gpioAndDelayCb);
-
-    @JniMethod(accessor = "u8g2_Setup_st7567_i2c_hem6432_2")
-    public static native void setupSt7567I2cHem64322(final long u8g2, final long rotation, final long byteCb,
-            final long gpioAndDelayCb);
-
-    @JniMethod(accessor = "u8g2_Setup_st7567_i2c_64x32_f")
-    public static native void setupSt7567I2c64x32F(final long u8g2, final long rotation, final long byteCb,
-            final long gpioAndDelayCb);
-
-    @JniMethod(accessor = "u8g2_Setup_st7567_i2c_hem6432_f")
-    public static native void setupSt7567I2cHem6432F(final long u8g2, final long rotation, final long byteCb,
-            final long gpioAndDelayCb);
+    @JniMethod(accessor = "u8g2_Setup_st7567_122x32_f")
+    public static native void setupSt7567122x32F(final long u8g2, final long rotation, final long byteCb, final long gpioAndDelayCb);
 
     @JniMethod(accessor = "u8g2_Setup_st7571_128x128_1")
     public static native void setupSt7571128x1281(final long u8g2, final long rotation, final long byteCb, final long gpioAndDelayCb);
