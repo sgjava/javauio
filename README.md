@@ -108,7 +108,7 @@ projects, etc. Then you just need to install NetBeans (or Eclipse, etc.).
 Since Java UIO relies on c-periphery and u8g2 those files are not included in the
 project. You can see them ignored in [.gitignore](https://github.com/sgjava/javauio/blob/3779bd600664379d12bc413366ee9f9a883413c2/.gitignore#L12)
 * Copy the c-periphery files to `javauio/periphery/src/main/native-package/src`
-* Copyu8g2 files to `javauio/u8g2/src/main/native-package/src`
+* Copy u8g2 files to `javauio/u8g2/src/main/native-package/src`
 
 Now you should be ready to compile the project with `mvn clean install`. To use
 NetBeans right-click Run on a program in Demo project modify project properties:
