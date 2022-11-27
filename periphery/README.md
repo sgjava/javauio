@@ -77,7 +77,7 @@ correct gpio.h include. After the install.sh script completes:
 * `cp /usr/src/linux-headers-5.9.11-sunxi/include/uapi/linux/gpio.h $HOME/include/linux/.` (use actual path)
 * `cd ~/javauio/periphery`
 * `mvn clean install "-DCFLAGS=-I$HOME/include"`
-* Add `-Dmaven.compiler.source=11 -Dmaven.compiler.target=11` for ARM32
+* Add `-Dmaven.compiler.source=11 -Dmaven.compiler.target=11` for ARM32 JDK 11 if needed
 
 ## High performance GPIO using MMIO
 I have created a generic way to achieve fast GPIO for times when performance (bit
@@ -158,9 +158,9 @@ After bulding Periphery simpily add the following artifact:
 <version>1.0.0-SNAPSHOT</version>
 ```
 
-## Zulu Mission Control (JDK 17 not supported yet)
-[Azul Mission Control](https://www.azul.com/products/components/zulu-mission-control) allows
+## Azul Mission Control
+[Azul Mission Control](https://www.azul.com/products/components/azul-mission-control) allows
 you to profile your applications.
-[Download](https://www.azul.com/products/components/zulu-mission-control/#block-download)
+[Download](https://www.azul.com/products/components/azul-mission-control/#downloads)
 zmc and launch on your desktop. To profile your Periphery application use:
-`java -XX:+FlightRecorder -Djava.rmi.server.hostname=your_ip -Dcom.sun.management.jmxremote=true -Dcom.sun.management.jmxremote.port=8888 -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -cp periphery-1.0.0-SNAPSHOT.jar:periphery-1.0.0-SNAPSHOT-linux32.jar com.codeferm.periphery.demo.GpioPerf`
+`java -Djava.rmi.server.hostname=your_ip -Dcom.sun.management.jmxremote=true -Dcom.sun.management.jmxremote.port=8888 -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -cp periphery-1.0.0-SNAPSHOT.jar:periphery-1.0.0-SNAPSHOT-linux32.jar com.codeferm.periphery.demo.GpioPerf`
