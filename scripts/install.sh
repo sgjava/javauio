@@ -70,20 +70,20 @@ jdk=17
 # ARM 32
 if [ "$arch" = "armv7l" ]; then
     # Uncomment next three lines for JDK 11
-    #jdkurl="https://cdn.azul.com/zulu-embedded/bin/zulu11.54.25-ca-jdk11.0.14.1-linux_aarch32hf.tar.gz"
+    #jdkurl="https://cdn.azul.com/zulu-embedded/bin/zulu11.60.19-ca-jdk11.0.17-linux_aarch32hf.tar.gz"
     #javahome=/usr/lib/jvm/jdk11
     #jdk=11
     # Comment next line if using JDK 11
-    jdkurl="https://cdn.azul.com/zulu-embedded/bin/zulu17.32.13-ca-jdk17.0.2-linux_aarch32hf.tar.gz"
+    jdkurl="https://cdn.azul.com/zulu-embedded/bin/zulu17.38.21-ca-jdk17.0.5-linux_aarch32hf.tar.gz"
 # ARM 64
 elif [ "$arch" = "aarch64" ]; then
-	jdkurl="https://cdn.azul.com/zulu/bin/zulu17.32.13-ca-jdk17.0.2-linux_aarch64.tar.gz"
+	jdkurl="https://cdn.azul.com/zulu/bin/zulu17.38.21-ca-jdk17.0.5-linux_aarch64.tar.gz"
 # X86_32
 elif [ "$arch" = "i586" ] || [ "$arch" = "i686" ]; then
-	jdkurl="https://cdn.azul.com/zulu/bin/zulu17.32.13-ca-jdk17.0.2-linux_i686.tar.gz"
+	jdkurl="https://cdn.azul.com/zulu/bin/zulu17.38.21-ca-jdk17.0.5-linux_i686.tar.gz"
 # X86_64	
 elif [ "$arch" = "x86_64" ]; then
-    jdkurl="https://cdn.azul.com/zulu/bin/zulu17.32.13-ca-jdk17.0.2-linux_x64.tar.gz"
+    jdkurl="https://cdn.azul.com/zulu/bin/zulu17.38.21-ca-jdk17.0.5-linux_x64.tar.gz"
 fi
 export javahome
 # Just JDK archive name
@@ -119,9 +119,9 @@ sudo -E sh -c 'echo "JAVA_HOME=$javahome" >> /etc/environment'
 log "JAVA_HOME = $JAVA_HOME"
 
 # Apache Maven
-mavenurl="https://downloads.apache.org/maven/maven-3/3.8.4/binaries/apache-maven-3.8.4-bin.tar.gz"
+mavenurl="https://downloads.apache.org/maven/maven-3/3.8.6/binaries/apache-maven-3.8.6-bin.tar.gz"
 mavenarchive=$(basename "$mavenurl")
-mavenver="apache-maven-3.8.4"
+mavenver="apache-maven-3.8.6"
 mavenhome="/opt/maven"
 export mavenhome
 mavenbin="/opt/maven/bin"

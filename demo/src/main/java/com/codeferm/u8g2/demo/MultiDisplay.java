@@ -8,10 +8,17 @@ import com.codeferm.u8g2.FontType;
 import com.codeferm.u8g2.SetupType;
 import com.codeferm.u8g2.U8g2;
 import static com.codeferm.u8g2.U8x8.U8X8_PIN_NONE;
+import com.codeferm.u8g2.demo.Base.DisplayType;
+import static com.codeferm.u8g2.demo.Base.DisplayType.I2CHW;
+import static com.codeferm.u8g2.demo.Base.DisplayType.I2CSW;
+import static com.codeferm.u8g2.demo.Base.DisplayType.SDL;
+import static com.codeferm.u8g2.demo.Base.DisplayType.SPIHW;
+import static com.codeferm.u8g2.demo.Base.DisplayType.SPISW;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 import java.util.TreeMap;
@@ -23,6 +30,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
+import picocli.CommandLine.Option;
 
 /**
  * Multiple displays using threads.
@@ -47,21 +55,20 @@ public class MultiDisplay implements Callable<Integer> {
      * Input file.
      */
     @CommandLine.Option(names = {"-f", "--file"}, description = "Input property file name, ${DEFAULT-VALUE} by default.")
-    private String fileName = "display-hw.properties";
+    private String fileName = "sdl.properties";
+    /**
+     * Type allows hardware and software I2C and SPI plus SDL.
+     */
+    @Option(names = {"--type"}, description = "Type of display, ${DEFAULT-VALUE} by default.")
+    private DisplayType type = SDL;
     /**
      * Display helper.
      */
     private final Display display = new Display();
-
     /**
-     * Add display types here and in setup method.
+     * Map of display number and type.
      */
-    public enum DisplayType {
-        I2CHW,
-        I2CSW,
-        SPIHW,
-        SPISW;
-    }
+    private final HashMap<Integer, DisplayType> typeMap = new HashMap<>();
 
     /**
      * Load properties file from file path or fail back to class path.
@@ -114,6 +121,8 @@ public class MultiDisplay implements Callable<Integer> {
                 }
             }
         });
+        // Save off type by display number
+        typeMap.put(displayNum, DisplayType.valueOf(strMap.get("type")));
         logger.debug(String.format("Setup %s", strMap.get("setup")));
         logger.debug(String.format("Type %s", strMap.get("type")));
         logger.debug(String.format("Font %s", strMap.get("font")));
@@ -133,6 +142,9 @@ public class MultiDisplay implements Callable<Integer> {
             case SPISW:
                 u8g2 = display.initSwSpi(SetupType.valueOf(strMap.get("setup")), intMap.get("gpio"), intMap.get("dc"), intMap.get(
                         "reset"), intMap.get("mosi"), intMap.get("sck"), intMap.get("cs"), intMap.get("delay"));
+                break;
+            case SDL:
+                u8g2 = display.initSdl();
                 break;
             default:
                 throw new RuntimeException(String.format("%s is not a valid type", strMap.get("setup")));
@@ -167,6 +179,7 @@ public class MultiDisplay implements Callable<Integer> {
      */
     @Override
     public Integer call() throws InterruptedException {
+        // This will setup display
         var exitCode = 0;
         final var properties = loadProperties(fileName);
         final var set = getDisplays(properties);
@@ -174,32 +187,40 @@ public class MultiDisplay implements Callable<Integer> {
         // Setup displays and store in Map.
         set.forEach(displayNum -> {
             map.put(displayNum, setup(displayNum, properties));
+            display.sleep(2000);
         });
         // Set thread pool to number of displays
         final var executor = Executors.newFixedThreadPool(set.size());
         // Write string to each display
-        map.entrySet().forEach((var entry) -> {
-            executor.execute(() -> {
-                final var u8g2 = entry.getValue();
-                final var height = U8g2.getDisplayHeight(u8g2);
-                final var width = U8g2.getDisplayWidth(u8g2);
-                // Draw discs in a loop switching drawing colors
-                for (int i = 0; i < 10; i++) {
-                    U8g2.setDrawColor(u8g2, 1);
-                    for (int r = 4; r < height; r += 4) {
-                        U8g2.drawDisc(u8g2, width / 2, height / 2, r / 2, U8g2.U8G2_DRAW_ALL);
-                        U8g2.sendBuffer(u8g2);
+        for (Map.Entry<Integer, Long> entry : map.entrySet()) {
+            executor.execute(new Runnable() {
+                public void run() {
+                    final var u8g2 = entry.getValue();
+                    final var height = U8g2.getDisplayHeight(u8g2);
+                    final var width = U8g2.getDisplayWidth(u8g2);
+                    // Draw discs in a loop switching drawing colors
+                    for (int i = 0; i < 10; i++) {
+                        U8g2.setDrawColor(u8g2, 1);
+                        for (int r = 4; r < height; r += 4) {
+                            U8g2.drawDisc(u8g2, width / 2, height / 2, r / 2, U8g2.U8G2_DRAW_ALL);
+                            U8g2.sendBuffer(u8g2);
+                            if (typeMap.get(entry.getKey()) == SDL) {
+                                display.sleep(50);
+                            }
+                        }
+                        U8g2.setDrawColor(u8g2, 0);
+                        for (int r = 4; r < height; r += 4) {
+                            U8g2.drawDisc(u8g2, width / 2, height / 2, r / 2, U8g2.U8G2_DRAW_ALL);
+                            U8g2.sendBuffer(u8g2);
+                            if (typeMap.get(entry.getKey()) == SDL) {
+                                display.sleep(50);
+                            }
+                        }
                     }
-                    U8g2.sendBuffer(entry.getValue());
-                    U8g2.setDrawColor(u8g2, 0);
-                    for (int r = 4; r < height; r += 4) {
-                        U8g2.drawDisc(u8g2, width / 2, height / 2, r / 2, U8g2.U8G2_DRAW_ALL);
-                        U8g2.sendBuffer(u8g2);
-                    }
-                    U8g2.sendBuffer(entry.getValue());
+                    logger.debug(Long.toString(u8g2));
                 }
             });
-        });
+        }
         try {
             // Initiate shutdown
             executor.shutdown();
@@ -218,7 +239,11 @@ public class MultiDisplay implements Callable<Integer> {
             U8g2.setPowerSave(entry.getValue(), 1);
             return entry;
         }).forEachOrdered(entry -> {
-            display.done(entry.getValue());
+            if (typeMap.get(entry.getKey()) == SDL) {
+                U8g2.done(entry.getValue());
+            } else {
+                display.done(entry.getValue());
+            }
         });
         // Free global I2C and SPI handles
         U8g2.doneI2c();
