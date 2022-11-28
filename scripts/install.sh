@@ -188,13 +188,13 @@ log "Removing u8g2"
 rm -rf u8g2 >> $logfile 2>&1
 log "Cloning U8g2..."
 # My fork, so arm-linux updates do not break my build
-git clone --depth 1 https://github.com/sgjava/u8g2 >> $logfile 2>&1
+git clone --depth 1 --recurse-submodules https://github.com/sgjava/u8g2 >> $logfile 2>&1
 log "Copying files into u8g2..."
 # Order is important here because some files will be overwritten
 cp -a "$HOME/u8g2/csrc/." "$HOME/javauio/u8g2/src/main/native-package/src/"
 cp -a "$HOME/u8g2/cppsrc/." "$HOME/javauio/u8g2/src/main/native-package/src/"
 cp -a "$HOME/u8g2/sys/sdl/common/." "$HOME/javauio/u8g2/src/main/native-package/src/"
-cp -a "$HOME/u8g2/sys/arm-linux/drivers/." "$HOME/javauio/u8g2/src/main/native-package/src/"
+cp -a "$HOME/u8g2/sys/arm-linux/c-periphery/src/." "$HOME/javauio/u8g2/src/main/native-package/src/"
 cp -a "$HOME/u8g2/sys/arm-linux/port/." "$HOME/javauio/u8g2/src/main/native-package/src/"
 
 # Java UIO build
