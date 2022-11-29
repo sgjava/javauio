@@ -102,7 +102,7 @@ could have gone wrong during the build/bindings generation processes.
 
 ### How to work on Java UIO project
 I'm using NetBeans to develop, but this is a standard Maven multi-module project.
-The easiest way to setup your environment is create a Ubuntu 20.04 desktop VM
+The easiest way to setup your environment is create a Ubuntu 22.04 desktop VM
 (VirtualBox, etc.) and follow install process since it installs JVM, Maven, all
 projects, etc. Then you just need to install NetBeans (or Eclipse, etc.).
 Since Java UIO relies on c-periphery and u8g2 those files are not included in the
