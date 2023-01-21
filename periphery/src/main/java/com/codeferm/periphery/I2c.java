@@ -136,7 +136,7 @@ public class I2c implements AutoCloseable {
     }
 
     /**
-     * Read array from i2c 8 bit address. Unlike i2cReadReg8 the bytes values are not "& 0xff", thus the caller will need to do
+     * Read array from i2c 8 bit address. Unlike i2cReadReg8 the bytes values are not "&amp; 0xff", thus the caller will need to do
      * this.
      *
      * In order to read a register, we first do a "dummy write" by writing 0 bytes to the register we want to read from. This is

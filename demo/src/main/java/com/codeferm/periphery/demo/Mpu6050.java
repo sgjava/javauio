@@ -14,7 +14,7 @@ import picocli.CommandLine.Option;
 
 /**
  * This is based on https://github.com/Raspoid/raspoid/blob/master/src/main/com/raspoid/additionalcomponents/MPU6050.java by Julien
- * Louette & Gaël Wittorski. The idea here is to show you with simple changes you can use existing code with something complex like
+ * Louette &amp; Gaël Wittorski. The idea here is to show you with simple changes you can use existing code with something complex like
  * the MPU 6050 and easily convert it to Java Periphery.
  *
  * <b>Implementation of the MPU6050 component.</b>
@@ -45,7 +45,6 @@ import picocli.CommandLine.Option;
  * <b>[datasheet - p.10-11]</b> Features
  * <ul>
  * <li>Gyroscope features (triple-axis MEMS gyroscope)</li>
- * <ul>
  * <li>Digital-output X-, Y-, and Z-Axis angular rate sensors (gyroscopes) with a user-programmable fullscale range of ±250, ±500,
  * ±1000, and ±2000°/sec</li>
  * <li>Integrated 16-bit ADCs enable simultaneous sampling of gyros</li>
@@ -56,8 +55,8 @@ import picocli.CommandLine.Option;
  * <li>Standby current: 5µA</li>
  * <li>Factory calibrated sensitivity scale factor</li>
  * </ul>
- * <li>Accelerometer features (triple-axis MEMS accelerometer)</li>
  * <ul>
+ * <li>Accelerometer features (triple-axis MEMS accelerometer)</li>
  * <li>Digital-output triple-axis accelerometer with a programmable full scale
  * range of ±2g, ±4g, ±8g and ±16g</li>
  * <li>Integrated 16-bit ADCs enable simultaneous sampling of accelerometers while requiring no external multiplexer</li>
@@ -69,8 +68,8 @@ import picocli.CommandLine.Option;
  * <li>User-programmable interrupts</li>
  * <li>High-G interrupt</li>
  * </ul>
- * <li>Additional features</li>
  * <ul>
+ * <li>Additional features</li>
  * <li>9-Axis MotionFusion by the on-chip Digital Motion Processor (DMP)</li>
  * <li>Auxiliary master I2C bus for reading data from external sensors (e.g., magnetometer)</li>
  * <li>3.9mA operating current when all 6 motion sensing axes and the DMP are enabled</li>
@@ -82,8 +81,8 @@ import picocli.CommandLine.Option;
  * <li>10,000 g shock tolerant</li>
  * <li>400kHz Fast Mode I2C for communicating with all registers</li>
  * </ul>
- * <li>MotionProcessing</li>
  * <ul>
+ * <li>MotionProcessing</li>
  * <li>Internal Digital Motion Processing™ (DMP™) engine supports 3D MotionProcessing and gesture recognition algorithms</li>
  * <li>The MPU-60X0 collects gyroscope and accelerometer data while synchronizing data sampling at a user defined rate. The total
  * dataset obtained by the MPU-60X0 includes 3-Axis gyroscope data, 3-Axis accelerometer data, and temperature data. The MPU’s
@@ -97,8 +96,6 @@ import picocli.CommandLine.Option;
  * <li>Digitally-programmable low-pass filters</li>
  * <li>Low-power pedometer functionality allows the host processor to sleep while the DMP maintains the step count.</li>
  * </ul>
- * </ul>
- * </p>
  *
  * <p>
  * Datasheet: <a href="http://raspoid.com/download/datasheet/MPU6050">MPU6050 (part 1)</a>,
