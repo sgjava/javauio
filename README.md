@@ -96,8 +96,8 @@ does and do it manually. What does the script do?
 * `./install.sh`
 * Check various log files if you have issues running the demo code. Something
 could have gone wrong during the build/bindings generation processes.
-* `tail -n 1 install.log` total build time
-* `tail -n 12 javauio.log` make sure all modules show SUCCESS
+    * `tail -n 1 install.log` total build time
+    * `tail -n 12 javauio.log` make sure all modules show SUCCESS
 * If you need to recompile use
     * `cd ~/javauio`
     * `mvn clean install`
