@@ -7,6 +7,12 @@ import static com.codeferm.periphery.Common.MAX_CHAR_ARRAY_LEN;
 import static com.codeferm.periphery.Common.free;
 import static com.codeferm.periphery.Common.jString;
 import static com.codeferm.periphery.Common.memMove;
+import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.experimental.Accessors;
 import org.fusesource.hawtjni.runtime.ClassFlag;
 import static org.fusesource.hawtjni.runtime.FieldFlag.CONSTANT;
 import org.fusesource.hawtjni.runtime.JniClass;
@@ -22,6 +28,7 @@ import static org.fusesource.hawtjni.runtime.MethodFlag.CONSTANT_INITIALIZER;
  * @version 1.0.0
  * @since 1.0.0
  */
+@Data
 @JniClass
 public class Gpio implements AutoCloseable {
 
@@ -44,10 +51,12 @@ public class Gpio implements AutoCloseable {
     /**
      * GPIO handle.
      */
+    @Setter(AccessLevel.NONE)
     final private long handle;
     /**
      * Gpio config struct.
      */
+    @Setter(AccessLevel.NONE)
     final private GpioConfig config;
 
     /**
@@ -128,8 +137,11 @@ public class Gpio implements AutoCloseable {
     public static int GPIO_DRIVE_OPEN_SOURCE;
 
     /**
-     * gpio_config struct as Java object. Allow fluent style to set members.
+     * gpio_config struct as Java object.
      */
+    @Data
+    @Builder
+    @Accessors(fluent = true)
     @JniClass(name = "gpio_config_t", flags = {ClassFlag.STRUCT, ClassFlag.TYPEDEF})
     public static class GpioConfig {
 
@@ -141,75 +153,15 @@ public class Gpio implements AutoCloseable {
         @JniMethod(flags = {CONSTANT_INITIALIZER})
         private static native void init();
         @JniField(flags = {CONSTANT}, accessor = "sizeof(gpio_config_t)")
-        private static int SIZEOF;
+        @Getter
+        @Setter
+        private static int SIZEOF; // @Getter and @Setter required for static
         private int direction;
         private int edge;
         private int bias;
         private int drive;
         private boolean inverted;
         private long label;
-
-        public static int getSIZEOF() {
-            return SIZEOF;
-        }
-
-        public static void setSIZEOF(int SIZEOF) {
-            GpioConfig.SIZEOF = SIZEOF;
-        }
-
-        public int getDirection() {
-            return direction;
-        }
-
-        public GpioConfig setDirection(final int direction) {
-            this.direction = direction;
-            return this;
-        }
-
-        public int getEdge() {
-            return edge;
-        }
-
-        public GpioConfig setEdge(final int edge) {
-            this.edge = edge;
-            return this;
-        }
-
-        public int getBias() {
-            return bias;
-        }
-
-        public GpioConfig setBias(final int bias) {
-            this.bias = bias;
-            return this;
-        }
-
-        public int getDrive() {
-            return drive;
-        }
-
-        public GpioConfig setDrive(final int drive) {
-            this.drive = drive;
-            return this;
-        }
-
-        public boolean isInverted() {
-            return inverted;
-        }
-
-        public GpioConfig setInverted(final boolean inverted) {
-            this.inverted = inverted;
-            return this;
-        }
-
-        public long getLabel() {
-            return label;
-        }
-
-        public GpioConfig setLabel(final long label) {
-            this.label = label;
-            return this;
-        }
     }
 
     /**
@@ -273,8 +225,8 @@ public class Gpio implements AutoCloseable {
         handle = gpioNew();
         if (handle == 0) {
             // Deallocate label before throwing exception
-            if (config.getLabel() != 0) {
-                free(config.getLabel());
+            if (config.label() != 0) {
+                free(config.label());
             }
             throw new RuntimeException("Handle cannot be NULL");
         }
@@ -283,8 +235,8 @@ public class Gpio implements AutoCloseable {
             // Free handle before throwing exception
             gpioFree(handle);
             // Deallocate label before throwing exception
-            if (config.getLabel() != 0) {
-                free(config.getLabel());
+            if (config.label() != 0) {
+                free(config.label());
             }
             throw new RuntimeException(gpioErrMessage(handle));
         }
@@ -304,8 +256,8 @@ public class Gpio implements AutoCloseable {
         handle = gpioNew();
         if (handle == 0) {
             // Deallocate label before throwing exception
-            if (config.getLabel() != 0) {
-                free(config.getLabel());
+            if (config.label() != 0) {
+                free(config.label());
             }
             throw new RuntimeException("Handle cannot be NULL");
         }
@@ -314,8 +266,8 @@ public class Gpio implements AutoCloseable {
             // Free handle before throwing exception
             gpioFree(handle);
             // Deallocate label before throwing exception
-            if (config.getLabel() != 0) {
-                free(config.getLabel());
+            if (config.label() != 0) {
+                free(config.label());
             }
             throw new RuntimeException(gpioErrMessage(handle));
         }
@@ -353,27 +305,9 @@ public class Gpio implements AutoCloseable {
         // Free handle
         gpioFree(handle);
         // Deallocate label
-        if (config != null && config.getLabel() != 0) {
-            free(config.getLabel());
+        if (config != null && config.label() != 0) {
+            free(config.label());
         }
-    }
-
-    /**
-     * Handle accessor.
-     *
-     * @return Handle.
-     */
-    public long getHandle() {
-        return handle;
-    }
-
-    /**
-     * Config accessor.
-     *
-     * @return Config.
-     */
-    public GpioConfig getConfig() {
-        return config;
     }
 
     /**

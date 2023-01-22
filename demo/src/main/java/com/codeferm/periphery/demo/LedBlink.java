@@ -28,8 +28,7 @@ import picocli.CommandLine.Option;
  * @version 1.0.0
  * @since 1.0.0
  */
-@Command(name = "LedBlink", mixinStandardHelpOptions = true, version = "1.0.0-SNAPSHOT",
-        description = "Turn LED on and off.")
+@Command(name = "LedBlink", mixinStandardHelpOptions = true, version = "1.0.0-SNAPSHOT", description = "Turn LED on and off.")
 public class LedBlink implements Callable<Integer> {
 
     /**
@@ -46,7 +45,7 @@ public class LedBlink implements Callable<Integer> {
      */
     @Option(names = {"-l", "--line"}, description = "GPIO line, ${DEFAULT-VALUE} by default.")
     private int line = 203;
-    
+
     /**
      * Blink LED.
      *
@@ -56,9 +55,9 @@ public class LedBlink implements Callable<Integer> {
     @Override
     public Integer call() throws InterruptedException {
         var exitCode = 0;
-        try (final var gpio = new Gpio(device, line, new GpioConfig().setBias(GPIO_BIAS_DEFAULT).setDirection(GPIO_DIR_OUT).
-                setDrive(GPIO_DRIVE_DEFAULT).setEdge(GPIO_EDGE_NONE).setInverted(false).setLabel(cString(LedBlink.class.
-                getSimpleName())))) {
+        try (final var gpio = new Gpio(device, line, GpioConfig.builder().bias(GPIO_BIAS_DEFAULT).direction(GPIO_DIR_OUT).
+                drive(GPIO_DRIVE_DEFAULT).edge(GPIO_EDGE_NONE).inverted(false).label(cString(LedBlink.class.getSimpleName())).
+                build())) {
             logger.info("Blinking LED");
             var i = 0;
             while (i < 10) {
@@ -73,7 +72,7 @@ public class LedBlink implements Callable<Integer> {
             exitCode = 1;
         }
         return exitCode;
-    }    
+    }
 
     /**
      * Main parsing, error handling and handling user requests for usage help or version help are done with one line of code.

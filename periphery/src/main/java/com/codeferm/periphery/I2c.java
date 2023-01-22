@@ -6,6 +6,9 @@ package com.codeferm.periphery;
 import static com.codeferm.periphery.Common.MAX_CHAR_ARRAY_LEN;
 import static com.codeferm.periphery.Common.jString;
 import static com.codeferm.periphery.Common.memMove;
+import lombok.AccessLevel;
+import lombok.Data;
+import lombok.Setter;
 import org.fusesource.hawtjni.runtime.ClassFlag;
 import static org.fusesource.hawtjni.runtime.FieldFlag.CONSTANT;
 import org.fusesource.hawtjni.runtime.JniClass;
@@ -21,6 +24,7 @@ import static org.fusesource.hawtjni.runtime.MethodFlag.CONSTANT_INITIALIZER;
  * @version 1.0.0
  * @since 1.0.0
  */
+@Data
 @JniClass
 public class I2c implements AutoCloseable {
 
@@ -46,6 +50,7 @@ public class I2c implements AutoCloseable {
     /**
      * I2C handle.
      */
+    @Setter(AccessLevel.NONE)
     final private long handle;
 
     /**
@@ -124,15 +129,6 @@ public class I2c implements AutoCloseable {
     public void close() {
         i2cClose(handle);
         i2cFree(handle);
-    }
-
-    /**
-     * Handle accessor.
-     *
-     * @return Handle.
-     */
-    public long getHandle() {
-        return handle;
     }
 
     /**

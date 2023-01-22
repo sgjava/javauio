@@ -16,6 +16,11 @@ import java.util.Properties;
 import java.util.TreeMap;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.experimental.Accessors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -26,6 +31,11 @@ import org.slf4j.LoggerFactory;
  * @version 1.0.0
  * @since 1.0.0
  */
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+@Accessors(fluent = true)
 public class File {
 
     /**
@@ -93,132 +103,6 @@ public class File {
      * MMIO path.
      */
     private String memPath;
-
-    /**
-     * Default constructor.
-     */
-    public File() {
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(final String description) {
-        this.description = description;
-    }
-
-    public List<Integer> getGpioDev() {
-        return gpioDev;
-    }
-
-    public void setGpioDev(final List<Integer> gpioDev) {
-        this.gpioDev = gpioDev;
-    }
-
-    public List<Long> getChips() {
-        return chips;
-    }
-
-    public void setChips(final List<Long> chips) {
-        this.chips = chips;
-    }
-
-    public List<Long> getMmioSize() {
-        return mmioSize;
-    }
-
-    public void setMmioSize(final List<Long> mmioSize) {
-        this.mmioSize = mmioSize;
-    }
-
-    public List<Integer> getPins() {
-        return pins;
-    }
-
-    public void setPins(final List<Integer> pins) {
-        this.pins = pins;
-    }
-
-    public List<Integer> getPinChip() {
-        return pinChip;
-    }
-
-    public void setPinChip(final List<Integer> pinChip) {
-        this.pinChip = pinChip;
-    }
-
-    public List<String> getPinName() {
-        return pinName;
-    }
-
-    public void setPinName(final List<String> pinName) {
-        this.pinName = pinName;
-    }
-
-    public List<Integer> getGroupChip() {
-        return groupChip;
-    }
-
-    public void setGroupChip(final List<Integer> groupChip) {
-        this.groupChip = groupChip;
-    }
-
-    public List<String> getGroupName() {
-        return groupName;
-    }
-
-    public void setGroupName(final List<String> groupName) {
-        this.groupName = groupName;
-    }
-
-    public List<Integer> getDataInOnOffset() {
-        return dataInOnOffset;
-    }
-
-    public void setDataInOnOffset(final List<Integer> dataInOnOffset) {
-        this.dataInOnOffset = dataInOnOffset;
-    }
-
-    public List<Integer> getDataInOffOffset() {
-        return dataInOffOffset;
-    }
-
-    public void setDataInOffOffset(final List<Integer> dataInOffOffset) {
-        this.dataInOffOffset = dataInOffOffset;
-    }
-
-    public List<Integer> getDataOutOnOffset() {
-        return dataOutOnOffset;
-    }
-
-    public void setDataOutOnOffset(final List<Integer> dataOutOnOffset) {
-        this.dataOutOnOffset = dataOutOnOffset;
-    }
-
-    public List<Integer> getDataOutOffOffset() {
-        return dataOutOffOffset;
-    }
-
-    public void setDataOutOffOffsetfinal(final List<Integer> dataOutOffOffset) {
-        this.dataOutOffOffset = dataOutOffOffset;
-    }
-
-    public boolean isUseInputDataReg() {
-        return useInputDataReg;
-    }
-
-    public void setUseInputDataReg(final boolean useInputDataReg) {
-        this.useInputDataReg = useInputDataReg;
-    }
-
-    public String getMemPath() {
-        return memPath;
-    }
-
-    public void setMemPath(final String memPath) {
-        this.memPath = memPath;
-    }
 
     /**
      * Load properties file from file path or fail back to class path.
@@ -356,16 +240,16 @@ public class File {
                 PinKey key = entry.getKey();
                 Pin value = entry.getValue();
                 // Make sure detect worked by making sure there's a group name
-                if (value.getGroupName() != null) {
+                if (value.groupName() != null) {
                     writer.write(String.format(
                             "pin.%d.%d = %s, %s, %s, 0x%02x, 0x%08x, %s, 0x%02x, 0x%08x, %s, 0x%02x, 0x%08x, %s, 0x%02x, 0x%08x\n",
-                            key.getChip(), key.getPin(), value.getGroupName(), value.getName(),
-                            value.getDataInOn().getName(), value.getDataInOn().getOffset(), value.getDataInOn().getMask(), value.
-                            getDataInOff().getName(), value.getDataInOff().getOffset(), value.getDataInOff().getMask(), value.
-                            getDataOutOn().getName(), value.getDataOutOn().getOffset(), value.getDataOutOn().getMask(), value.
-                            getDataOutOff().getName(), value.getDataOutOff().getOffset(), value.getDataOutOff().getMask()));
+                            key.chip(), key.pin(), value.groupName(), value.name(),
+                            value.dataInOn().name(), value.dataInOn().offset(), value.dataInOn().mask(), value.
+                            dataInOff().name(), value.dataInOff().offset(), value.dataInOff().mask(), value.
+                            dataOutOn().name(), value.dataOutOn().offset(), value.dataOutOn().mask(), value.
+                            dataOutOff().name(), value.dataOutOff().offset(), value.dataOutOff().mask()));
                 } else {
-                    logger.warn(String.format("Chip %d pin %d detection failed, so skipping", key.getChip(), key.getPin()));
+                    logger.warn(String.format("Chip %d pin %d detection failed, so skipping", key.chip(), key.pin()));
                 }
             }
         } catch (IOException e) {

@@ -6,6 +6,9 @@ package com.codeferm.periphery;
 import static com.codeferm.periphery.Common.MAX_CHAR_ARRAY_LEN;
 import static com.codeferm.periphery.Common.jString;
 import static com.codeferm.periphery.Common.memMove;
+import lombok.AccessLevel;
+import lombok.Data;
+import lombok.Setter;
 import static org.fusesource.hawtjni.runtime.FieldFlag.CONSTANT;
 import org.fusesource.hawtjni.runtime.JniClass;
 import org.fusesource.hawtjni.runtime.JniField;
@@ -20,6 +23,7 @@ import static org.fusesource.hawtjni.runtime.MethodFlag.CONSTANT_INITIALIZER;
  * @version 1.0.0
  * @since 1.0.0
  */
+@Data
 @JniClass
 public class Led implements AutoCloseable {
 
@@ -34,6 +38,7 @@ public class Led implements AutoCloseable {
     /**
      * LED handle.
      */
+    @Setter(AccessLevel.NONE)
     final private long handle;
 
     /**
@@ -91,15 +96,6 @@ public class Led implements AutoCloseable {
         ledFree(handle);
     }
     
-    /**
-     * Handle accessor.
-     *
-     * @return Handle.
-     */
-    public long getHandle() {
-        return handle;
-    }
-
     /**
      * Allocate an LED handle.
      *
