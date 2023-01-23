@@ -137,4 +137,8 @@ public class U8x8 {
     public static int U8X8_MSG_DELAY_NANO;
     @JniField(flags = {CONSTANT})
     public static int U8X8_MSG_DELAY_I2C;
+    @JniField(flags = {CONSTANT})
+    public static long u8x8_byte_sw_i2c;
+    @JniField(flags = {CONSTANT})
+    public static long u8x8_byte_4wire_sw_spi;
 }

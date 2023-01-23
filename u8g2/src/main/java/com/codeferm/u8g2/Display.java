@@ -5,10 +5,10 @@ package com.codeferm.u8g2;
 
 import static com.codeferm.u8g2.U8g2.U8G2_R0;
 import static com.codeferm.u8g2.U8g2.u8x8_arm_linux_gpio_and_delay;
-import static com.codeferm.u8g2.U8g2.u8x8_byte_4wire_sw_spi;
 import static com.codeferm.u8g2.U8g2.u8x8_byte_arm_linux_hw_i2c;
 import static com.codeferm.u8g2.U8g2.u8x8_byte_arm_linux_hw_spi;
-import static com.codeferm.u8g2.U8g2.u8x8_byte_sw_i2c;
+import static com.codeferm.u8g2.U8x8.u8x8_byte_4wire_sw_spi;
+import static com.codeferm.u8g2.U8x8.u8x8_byte_sw_i2c;
 import java.util.concurrent.TimeUnit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -1969,6 +1969,12 @@ public class Display {
             case FONT_SECRETARYHAND_T_ALL:
                 fontSel = Fonts.u8g2_font_secretaryhand_t_all;
                 break;
+            case FONT_GARBAGECAN_TF:
+                fontSel = Fonts.u8g2_font_garbagecan_tf;
+                break;
+            case FONT_GARBAGECAN_TR:
+                fontSel = Fonts.u8g2_font_garbagecan_tr;
+                break;
             case FONT_BEANSTALK_MEL_TR:
                 fontSel = Fonts.u8g2_font_beanstalk_mel_tr;
                 break;
@@ -2068,6 +2074,12 @@ public class Display {
             case FONT_SERAPHIMB1_TR:
                 fontSel = Fonts.u8g2_font_seraphimb1_tr;
                 break;
+            case FONT_RESOLEDBOLD_TR:
+                fontSel = Fonts.u8g2_font_resoledbold_tr;
+                break;
+            case FONT_RESOLEDMEDIUM_TR:
+                fontSel = Fonts.u8g2_font_resoledmedium_tr;
+                break;
             case FONT_JINXEDWIZARDS_TR:
                 fontSel = Fonts.u8g2_font_jinxedwizards_tr;
                 break;
@@ -2163,6 +2175,15 @@ public class Display {
                 break;
             case FONT_TWELVEDINGS_T_ALL:
                 fontSel = Fonts.u8g2_font_twelvedings_t_all;
+                break;
+            case FONT_FRIGIDAIRE_MR:
+                fontSel = Fonts.u8g2_font_frigidaire_mr;
+                break;
+            case FONT_LORD_MR:
+                fontSel = Fonts.u8g2_font_lord_mr;
+                break;
+            case FONT_ABEL_MR:
+                fontSel = Fonts.u8g2_font_abel_mr;
                 break;
             case FONT_FEWTURE_TF:
                 fontSel = Fonts.u8g2_font_fewture_tf;
@@ -2278,14 +2299,311 @@ public class Display {
             case FONT_ICONQUADPIX_M_ALL:
                 fontSel = Fonts.u8g2_font_iconquadpix_m_all;
                 break;
-            case FONT_LASTAPPRENTICEBOLD_TR:
-                fontSel = Fonts.u8g2_font_lastapprenticebold_tr;
+            case FONT_TALLPIX_TR:
+                fontSel = Fonts.u8g2_font_tallpix_tr;
+                break;
+            case FONT_BOTMAKER_TE:
+                fontSel = Fonts.u8g2_font_botmaker_te;
+                break;
+            case FONT_EFRANEEXTRACONDENSED_TE:
+                fontSel = Fonts.u8g2_font_efraneextracondensed_te;
+                break;
+            case FONT_MINIMAL3X3_TU:
+                fontSel = Fonts.u8g2_font_minimal3x3_tu;
+                break;
+            case FONT_3X3BASIC_TR:
+                fontSel = Fonts.u8g2_font_3x3basic_tr;
+                break;
+            case FONT_TINY_GK_TR:
+                fontSel = Fonts.u8g2_font_tiny_gk_tr;
+                break;
+            case FONT_THREEPIX_TR:
+                fontSel = Fonts.u8g2_font_threepix_tr;
+                break;
+            case FONT_EVENTHREES_TR:
+                fontSel = Fonts.u8g2_font_eventhrees_tr;
+                break;
+            case FONT_FOURMAT_TF:
+                fontSel = Fonts.u8g2_font_fourmat_tf;
+                break;
+            case FONT_FOURMAT_TR:
+                fontSel = Fonts.u8g2_font_fourmat_tr;
+                break;
+            case FONT_FOURMAT_TE:
+                fontSel = Fonts.u8g2_font_fourmat_te;
+                break;
+            case FONT_TINY_SIMON_TR:
+                fontSel = Fonts.u8g2_font_tiny_simon_tr;
+                break;
+            case FONT_TINY_SIMON_MR:
+                fontSel = Fonts.u8g2_font_tiny_simon_mr;
+                break;
+            case FONT_SMOLFONT_TF:
+                fontSel = Fonts.u8g2_font_smolfont_tf;
+                break;
+            case FONT_SMOLFONT_TR:
+                fontSel = Fonts.u8g2_font_smolfont_tr;
+                break;
+            case FONT_SMOLFONT_TE:
+                fontSel = Fonts.u8g2_font_smolfont_te;
+                break;
+            case FONT_TINYUNICODE_TF:
+                fontSel = Fonts.u8g2_font_tinyunicode_tf;
+                break;
+            case FONT_TINYUNICODE_TR:
+                fontSel = Fonts.u8g2_font_tinyunicode_tr;
+                break;
+            case FONT_TINYUNICODE_TE:
+                fontSel = Fonts.u8g2_font_tinyunicode_te;
+                break;
+            case FONT_MICROPIXEL_TF:
+                fontSel = Fonts.u8g2_font_micropixel_tf;
+                break;
+            case FONT_MICROPIXEL_TR:
+                fontSel = Fonts.u8g2_font_micropixel_tr;
+                break;
+            case FONT_MICROPIXEL_TE:
+                fontSel = Fonts.u8g2_font_micropixel_te;
+                break;
+            case FONT_TINYPIXIE2_TR:
+                fontSel = Fonts.u8g2_font_tinypixie2_tr;
+                break;
+            case FONT_STANDARDIZED3X5_TR:
+                fontSel = Fonts.u8g2_font_standardized3x5_tr;
+                break;
+            case FONT_FIVEPX_TR:
+                fontSel = Fonts.u8g2_font_fivepx_tr;
+                break;
+            case FONT_3X5IM_TR:
+                fontSel = Fonts.u8g2_font_3x5im_tr;
+                break;
+            case FONT_3X5IM_TE:
+                fontSel = Fonts.u8g2_font_3x5im_te;
+                break;
+            case FONT_3X5IM_MR:
+                fontSel = Fonts.u8g2_font_3x5im_mr;
+                break;
+            case FONT_WEDGE_TR:
+                fontSel = Fonts.u8g2_font_wedge_tr;
+                break;
+            case FONT_KIBIBYTE_TR:
+                fontSel = Fonts.u8g2_font_kibibyte_tr;
+                break;
+            case FONT_KIBIBYTE_TE:
+                fontSel = Fonts.u8g2_font_kibibyte_te;
+                break;
+            case FONT_TINYFACE_TR:
+                fontSel = Fonts.u8g2_font_tinyface_tr;
+                break;
+            case FONT_TINYFACE_TE:
+                fontSel = Fonts.u8g2_font_tinyface_te;
+                break;
+            case FONT_SMALLSIMPLE_TR:
+                fontSel = Fonts.u8g2_font_smallsimple_tr;
+                break;
+            case FONT_SMALLSIMPLE_TE:
+                fontSel = Fonts.u8g2_font_smallsimple_te;
+                break;
+            case FONT_SIMPLE1_TF:
+                fontSel = Fonts.u8g2_font_simple1_tf;
+                break;
+            case FONT_SIMPLE1_TR:
+                fontSel = Fonts.u8g2_font_simple1_tr;
+                break;
+            case FONT_SIMPLE1_TE:
+                fontSel = Fonts.u8g2_font_simple1_te;
+                break;
+            case FONT_LIKEMINECRAFT_TE:
+                fontSel = Fonts.u8g2_font_likeminecraft_te;
+                break;
+            case FONT_MEDSANS_TR:
+                fontSel = Fonts.u8g2_font_medsans_tr;
+                break;
+            case FONT_HEISANS_TR:
+                fontSel = Fonts.u8g2_font_heisans_tr;
+                break;
+            case FONT_ORIGINALSANS_TR:
+                fontSel = Fonts.u8g2_font_originalsans_tr;
+                break;
+            case FONT_MINICUTE_TR:
+                fontSel = Fonts.u8g2_font_minicute_tr;
+                break;
+            case FONT_MINICUTE_TE:
+                fontSel = Fonts.u8g2_font_minicute_te;
+                break;
+            case FONT_SCRUM_TF:
+                fontSel = Fonts.u8g2_font_scrum_tf;
+                break;
+            case FONT_SCRUM_TR:
+                fontSel = Fonts.u8g2_font_scrum_tr;
+                break;
+            case FONT_SCRUM_TE:
+                fontSel = Fonts.u8g2_font_scrum_te;
+                break;
+            case FONT_STYLISHCHARM_TR:
+                fontSel = Fonts.u8g2_font_stylishcharm_tr;
+                break;
+            case FONT_STYLISHCHARM_TE:
+                fontSel = Fonts.u8g2_font_stylishcharm_te;
+                break;
+            case FONT_SISTERSERIF_TR:
+                fontSel = Fonts.u8g2_font_sisterserif_tr;
+                break;
+            case FONT_PRINCESS_TR:
+                fontSel = Fonts.u8g2_font_princess_tr;
+                break;
+            case FONT_PRINCESS_TE:
+                fontSel = Fonts.u8g2_font_princess_te;
+                break;
+            case FONT_DYSTOPIA_TR:
+                fontSel = Fonts.u8g2_font_dystopia_tr;
+                break;
+            case FONT_DYSTOPIA_TE:
+                fontSel = Fonts.u8g2_font_dystopia_te;
                 break;
             case FONT_LASTAPPRENTICETHIN_TR:
                 fontSel = Fonts.u8g2_font_lastapprenticethin_tr;
                 break;
-            case FONT_TALLPIX_TR:
-                fontSel = Fonts.u8g2_font_tallpix_tr;
+            case FONT_LASTAPPRENTICETHIN_TE:
+                fontSel = Fonts.u8g2_font_lastapprenticethin_te;
+                break;
+            case FONT_LASTAPPRENTICEBOLD_TR:
+                fontSel = Fonts.u8g2_font_lastapprenticebold_tr;
+                break;
+            case FONT_LASTAPPRENTICEBOLD_TE:
+                fontSel = Fonts.u8g2_font_lastapprenticebold_te;
+                break;
+            case FONT_BPIXEL_TR:
+                fontSel = Fonts.u8g2_font_bpixel_tr;
+                break;
+            case FONT_BPIXEL_TE:
+                fontSel = Fonts.u8g2_font_bpixel_te;
+                break;
+            case FONT_BPIXELDOUBLE_TR:
+                fontSel = Fonts.u8g2_font_bpixeldouble_tr;
+                break;
+            case FONT_MILDRAS_TR:
+                fontSel = Fonts.u8g2_font_mildras_tr;
+                break;
+            case FONT_MILDRAS_TE:
+                fontSel = Fonts.u8g2_font_mildras_te;
+                break;
+            case FONT_MINUTECONSOLE_MR:
+                fontSel = Fonts.u8g2_font_minuteconsole_mr;
+                break;
+            case FONT_MINUTECONSOLE_TR:
+                fontSel = Fonts.u8g2_font_minuteconsole_tr;
+                break;
+            case FONT_BUSDISPLAY11X5_TR:
+                fontSel = Fonts.u8g2_font_busdisplay11x5_tr;
+                break;
+            case FONT_BUSDISPLAY11X5_TE:
+                fontSel = Fonts.u8g2_font_busdisplay11x5_te;
+                break;
+            case FONT_BUSDISPLAY8X5_TR:
+                fontSel = Fonts.u8g2_font_busdisplay8x5_tr;
+                break;
+            case FONT_STICKER100COMPLETE_TR:
+                fontSel = Fonts.u8g2_font_sticker100complete_tr;
+                break;
+            case FONT_STICKER100COMPLETE_TE:
+                fontSel = Fonts.u8g2_font_sticker100complete_te;
+                break;
+            case FONT_DOOMALPHA04_TR:
+                fontSel = Fonts.u8g2_font_doomalpha04_tr;
+                break;
+            case FONT_DOOMALPHA04_TE:
+                fontSel = Fonts.u8g2_font_doomalpha04_te;
+                break;
+            case FONT_GREENBLOODSERIF2_TR:
+                fontSel = Fonts.u8g2_font_greenbloodserif2_tr;
+                break;
+            case FONT_ECKPIXEL_TR:
+                fontSel = Fonts.u8g2_font_eckpixel_tr;
+                break;
+            case FONT_ELISPE_TR:
+                fontSel = Fonts.u8g2_font_elispe_tr;
+                break;
+            case FONT_NEUECRAFT_TR:
+                fontSel = Fonts.u8g2_font_neuecraft_tr;
+                break;
+            case FONT_NEUECRAFT_TE:
+                fontSel = Fonts.u8g2_font_neuecraft_te;
+                break;
+            case FONT_8BITCLASSIC_TF:
+                fontSel = Fonts.u8g2_font_8bitclassic_tf;
+                break;
+            case FONT_8BITCLASSIC_TR:
+                fontSel = Fonts.u8g2_font_8bitclassic_tr;
+                break;
+            case FONT_8BITCLASSIC_TE:
+                fontSel = Fonts.u8g2_font_8bitclassic_te;
+                break;
+            case FONT_LITTLEMISSLOUDONBOLD_TR:
+                fontSel = Fonts.u8g2_font_littlemissloudonbold_tr;
+                break;
+            case FONT_LITTLEMISSLOUDONBOLD_TE:
+                fontSel = Fonts.u8g2_font_littlemissloudonbold_te;
+                break;
+            case FONT_COMMODORE64_TR:
+                fontSel = Fonts.u8g2_font_commodore64_tr;
+                break;
+            case FONT_NEW3X9PIXELFONT_TF:
+                fontSel = Fonts.u8g2_font_new3x9pixelfont_tf;
+                break;
+            case FONT_NEW3X9PIXELFONT_TR:
+                fontSel = Fonts.u8g2_font_new3x9pixelfont_tr;
+                break;
+            case FONT_NEW3X9PIXELFONT_TE:
+                fontSel = Fonts.u8g2_font_new3x9pixelfont_te;
+                break;
+            case FONT_SONICMANIA_TR:
+                fontSel = Fonts.u8g2_font_sonicmania_tr;
+                break;
+            case FONT_SONICMANIA_TE:
+                fontSel = Fonts.u8g2_font_sonicmania_te;
+                break;
+            case FONT_BYTESIZE_TF:
+                fontSel = Fonts.u8g2_font_bytesize_tf;
+                break;
+            case FONT_BYTESIZE_TR:
+                fontSel = Fonts.u8g2_font_bytesize_tr;
+                break;
+            case FONT_BYTESIZE_TE:
+                fontSel = Fonts.u8g2_font_bytesize_te;
+                break;
+            case FONT_PIXZILLAV1_TF:
+                fontSel = Fonts.u8g2_font_pixzillav1_tf;
+                break;
+            case FONT_PIXZILLAV1_TR:
+                fontSel = Fonts.u8g2_font_pixzillav1_tr;
+                break;
+            case FONT_PIXZILLAV1_TE:
+                fontSel = Fonts.u8g2_font_pixzillav1_te;
+                break;
+            case FONT_CIIRCLE13_TR:
+                fontSel = Fonts.u8g2_font_ciircle13_tr;
+                break;
+            case FONT_PXCLASSIC_TF:
+                fontSel = Fonts.u8g2_font_pxclassic_tf;
+                break;
+            case FONT_PXCLASSIC_TR:
+                fontSel = Fonts.u8g2_font_pxclassic_tr;
+                break;
+            case FONT_PXCLASSIC_TE:
+                fontSel = Fonts.u8g2_font_pxclassic_te;
+                break;
+            case FONT_MOOSENOOKS_TR:
+                fontSel = Fonts.u8g2_font_moosenooks_tr;
+                break;
+            case FONT_TALLPIXELEXTENDED_TF:
+                fontSel = Fonts.u8g2_font_tallpixelextended_tf;
+                break;
+            case FONT_TALLPIXELEXTENDED_TR:
+                fontSel = Fonts.u8g2_font_tallpixelextended_tr;
+                break;
+            case FONT_TALLPIXELEXTENDED_TE:
+                fontSel = Fonts.u8g2_font_tallpixelextended_te;
                 break;
             case FONT_BBSESQUE_TF:
                 fontSel = Fonts.u8g2_font_BBSesque_tf;
@@ -2338,6 +2656,12 @@ public class Display {
             case FONT_IPAANDRUSLCD_TE:
                 fontSel = Fonts.u8g2_font_IPAandRUSLCD_te;
                 break;
+            case FONT_PIXELTHEATRE_TR:
+                fontSel = Fonts.u8g2_font_PixelTheatre_tr;
+                break;
+            case FONT_PIXELTHEATRE_TE:
+                fontSel = Fonts.u8g2_font_PixelTheatre_te;
+                break;
             case FONT_HELVETIPIXEL_TR:
                 fontSel = Fonts.u8g2_font_HelvetiPixel_tr;
                 break;
@@ -2370,6 +2694,156 @@ public class Display {
                 break;
             case FONT_UNTITLED16PIXELSANSSERIFBITMAP_TR:
                 fontSel = Fonts.u8g2_font_Untitled16PixelSansSerifBitmap_tr;
+                break;
+            case FONT_UNNAMEDDOSFONTIV_TR:
+                fontSel = Fonts.u8g2_font_UnnamedDOSFontIV_tr;
+                break;
+            case FONT_TERMINAL_TR:
+                fontSel = Fonts.u8g2_font_Terminal_tr;
+                break;
+            case FONT_TERMINAL_TE:
+                fontSel = Fonts.u8g2_font_Terminal_te;
+                break;
+            case FONT_NOKIALARGEBOLD_TF:
+                fontSel = Fonts.u8g2_font_NokiaLargeBold_tf;
+                break;
+            case FONT_NOKIALARGEBOLD_TR:
+                fontSel = Fonts.u8g2_font_NokiaLargeBold_tr;
+                break;
+            case FONT_NOKIALARGEBOLD_TE:
+                fontSel = Fonts.u8g2_font_NokiaLargeBold_te;
+                break;
+            case FONT_NOKIASMALLBOLD_TF:
+                fontSel = Fonts.u8g2_font_NokiaSmallBold_tf;
+                break;
+            case FONT_NOKIASMALLBOLD_TR:
+                fontSel = Fonts.u8g2_font_NokiaSmallBold_tr;
+                break;
+            case FONT_NOKIASMALLBOLD_TE:
+                fontSel = Fonts.u8g2_font_NokiaSmallBold_te;
+                break;
+            case FONT_NOKIASMALLPLAIN_TF:
+                fontSel = Fonts.u8g2_font_NokiaSmallPlain_tf;
+                break;
+            case FONT_NOKIASMALLPLAIN_TR:
+                fontSel = Fonts.u8g2_font_NokiaSmallPlain_tr;
+                break;
+            case FONT_NOKIASMALLPLAIN_TE:
+                fontSel = Fonts.u8g2_font_NokiaSmallPlain_te;
+                break;
+            case FONT_12X6LED_TF:
+                fontSel = Fonts.u8g2_font_12x6LED_tf;
+                break;
+            case FONT_12X6LED_TR:
+                fontSel = Fonts.u8g2_font_12x6LED_tr;
+                break;
+            case FONT_12X6LED_MN:
+                fontSel = Fonts.u8g2_font_12x6LED_mn;
+                break;
+            case FONT_9X6LED_TF:
+                fontSel = Fonts.u8g2_font_9x6LED_tf;
+                break;
+            case FONT_9X6LED_TR:
+                fontSel = Fonts.u8g2_font_9x6LED_tr;
+                break;
+            case FONT_9X6LED_MN:
+                fontSel = Fonts.u8g2_font_9x6LED_mn;
+                break;
+            case FONT_CALBLK36_TR:
+                fontSel = Fonts.u8g2_font_calblk36_tr;
+                break;
+            case FONT_CALLITE24_TR:
+                fontSel = Fonts.u8g2_font_callite24_tr;
+                break;
+            case FONT_SPLEEN5X8_MF:
+                fontSel = Fonts.u8g2_font_spleen5x8_mf;
+                break;
+            case FONT_SPLEEN5X8_MR:
+                fontSel = Fonts.u8g2_font_spleen5x8_mr;
+                break;
+            case FONT_SPLEEN5X8_MN:
+                fontSel = Fonts.u8g2_font_spleen5x8_mn;
+                break;
+            case FONT_SPLEEN5X8_MU:
+                fontSel = Fonts.u8g2_font_spleen5x8_mu;
+                break;
+            case FONT_SPLEEN5X8_ME:
+                fontSel = Fonts.u8g2_font_spleen5x8_me;
+                break;
+            case FONT_SPLEEN6X12_MF:
+                fontSel = Fonts.u8g2_font_spleen6x12_mf;
+                break;
+            case FONT_SPLEEN6X12_MR:
+                fontSel = Fonts.u8g2_font_spleen6x12_mr;
+                break;
+            case FONT_SPLEEN6X12_MN:
+                fontSel = Fonts.u8g2_font_spleen6x12_mn;
+                break;
+            case FONT_SPLEEN6X12_MU:
+                fontSel = Fonts.u8g2_font_spleen6x12_mu;
+                break;
+            case FONT_SPLEEN6X12_ME:
+                fontSel = Fonts.u8g2_font_spleen6x12_me;
+                break;
+            case FONT_SPLEEN8X16_MF:
+                fontSel = Fonts.u8g2_font_spleen8x16_mf;
+                break;
+            case FONT_SPLEEN8X16_MR:
+                fontSel = Fonts.u8g2_font_spleen8x16_mr;
+                break;
+            case FONT_SPLEEN8X16_MN:
+                fontSel = Fonts.u8g2_font_spleen8x16_mn;
+                break;
+            case FONT_SPLEEN8X16_MU:
+                fontSel = Fonts.u8g2_font_spleen8x16_mu;
+                break;
+            case FONT_SPLEEN8X16_ME:
+                fontSel = Fonts.u8g2_font_spleen8x16_me;
+                break;
+            case FONT_SPLEEN12X24_MF:
+                fontSel = Fonts.u8g2_font_spleen12x24_mf;
+                break;
+            case FONT_SPLEEN12X24_MR:
+                fontSel = Fonts.u8g2_font_spleen12x24_mr;
+                break;
+            case FONT_SPLEEN12X24_MN:
+                fontSel = Fonts.u8g2_font_spleen12x24_mn;
+                break;
+            case FONT_SPLEEN12X24_MU:
+                fontSel = Fonts.u8g2_font_spleen12x24_mu;
+                break;
+            case FONT_SPLEEN12X24_ME:
+                fontSel = Fonts.u8g2_font_spleen12x24_me;
+                break;
+            case FONT_SPLEEN16X32_MF:
+                fontSel = Fonts.u8g2_font_spleen16x32_mf;
+                break;
+            case FONT_SPLEEN16X32_MR:
+                fontSel = Fonts.u8g2_font_spleen16x32_mr;
+                break;
+            case FONT_SPLEEN16X32_MN:
+                fontSel = Fonts.u8g2_font_spleen16x32_mn;
+                break;
+            case FONT_SPLEEN16X32_MU:
+                fontSel = Fonts.u8g2_font_spleen16x32_mu;
+                break;
+            case FONT_SPLEEN16X32_ME:
+                fontSel = Fonts.u8g2_font_spleen16x32_me;
+                break;
+            case FONT_SPLEEN32X64_MF:
+                fontSel = Fonts.u8g2_font_spleen32x64_mf;
+                break;
+            case FONT_SPLEEN32X64_MR:
+                fontSel = Fonts.u8g2_font_spleen32x64_mr;
+                break;
+            case FONT_SPLEEN32X64_MN:
+                fontSel = Fonts.u8g2_font_spleen32x64_mn;
+                break;
+            case FONT_SPLEEN32X64_MU:
+                fontSel = Fonts.u8g2_font_spleen32x64_mu;
+                break;
+            case FONT_SPLEEN32X64_ME:
+                fontSel = Fonts.u8g2_font_spleen32x64_me;
                 break;
             case FONT_NOKIAFC22_TF:
                 fontSel = Fonts.u8g2_font_nokiafc22_tf;
@@ -5435,8 +5909,17 @@ public class Display {
             case SSD1306_I2C_128X64_ALT0:
                 U8g2.setupSsd1306I2c128x64Alt0F(u8g2, rotation, byteCb, gpioAndDelayCb);
                 break;
+            case SSD1312_I2C_128X64_NONAME:
+                U8g2.setupSsd1312I2c128x64NonameF(u8g2, rotation, byteCb, gpioAndDelayCb);
+                break;
             case SSD1306_I2C_72X40_ER:
                 U8g2.setupSsd1306I2c72x40ErF(u8g2, rotation, byteCb, gpioAndDelayCb);
+                break;
+            case SSD1306_I2C_96X40:
+                U8g2.setupSsd1306I2c96x40F(u8g2, rotation, byteCb, gpioAndDelayCb);
+                break;
+            case SSD1306_I2C_96X39:
+                U8g2.setupSsd1306I2c96x39F(u8g2, rotation, byteCb, gpioAndDelayCb);
                 break;
             case SH1106_I2C_128X64_NONAME:
                 U8g2.setupSh1106I2c128x64NonameF(u8g2, rotation, byteCb, gpioAndDelayCb);
@@ -5459,8 +5942,14 @@ public class Display {
             case SH1107_I2C_SEEED_96X96:
                 U8g2.setupSh1107I2cSeeed96x96F(u8g2, rotation, byteCb, gpioAndDelayCb);
                 break;
+            case SH1107_I2C_HJR_OEL1M0201_96X96:
+                U8g2.setupSh1107I2cHjrOel1m020196x96F(u8g2, rotation, byteCb, gpioAndDelayCb);
+                break;
             case SH1107_I2C_128X80:
                 U8g2.setupSh1107I2c128x80F(u8g2, rotation, byteCb, gpioAndDelayCb);
+                break;
+            case SH1107_I2C_TK078F288_80X128:
+                U8g2.setupSh1107I2cTk078f28880x128F(u8g2, rotation, byteCb, gpioAndDelayCb);
                 break;
             case SH1107_I2C_128X128:
                 U8g2.setupSh1107I2c128x128F(u8g2, rotation, byteCb, gpioAndDelayCb);
@@ -5470,6 +5959,9 @@ public class Display {
                 break;
             case SH1107_I2C_SEEED_128X128:
                 U8g2.setupSh1107I2cSeeed128x128F(u8g2, rotation, byteCb, gpioAndDelayCb);
+                break;
+            case SH1108_I2C_128X160:
+                U8g2.setupSh1108I2c128x160F(u8g2, rotation, byteCb, gpioAndDelayCb);
                 break;
             case SH1108_I2C_160X160:
                 U8g2.setupSh1108I2c160x160F(u8g2, rotation, byteCb, gpioAndDelayCb);
@@ -5512,6 +6004,9 @@ public class Display {
                 break;
             case SSD1316_I2C_128X32:
                 U8g2.setupSsd1316I2c128x32F(u8g2, rotation, byteCb, gpioAndDelayCb);
+                break;
+            case SSD1316_I2C_96X32:
+                U8g2.setupSsd1316I2c96x32F(u8g2, rotation, byteCb, gpioAndDelayCb);
                 break;
             case SSD1317_I2C_96X96:
                 U8g2.setupSsd1317I2c96x96F(u8g2, rotation, byteCb, gpioAndDelayCb);
@@ -5576,6 +6071,9 @@ public class Display {
             case UC1638_I2C_192X96:
                 U8g2.setupUc1638I2c192x96F(u8g2, rotation, byteCb, gpioAndDelayCb);
                 break;
+            case UC1638_I2C_240X128:
+                U8g2.setupUc1638I2c240x128F(u8g2, rotation, byteCb, gpioAndDelayCb);
+                break;
             case UC1610_I2C_EA_DOGXL160:
                 U8g2.setupUc1610I2cEaDogxl160F(u8g2, rotation, byteCb, gpioAndDelayCb);
                 break;
@@ -5608,6 +6106,33 @@ public class Display {
                 break;
             case UC1601_I2C_128X64:
                 U8g2.setupUc1601I2c128x64F(u8g2, rotation, byteCb, gpioAndDelayCb);
+                break;
+            case ST7567_I2C_PI_132X64:
+                U8g2.setupSt7567I2cPi132x64F(u8g2, rotation, byteCb, gpioAndDelayCb);
+                break;
+            case ST7567_I2C_JLX12864:
+                U8g2.setupSt7567I2cJlx12864F(u8g2, rotation, byteCb, gpioAndDelayCb);
+                break;
+            case ST7567_I2C_ENH_DG128064:
+                U8g2.setupSt7567I2cEnhDg128064F(u8g2, rotation, byteCb, gpioAndDelayCb);
+                break;
+            case ST7567_I2C_ENH_DG128064I:
+                U8g2.setupSt7567I2cEnhDg128064iF(u8g2, rotation, byteCb, gpioAndDelayCb);
+                break;
+            case ST7567_I2C_OS12864:
+                U8g2.setupSt7567I2cOs12864F(u8g2, rotation, byteCb, gpioAndDelayCb);
+                break;
+            case ST7567_I2C_ERC13232:
+                U8g2.setupSt7567I2cErc13232F(u8g2, rotation, byteCb, gpioAndDelayCb);
+                break;
+            case ST7567_I2C_122X32:
+                U8g2.setupSt7567I2c122x32F(u8g2, rotation, byteCb, gpioAndDelayCb);
+                break;
+            case ST7567_I2C_64X32:
+                U8g2.setupSt7567I2c64x32F(u8g2, rotation, byteCb, gpioAndDelayCb);
+                break;
+            case ST7567_I2C_HEM6432:
+                U8g2.setupSt7567I2cHem6432F(u8g2, rotation, byteCb, gpioAndDelayCb);
                 break;
             case ST7571_I2C_128X128:
                 U8g2.setupSt7571I2c128x128F(u8g2, rotation, byteCb, gpioAndDelayCb);
@@ -5648,23 +6173,26 @@ public class Display {
             case ST75256_I2C_JLX19296:
                 U8g2.setupSt75256I2cJlx19296F(u8g2, rotation, byteCb, gpioAndDelayCb);
                 break;
+            case ST75256_I2C_JLX16080:
+                U8g2.setupSt75256I2cJlx16080F(u8g2, rotation, byteCb, gpioAndDelayCb);
+                break;
             case ST75320_I2C_JLX320240:
                 U8g2.setupSt75320I2cJlx320240F(u8g2, rotation, byteCb, gpioAndDelayCb);
+                break;
+            case SSD1320_I2C_160X80:
+                U8g2.setupSsd1320I2c160x80F(u8g2, rotation, byteCb, gpioAndDelayCb);
+                break;
+            case SSD1362_I2C_256X64:
+                U8g2.setupSsd1362I2c256x64F(u8g2, rotation, byteCb, gpioAndDelayCb);
+                break;
+            case SSD1362_I2C_206X36:
+                U8g2.setupSsd1362I2c206x36F(u8g2, rotation, byteCb, gpioAndDelayCb);
                 break;
             default:
                 throw new RuntimeException(String.format("Setup type %s not supported for I2C", setupType));
         }
     }
 
-    /**
-     * Centralize SPI setup.
-     *
-     * @param setupType Setup type enum,
-     * @param u8g2 Pointer to u8g2_t structure.
-     * @param rotation Display rotation.
-     * @param byteCb Byte callback pointer.
-     * @param gpioAndDelayCb GPIO callback pointer.
-     */
     public void setupSpi(final SetupType setupType, final long u8g2, final long rotation, final long byteCb,
             final long gpioAndDelayCb) {
         switch (setupType) {
@@ -5693,8 +6221,17 @@ public class Display {
             case SSD1306_128X64_ALT0:
                 U8g2.setupSsd1306128x64Alt0F(u8g2, rotation, byteCb, gpioAndDelayCb);
                 break;
+            case SSD1312_128X64_NONAME:
+                U8g2.setupSsd1312128x64NonameF(u8g2, rotation, byteCb, gpioAndDelayCb);
+                break;
             case SSD1306_72X40_ER:
                 U8g2.setupSsd130672x40ErF(u8g2, rotation, byteCb, gpioAndDelayCb);
+                break;
+            case SSD1306_96X40:
+                U8g2.setupSsd130696x40F(u8g2, rotation, byteCb, gpioAndDelayCb);
+                break;
+            case SSD1306_96X39:
+                U8g2.setupSsd130696x39F(u8g2, rotation, byteCb, gpioAndDelayCb);
                 break;
             case SH1106_128X64_NONAME:
                 U8g2.setupSh1106128x64NonameF(u8g2, rotation, byteCb, gpioAndDelayCb);
@@ -5717,8 +6254,14 @@ public class Display {
             case SH1107_SEEED_96X96:
                 U8g2.setupSh1107Seeed96x96F(u8g2, rotation, byteCb, gpioAndDelayCb);
                 break;
+            case SH1107_HJR_OEL1M0201_96X96:
+                U8g2.setupSh1107HjrOel1m020196x96F(u8g2, rotation, byteCb, gpioAndDelayCb);
+                break;
             case SH1107_128X80:
                 U8g2.setupSh1107128x80F(u8g2, rotation, byteCb, gpioAndDelayCb);
+                break;
+            case SH1107_TK078F288_80X128:
+                U8g2.setupSh1107Tk078f28880x128F(u8g2, rotation, byteCb, gpioAndDelayCb);
                 break;
             case SH1107_128X128:
                 U8g2.setupSh1107128x128F(u8g2, rotation, byteCb, gpioAndDelayCb);
@@ -5728,6 +6271,9 @@ public class Display {
                 break;
             case SH1107_SEEED_128X128:
                 U8g2.setupSh1107Seeed128x128F(u8g2, rotation, byteCb, gpioAndDelayCb);
+                break;
+            case SH1108_128X160:
+                U8g2.setupSh1108128x160F(u8g2, rotation, byteCb, gpioAndDelayCb);
                 break;
             case SH1108_160X160:
                 U8g2.setupSh1108160x160F(u8g2, rotation, byteCb, gpioAndDelayCb);
@@ -5771,6 +6317,9 @@ public class Display {
             case SSD1316_128X32:
                 U8g2.setupSsd1316128x32F(u8g2, rotation, byteCb, gpioAndDelayCb);
                 break;
+            case SSD1316_96X32:
+                U8g2.setupSsd131696x32F(u8g2, rotation, byteCb, gpioAndDelayCb);
+                break;
             case SSD1317_96X96:
                 U8g2.setupSsd131796x96F(u8g2, rotation, byteCb, gpioAndDelayCb);
                 break;
@@ -5801,6 +6350,9 @@ public class Display {
             case SSD1327_MIDAS_128X128:
                 U8g2.setupSsd1327Midas128x128F(u8g2, rotation, byteCb, gpioAndDelayCb);
                 break;
+            case SSD1327_ZJY_128X128:
+                U8g2.setupSsd1327Zjy128x128F(u8g2, rotation, byteCb, gpioAndDelayCb);
+                break;
             case SSD1327_WS_128X128:
                 U8g2.setupSsd1327Ws128x128F(u8g2, rotation, byteCb, gpioAndDelayCb);
                 break;
@@ -5827,6 +6379,15 @@ public class Display {
                 break;
             case ST7920_S_256X32:
                 U8g2.setupSt7920S256x32F(u8g2, rotation, byteCb, gpioAndDelayCb);
+                break;
+            case ST7920_P_160X32:
+                U8g2.setupSt7920P160x32F(u8g2, rotation, byteCb, gpioAndDelayCb);
+                break;
+            case ST7920_160X32:
+                U8g2.setupSt7920160x32F(u8g2, rotation, byteCb, gpioAndDelayCb);
+                break;
+            case ST7920_S_160X32:
+                U8g2.setupSt7920S160x32F(u8g2, rotation, byteCb, gpioAndDelayCb);
                 break;
             case ST7920_P_192X32:
                 U8g2.setupSt7920P192x32F(u8g2, rotation, byteCb, gpioAndDelayCb);
@@ -5896,6 +6457,9 @@ public class Display {
                 break;
             case UC1638_192X96:
                 U8g2.setupUc1638192x96F(u8g2, rotation, byteCb, gpioAndDelayCb);
+                break;
+            case UC1638_240X128:
+                U8g2.setupUc1638240x128F(u8g2, rotation, byteCb, gpioAndDelayCb);
                 break;
             case UC1610_EA_DOGXL160:
                 U8g2.setupUc1610EaDogxl160F(u8g2, rotation, byteCb, gpioAndDelayCb);
@@ -5987,14 +6551,17 @@ public class Display {
             case ST7567_OS12864:
                 U8g2.setupSt7567Os12864F(u8g2, rotation, byteCb, gpioAndDelayCb);
                 break;
+            case ST7567_ERC13232:
+                U8g2.setupSt7567Erc13232F(u8g2, rotation, byteCb, gpioAndDelayCb);
+                break;
+            case ST7567_122X32:
+                U8g2.setupSt7567122x32F(u8g2, rotation, byteCb, gpioAndDelayCb);
+                break;
             case ST7567_64X32:
                 U8g2.setupSt756764x32F(u8g2, rotation, byteCb, gpioAndDelayCb);
                 break;
             case ST7567_HEM6432:
                 U8g2.setupSt7567Hem6432F(u8g2, rotation, byteCb, gpioAndDelayCb);
-                break;
-            case ST7567_122X32:
-                U8g2.setupSt7567122x32F(u8g2, rotation, byteCb, gpioAndDelayCb);
                 break;
             case ST7571_128X128:
                 U8g2.setupSt7571128x128F(u8g2, rotation, byteCb, gpioAndDelayCb);
@@ -6004,6 +6571,9 @@ public class Display {
                 break;
             case ST7586S_S028HN118A:
                 U8g2.setupSt7586sS028hn118aF(u8g2, rotation, byteCb, gpioAndDelayCb);
+                break;
+            case ST7586S_JLX384160:
+                U8g2.setupSt7586sJlx384160F(u8g2, rotation, byteCb, gpioAndDelayCb);
                 break;
             case ST7586S_ERC240160:
                 U8g2.setupSt7586sErc240160F(u8g2, rotation, byteCb, gpioAndDelayCb);
@@ -6044,6 +6614,9 @@ public class Display {
             case ST75256_JLX19296:
                 U8g2.setupSt75256Jlx19296F(u8g2, rotation, byteCb, gpioAndDelayCb);
                 break;
+            case ST75256_JLX16080:
+                U8g2.setupSt75256Jlx16080F(u8g2, rotation, byteCb, gpioAndDelayCb);
+                break;
             case ST75320_JLX320240:
                 U8g2.setupSt75320Jlx320240F(u8g2, rotation, byteCb, gpioAndDelayCb);
                 break;
@@ -6052,6 +6625,9 @@ public class Display {
                 break;
             case IST3020_ERC19264:
                 U8g2.setupIst3020Erc19264F(u8g2, rotation, byteCb, gpioAndDelayCb);
+                break;
+            case IST3088_320X240:
+                U8g2.setupIst3088320x240F(u8g2, rotation, byteCb, gpioAndDelayCb);
                 break;
             case IST7920_128X128:
                 U8g2.setupIst7920128x128F(u8g2, rotation, byteCb, gpioAndDelayCb);
@@ -6086,6 +6662,9 @@ public class Display {
             case LC7981_240X64:
                 U8g2.setupLc7981240x64F(u8g2, rotation, byteCb, gpioAndDelayCb);
                 break;
+            case LC7981_128X128:
+                U8g2.setupLc7981128x128F(u8g2, rotation, byteCb, gpioAndDelayCb);
+                break;
             case T6963_240X128:
                 U8g2.setupT6963240x128F(u8g2, rotation, byteCb, gpioAndDelayCb);
                 break;
@@ -6110,11 +6689,20 @@ public class Display {
             case SSD1320_160X132:
                 U8g2.setupSsd1320160x132F(u8g2, rotation, byteCb, gpioAndDelayCb);
                 break;
+            case SSD1320_160X80:
+                U8g2.setupSsd1320160x80F(u8g2, rotation, byteCb, gpioAndDelayCb);
+                break;
             case SSD1322_NHD_256X64:
                 U8g2.setupSsd1322Nhd256x64F(u8g2, rotation, byteCb, gpioAndDelayCb);
                 break;
             case SSD1322_NHD_128X64:
                 U8g2.setupSsd1322Nhd128x64F(u8g2, rotation, byteCb, gpioAndDelayCb);
+                break;
+            case SSD1362_256X64:
+                U8g2.setupSsd1362256x64F(u8g2, rotation, byteCb, gpioAndDelayCb);
+                break;
+            case SSD1362_206X36:
+                U8g2.setupSsd1362206x36F(u8g2, rotation, byteCb, gpioAndDelayCb);
                 break;
             case SSD1606_172X72:
                 U8g2.setupSsd1606172x72F(u8g2, rotation, byteCb, gpioAndDelayCb);
@@ -6152,6 +6740,9 @@ public class Display {
             case MAX7219_8X8:
                 U8g2.setupMax72198x8F(u8g2, rotation, byteCb, gpioAndDelayCb);
                 break;
+            case S1D15300_LM6023:
+                U8g2.setupS1d15300Lm6023F(u8g2, rotation, byteCb, gpioAndDelayCb);
+                break;
             case S1D15E06_160100:
                 U8g2.setupS1d15e06160100F(u8g2, rotation, byteCb, gpioAndDelayCb);
                 break;
@@ -6160,6 +6751,15 @@ public class Display {
                 break;
             case GU800_128X64:
                 U8g2.setupGu800128x64F(u8g2, rotation, byteCb, gpioAndDelayCb);
+                break;
+            case GU800_160X16:
+                U8g2.setupGu800160x16F(u8g2, rotation, byteCb, gpioAndDelayCb);
+                break;
+            case GP1287AI_256X50:
+                U8g2.setupGp1287ai256x50F(u8g2, rotation, byteCb, gpioAndDelayCb);
+                break;
+            case GP1247AI_253X63:
+                U8g2.setupGp1247ai253x63F(u8g2, rotation, byteCb, gpioAndDelayCb);
                 break;
             case A2PRINTER_384X240:
                 U8g2.setupA2printer384x240F(u8g2, rotation, byteCb, gpioAndDelayCb);

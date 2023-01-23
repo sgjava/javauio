@@ -327,6 +327,11 @@ public class CodeGen implements Callable<Integer> {
         final var u8g2ConstantsMap = generateConstants(u8g2List);
         final var u8g2Constants = u8g2ConstantsMap.get(CONSTANTS);
         final var u8g2Fonts = u8g2ConstantsMap.get(FONTS);
+        // These are in u8x8.h
+        u8x8Constants.add("    @JniField(flags = {CONSTANT})");
+        u8x8Constants.add("    public static long u8x8_byte_sw_i2c;");
+        u8x8Constants.add("    @JniField(flags = {CONSTANT})");
+        u8x8Constants.add("    public static long u8x8_byte_4wire_sw_spi;");
         // These are in u8g2port.h
         u8g2Constants.add("    @JniField(flags = {CONSTANT})");
         u8g2Constants.add("    public static long u8x8_arm_linux_gpio_and_delay;");
