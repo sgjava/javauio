@@ -63,6 +63,7 @@
                                         <exclude>META-INF/NOTICE</exclude>
                                         <exclude>META-INF/MANIFEST.MF</exclude>
                                         <exclude>META-INF/versions/9/module-info.*</exclude>
+                                        <exclude>module-info.class</exclude>
                                     </excludes>
                                 </filter>
                             </filters>              
@@ -89,6 +90,6 @@
             <groupId>info.picocli</groupId>
             <artifactId>picocli</artifactId>
             <version>4.7.0</version>
-        </dependency>        
+        </dependency>                
     </dependencies>    
 </project>

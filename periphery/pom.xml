@@ -139,7 +139,7 @@
             <artifactId>hawtjni-runtime</artifactId>
             <version>${hawtjni.version}</version>
         </dependency>
-        <!-- Optional -->
+        <!-- Provided -->
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
