@@ -17,7 +17,7 @@ displays. Based on [U8g2](https://github.com/olikraus/u8g2): Library for
 monochrome displays, version 2. I added ability to use multiple displays in a
 thread safe way and dramatically improved software driven I2C and SPI performance
 at the C level. You can also use SDL 2 based display to develop on a desktop without
-physical display attached.
+physical display attached. You can choose display type and fonts at runtime.
 * [Tools](https://github.com/sgjava/javauio/tree/main/tools) provides tools
 for mapping MMIO GPIO register mapping, code generation, etc.
 * [Demo](https://github.com/sgjava/javauio/tree/main/demo) provides CLI based
@@ -98,6 +98,7 @@ does and do it manually. What does the script do?
 could have gone wrong during the build/bindings generation processes.
     * `tail -n 1 install.log` total build time
     * `tail -n 12 javauio.log` make sure all modules show SUCCESS
+* Make sure you use latest [gpio.h](https://github.com/sgjava/javauio/tree/main/periphery#build-periphery-with-proper-gpioh)
 * If you need to recompile use
     * `cd ~/javauio`
     * `mvn clean install`
@@ -108,7 +109,7 @@ The easiest way to setup your environment is create a Ubuntu 22.04 desktop VM
 (VirtualBox, etc.) and follow install process since it installs JVM, Maven, all
 projects, etc. Then you just need to install NetBeans (or Eclipse, etc.).
 Since Java UIO relies on c-periphery and u8g2 those files are not included in the
-project. You can see them ignored in [.gitignore](https://github.com/sgjava/javauio/blob/3779bd600664379d12bc413366ee9f9a883413c2/.gitignore#L12)
+project. You can see them ignored in .gitignore.
 * Copy the c-periphery files to `javauio/periphery/src/main/native-package/src`
 * Copy u8g2 files to `javauio/u8g2/src/main/native-package/src`
 
