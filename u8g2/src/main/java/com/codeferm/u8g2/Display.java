@@ -2371,6 +2371,156 @@ public class Display {
             case FONT_UNTITLED16PIXELSANSSERIFBITMAP_TR:
                 fontSel = Fonts.u8g2_font_Untitled16PixelSansSerifBitmap_tr;
                 break;
+            case FONT_UNNAMEDDOSFONTIV_TR:
+                fontSel = Fonts.u8g2_font_UnnamedDOSFontIV_tr;
+                break;
+            case FONT_TERMINAL_TR:
+                fontSel = Fonts.u8g2_font_Terminal_tr;
+                break;
+            case FONT_TERMINAL_TE:
+                fontSel = Fonts.u8g2_font_Terminal_te;
+                break;
+            case FONT_NOKIALARGEBOLD_TF:
+                fontSel = Fonts.u8g2_font_NokiaLargeBold_tf;
+                break;
+            case FONT_NOKIALARGEBOLD_TR:
+                fontSel = Fonts.u8g2_font_NokiaLargeBold_tr;
+                break;
+            case FONT_NOKIALARGEBOLD_TE:
+                fontSel = Fonts.u8g2_font_NokiaLargeBold_te;
+                break;
+            case FONT_NOKIASMALLBOLD_TF:
+                fontSel = Fonts.u8g2_font_NokiaSmallBold_tf;
+                break;
+            case FONT_NOKIASMALLBOLD_TR:
+                fontSel = Fonts.u8g2_font_NokiaSmallBold_tr;
+                break;
+            case FONT_NOKIASMALLBOLD_TE:
+                fontSel = Fonts.u8g2_font_NokiaSmallBold_te;
+                break;
+            case FONT_NOKIASMALLPLAIN_TF:
+                fontSel = Fonts.u8g2_font_NokiaSmallPlain_tf;
+                break;
+            case FONT_NOKIASMALLPLAIN_TR:
+                fontSel = Fonts.u8g2_font_NokiaSmallPlain_tr;
+                break;
+            case FONT_NOKIASMALLPLAIN_TE:
+                fontSel = Fonts.u8g2_font_NokiaSmallPlain_te;
+                break;
+            case FONT_12X6LED_TF:
+                fontSel = Fonts.u8g2_font_12x6LED_tf;
+                break;
+            case FONT_12X6LED_TR:
+                fontSel = Fonts.u8g2_font_12x6LED_tr;
+                break;
+            case FONT_12X6LED_MN:
+                fontSel = Fonts.u8g2_font_12x6LED_mn;
+                break;
+            case FONT_9X6LED_TF:
+                fontSel = Fonts.u8g2_font_9x6LED_tf;
+                break;
+            case FONT_9X6LED_TR:
+                fontSel = Fonts.u8g2_font_9x6LED_tr;
+                break;
+            case FONT_9X6LED_MN:
+                fontSel = Fonts.u8g2_font_9x6LED_mn;
+                break;
+            case FONT_CALBLK36_TR:
+                fontSel = Fonts.u8g2_font_calblk36_tr;
+                break;
+            case FONT_CALLITE24_TR:
+                fontSel = Fonts.u8g2_font_callite24_tr;
+                break;
+            case FONT_SPLEEN5X8_MF:
+                fontSel = Fonts.u8g2_font_spleen5x8_mf;
+                break;
+            case FONT_SPLEEN5X8_MR:
+                fontSel = Fonts.u8g2_font_spleen5x8_mr;
+                break;
+            case FONT_SPLEEN5X8_MN:
+                fontSel = Fonts.u8g2_font_spleen5x8_mn;
+                break;
+            case FONT_SPLEEN5X8_MU:
+                fontSel = Fonts.u8g2_font_spleen5x8_mu;
+                break;
+            case FONT_SPLEEN5X8_ME:
+                fontSel = Fonts.u8g2_font_spleen5x8_me;
+                break;
+            case FONT_SPLEEN6X12_MF:
+                fontSel = Fonts.u8g2_font_spleen6x12_mf;
+                break;
+            case FONT_SPLEEN6X12_MR:
+                fontSel = Fonts.u8g2_font_spleen6x12_mr;
+                break;
+            case FONT_SPLEEN6X12_MN:
+                fontSel = Fonts.u8g2_font_spleen6x12_mn;
+                break;
+            case FONT_SPLEEN6X12_MU:
+                fontSel = Fonts.u8g2_font_spleen6x12_mu;
+                break;
+            case FONT_SPLEEN6X12_ME:
+                fontSel = Fonts.u8g2_font_spleen6x12_me;
+                break;
+            case FONT_SPLEEN8X16_MF:
+                fontSel = Fonts.u8g2_font_spleen8x16_mf;
+                break;
+            case FONT_SPLEEN8X16_MR:
+                fontSel = Fonts.u8g2_font_spleen8x16_mr;
+                break;
+            case FONT_SPLEEN8X16_MN:
+                fontSel = Fonts.u8g2_font_spleen8x16_mn;
+                break;
+            case FONT_SPLEEN8X16_MU:
+                fontSel = Fonts.u8g2_font_spleen8x16_mu;
+                break;
+            case FONT_SPLEEN8X16_ME:
+                fontSel = Fonts.u8g2_font_spleen8x16_me;
+                break;
+            case FONT_SPLEEN12X24_MF:
+                fontSel = Fonts.u8g2_font_spleen12x24_mf;
+                break;
+            case FONT_SPLEEN12X24_MR:
+                fontSel = Fonts.u8g2_font_spleen12x24_mr;
+                break;
+            case FONT_SPLEEN12X24_MN:
+                fontSel = Fonts.u8g2_font_spleen12x24_mn;
+                break;
+            case FONT_SPLEEN12X24_MU:
+                fontSel = Fonts.u8g2_font_spleen12x24_mu;
+                break;
+            case FONT_SPLEEN12X24_ME:
+                fontSel = Fonts.u8g2_font_spleen12x24_me;
+                break;
+            case FONT_SPLEEN16X32_MF:
+                fontSel = Fonts.u8g2_font_spleen16x32_mf;
+                break;
+            case FONT_SPLEEN16X32_MR:
+                fontSel = Fonts.u8g2_font_spleen16x32_mr;
+                break;
+            case FONT_SPLEEN16X32_MN:
+                fontSel = Fonts.u8g2_font_spleen16x32_mn;
+                break;
+            case FONT_SPLEEN16X32_MU:
+                fontSel = Fonts.u8g2_font_spleen16x32_mu;
+                break;
+            case FONT_SPLEEN16X32_ME:
+                fontSel = Fonts.u8g2_font_spleen16x32_me;
+                break;
+            case FONT_SPLEEN32X64_MF:
+                fontSel = Fonts.u8g2_font_spleen32x64_mf;
+                break;
+            case FONT_SPLEEN32X64_MR:
+                fontSel = Fonts.u8g2_font_spleen32x64_mr;
+                break;
+            case FONT_SPLEEN32X64_MN:
+                fontSel = Fonts.u8g2_font_spleen32x64_mn;
+                break;
+            case FONT_SPLEEN32X64_MU:
+                fontSel = Fonts.u8g2_font_spleen32x64_mu;
+                break;
+            case FONT_SPLEEN32X64_ME:
+                fontSel = Fonts.u8g2_font_spleen32x64_me;
+                break;
             case FONT_NOKIAFC22_TF:
                 fontSel = Fonts.u8g2_font_nokiafc22_tf;
                 break;
