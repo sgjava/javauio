@@ -11,7 +11,7 @@
             </goals>
             <properties>
                 <exec.vmArgs></exec.vmArgs>
-                <exec.classpath>/home/servadmin/NetBeansProjects/javauio/u8g2/target/u8g2-1.0.0-SNAPSHOT-linux64.jar</exec.classpath>
+                <exec.classpath>/home/sgoldsmith/NetBeansProjects/javauio/u8g2/target/u8g2-1.0.0-SNAPSHOT-linux64.jar:/home/sgoldsmith/NetBeansProjects/javauio/periphery/target/periphery-1.0.0-SNAPSHOT-linux64.jar</exec.classpath>
                 <exec.appArgs>--type=SDL</exec.appArgs>
                 <exec.args>${exec.vmArgs} -classpath ${exec.classpath}:%classpath ${exec.mainClass} ${exec.appArgs}</exec.args>
                 <exec.executable>java</exec.executable>
@@ -82,7 +82,7 @@
             </goals>
             <properties>
                 <exec.vmArgs>-agentlib:jdwp=transport=dt_socket,server=n,address=${jpda.address}</exec.vmArgs>
-                <exec.classpath>/home/servadmin/NetBeansProjects/javauio/u8g2/target/u8g2-1.0.0-SNAPSHOT-linux64.jar</exec.classpath>
+                <exec.classpath>/home/sgoldsmith/NetBeansProjects/javauio/u8g2/target/u8g2-1.0.0-SNAPSHOT-linux64.jar:/home/sgoldsmith/NetBeansProjects/javauio/periphery/target/periphery-1.0.0-SNAPSHOT-linux64.jar</exec.classpath>
                 <exec.appArgs>--type=SDL</exec.appArgs>
                 <exec.args>${exec.vmArgs} -classpath ${exec.classpath}:%classpath ${exec.mainClass} ${exec.appArgs}</exec.args>
                 <exec.executable>java</exec.executable>
