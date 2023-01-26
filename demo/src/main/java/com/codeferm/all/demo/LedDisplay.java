@@ -9,9 +9,7 @@ import static com.codeferm.periphery.Gpio.GPIO_BIAS_DEFAULT;
 import static com.codeferm.periphery.Gpio.GPIO_DIR_OUT;
 import static com.codeferm.periphery.Gpio.GPIO_DRIVE_DEFAULT;
 import static com.codeferm.periphery.Gpio.GPIO_EDGE_NONE;
-import com.codeferm.periphery.demo.LedBlink;
 import com.codeferm.u8g2.demo.*;
-import java.util.concurrent.TimeUnit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import picocli.CommandLine;
@@ -24,8 +22,8 @@ import picocli.CommandLine.Command;
  * @version 1.0.0
  * @since 1.0.0
  */
-@Command(name = "SimpleText", mixinStandardHelpOptions = true, version = "1.0.0-SNAPSHOT",
-        description = "Simple text demo")
+@Command(name = "LedDisplay", mixinStandardHelpOptions = true, version = "1.0.0-SNAPSHOT",
+        description = "Blink LED and show status on mono display")
 public class LedDisplay extends Base {
 
     /**
@@ -57,7 +55,7 @@ public class LedDisplay extends Base {
         // 1 second delay after screen draw
         setSleep(1000);
         try (final var gpio = new Gpio(device, line, Gpio.GpioConfig.builder().bias(GPIO_BIAS_DEFAULT).direction(GPIO_DIR_OUT).
-                drive(GPIO_DRIVE_DEFAULT).edge(GPIO_EDGE_NONE).inverted(false).label(cString(LedBlink.class.getSimpleName())).
+                drive(GPIO_DRIVE_DEFAULT).edge(GPIO_EDGE_NONE).inverted(false).label(cString(LedDisplay.class.getSimpleName())).
                 build())) {
             logger.info("Blinking LED");
             var i = 0;
