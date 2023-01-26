@@ -117,8 +117,8 @@ Now you should be ready to compile the project with `mvn clean install`. To use
 NetBeans right-click Run on a program in Demo project modify project properties:
 * Click actions
 * Click Run file via main()
-    * exec.classpath=/home/youruser/NetBeansProjects/javauio/u8g2/target/u8g2-1.0.0-SNAPSHOT-linux64.jar:/home/youruser/NetBeansProjects/javauio/periphery/target/periphery-1.0.0-SNAPSHOT-linux64.jar
-    * exec.appArgs=--type=SDL
+    * `exec.classpath=/home/youruser/NetBeansProjects/javauio/u8g2/target/u8g2-1.0.0-SNAPSHOT-linux64.jar:/home/youruser/NetBeansProjects/javauio/periphery/target/periphery-1.0.0-SNAPSHOT-linux64.jar`
+    * `exec.appArgs=--type=SDL`
  * Click OK
 
 Now if you run SimpleText it will use SDL instead of a real display. You will
