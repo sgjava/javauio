@@ -32,7 +32,7 @@ public class LedDisplay extends Base {
      * Logger.
      */
     private static final Logger logger = LoggerFactory.getLogger(LedDisplay.class);
-    
+
     /**
      * Device option.
      */
@@ -42,7 +42,7 @@ public class LedDisplay extends Base {
      * Line option.
      */
     @CommandLine.Option(names = {"-l", "--line"}, description = "GPIO line, ${DEFAULT-VALUE} by default.")
-    private int line = 203;    
+    private int line = 203;
 
     /**
      * Simple text display.
@@ -54,6 +54,8 @@ public class LedDisplay extends Base {
     public Integer call() throws InterruptedException {
         // This will setup display
         var exitCode = super.call();
+        // 1 second delay after screen draw
+        setSleep(1000);
         try (final var gpio = new Gpio(device, line, Gpio.GpioConfig.builder().bias(GPIO_BIAS_DEFAULT).direction(GPIO_DIR_OUT).
                 drive(GPIO_DRIVE_DEFAULT).edge(GPIO_EDGE_NONE).inverted(false).label(cString(LedBlink.class.getSimpleName())).
                 build())) {
@@ -62,16 +64,14 @@ public class LedDisplay extends Base {
             while (i < 10) {
                 Gpio.gpioWrite(gpio.getHandle(), true);
                 showText("LED on");
-                TimeUnit.SECONDS.sleep(1);
                 Gpio.gpioWrite(gpio.getHandle(), false);
                 showText("LED off");
-                TimeUnit.SECONDS.sleep(1);
                 i++;
             }
         } catch (RuntimeException e) {
             logger.error(e.getMessage());
             exitCode = 1;
-        }        
+        }
         done();
         return exitCode;
     }
