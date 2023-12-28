@@ -10,7 +10,6 @@ package com.codeferm.u8g2;
  * @version 1.0.0
  * @since 1.0.0
  */
-
 public enum SetupType {
     SSD1305_128X32_NONAME,
     SSD1305_128X32_ADAFRUIT,
