@@ -228,6 +228,8 @@ public class Fonts {
     @JniField(flags = {CONSTANT})
     public static long u8x8_font_inr33_3x6_n;
     @JniField(flags = {CONSTANT})
+    public static long u8x8_font_inr46_4x8_f;
+    @JniField(flags = {CONSTANT})
     public static long u8x8_font_inr46_4x8_r;
     @JniField(flags = {CONSTANT})
     public static long u8x8_font_inr46_4x8_n;
@@ -244,8 +246,8 @@ public class Fonts {
     @JniField(flags = {CONSTANT})
     public static long u8x8_font_inb33_3x6_n;
     @JniField(flags = {CONSTANT})
-    //public static long u8x8_font_inb46_4x8_f;
-    //@JniField(flags = {CONSTANT})
+    public static long u8x8_font_inb46_4x8_f;
+    @JniField(flags = {CONSTANT})
     public static long u8x8_font_inb46_4x8_r;
     @JniField(flags = {CONSTANT})
     public static long u8x8_font_inb46_4x8_n;
@@ -301,6 +303,7 @@ public class Fonts {
     public static long u8x8_font_px437wyse700b_2x2_r;
     @JniField(flags = {CONSTANT})
     public static long u8x8_font_px437wyse700b_2x2_n;
+    // u8g2 fonts
     @JniField(flags = {CONSTANT})
     public static long u8g2_font_u8glib_4_tf;
     @JniField(flags = {CONSTANT})
@@ -353,6 +356,14 @@ public class Fonts {
     public static long u8g2_font_7_Seg_33x19_mn;
     @JniField(flags = {CONSTANT})
     public static long u8g2_font_7_Seg_41x21_mn;
+    @JniField(flags = {CONSTANT})
+    public static long u8g2_font_tiny5_tf;
+    @JniField(flags = {CONSTANT})
+    public static long u8g2_font_tiny5_tr;
+    @JniField(flags = {CONSTANT})
+    public static long u8g2_font_04b_03b_tr;
+    @JniField(flags = {CONSTANT})
+    public static long u8g2_font_04b_03_tr;
     @JniField(flags = {CONSTANT})
     public static long u8g2_font_amstrad_cpc_extended_8f;
     @JniField(flags = {CONSTANT})
@@ -1816,8 +1827,6 @@ public class Fonts {
     @JniField(flags = {CONSTANT})
     public static long u8g2_font_efraneextracondensed_te;
     @JniField(flags = {CONSTANT})
-    public static long u8g2_font_minimal3x3_tu;
-    @JniField(flags = {CONSTANT})
     public static long u8g2_font_3x3basic_tr;
     @JniField(flags = {CONSTANT})
     public static long u8g2_font_tiny_gk_tr;
@@ -1847,12 +1856,6 @@ public class Fonts {
     public static long u8g2_font_tinyunicode_tr;
     @JniField(flags = {CONSTANT})
     public static long u8g2_font_tinyunicode_te;
-    @JniField(flags = {CONSTANT})
-    public static long u8g2_font_micropixel_tf;
-    @JniField(flags = {CONSTANT})
-    public static long u8g2_font_micropixel_tr;
-    @JniField(flags = {CONSTANT})
-    public static long u8g2_font_micropixel_te;
     @JniField(flags = {CONSTANT})
     public static long u8g2_font_tinypixie2_tr;
     @JniField(flags = {CONSTANT})
