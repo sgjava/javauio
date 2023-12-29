@@ -228,8 +228,6 @@ public class Fonts {
     @JniField(flags = {CONSTANT})
     public static long u8x8_font_inr33_3x6_n;
     @JniField(flags = {CONSTANT})
-    public static long u8x8_font_inr46_4x8_f;
-    @JniField(flags = {CONSTANT})
     public static long u8x8_font_inr46_4x8_r;
     @JniField(flags = {CONSTANT})
     public static long u8x8_font_inr46_4x8_n;
