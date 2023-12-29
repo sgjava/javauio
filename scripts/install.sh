@@ -123,7 +123,7 @@ mavenbin="/opt/maven/bin"
 
 # Install latest Maven
 log "Installing Maven $mavenver..."
-log "Downloading $mavenurl$mavenarchive to $tmpdir     "
+log "Downloading $mavenurl to $tmpdir     "
 wget -q --directory-prefix=$tmpdir "$mavenurl" >> $logfile 2>&1
 log "Extracting $tmpdir/$mavenarchive to $tmpdir"
 tar -xf "$tmpdir/$mavenarchive" -C "$tmpdir" >> $logfile 2>&1
