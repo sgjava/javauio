@@ -171,7 +171,7 @@ cd >> $logfile 2>&1
 log "Removing c-periphery"
 rm -rf c-periphery >> $logfile 2>&1
 log "Cloning c-periphery..."
-# My fork since there's been no updates for a while
+# My fork, so changes don't break build
 git clone --depth 1 https://github.com/sgjava/c-periphery.git >> $logfile 2>&1
 log "Copying files into periphery..."
 cp -a "$HOME/c-periphery/src/"*.c "$HOME/javauio/periphery/src/main/native-package/src/"
@@ -182,7 +182,7 @@ cd >> $logfile 2>&1
 log "Removing u8g2"
 rm -rf u8g2 >> $logfile 2>&1
 log "Cloning U8g2..."
-# My fork, so arm-linux updates do not break my build
+# My fork, so changes don't break build
 git clone --depth 1 --recurse-submodules https://github.com/sgjava/u8g2 >> $logfile 2>&1
 log "Copying files into u8g2..."
 # Order is important here because some files will be overwritten
