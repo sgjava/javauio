@@ -76,7 +76,7 @@ elif [ "$arch" = "aarch64" ]; then
 	jdkurl="https://cdn.azul.com/zulu/bin/zulu21.30.15-ca-jdk21.0.1-linux_aarch64.tar.gz"
 # X86_32
 elif [ "$arch" = "i586" ] || [ "$arch" = "i686" ]; then
-        # Liberica used for x86_32
+        # Liberica used for x86
 	jdkurl="https://download.bell-sw.com/java/21.0.1+12/bellsoft-jdk21.0.1+12-linux-i586.tar.gz"
 # X86_64	
 elif [ "$arch" = "x86_64" ]; then
@@ -89,14 +89,12 @@ jdkarchive=$(basename "$jdkurl")
 # Install Zulu Java JDK
 log "Downloading $jdkarchive to $tmpdir"
 wget -q --directory-prefix=$tmpdir "$jdkurl" >> $logfile 2>&1
-log "Extracting $jdkarchive to $tmpdir"
-tar -xf "$tmpdir/$jdkarchive" -C "$tmpdir" >> $logfile 2>&1
+filename="jdk$jdk"
+log "Extracting $jdkarchive to $tmpdir/$filename"
+mkdir "$tmpdir/$filename" >> $logfile 2>&1
+tar -xf "$tmpdir/$jdkarchive" -C "$tmpdir/$filename" --strip-components=1 >> $logfile 2>&1
 log "Removing $javahome"
 sudo -E rm -rf "$javahome" >> $logfile 2>&1
-# Remove .gz
-filename="${jdkarchive%.*}"
-# Remove .tar
-filename="${filename%.*}"
 sudo mkdir -p /usr/lib/jvm >> $logfile 2>&1
 log "Moving $tmpdir/$filename to $javahome"
 sudo -E mv "$tmpdir/$filename" "$javahome" >> $logfile 2>&1
