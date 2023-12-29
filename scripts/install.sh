@@ -154,13 +154,13 @@ log "PATH = $PATH"
 log "Removing $tmpdir"
 rm -rf "$tmpdir" >> $logfile 2>&1
 
-# HawtJNI install (using my JDK 17 fork)
+# HawtJNI install (using my JDK 21 fork)
 export JAVA_HOME=$javahome
 cd >> $logfile 2>&1
 log "Removing hawtjni"
 rm -rf hawtjni >> $logfile 2>&1
 log "Cloning HawtJNI..."
-# My fork that works with JDK 17
+# My fork that works with JDK 21
 git clone https://github.com/sgjava/hawtjni.git >> $logfile 2>&1
 cd hawtjni >> $logfile 2>&1
 log "Building HawtJNI..."

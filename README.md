@@ -4,7 +4,7 @@ Java UIO provides high performance Java interfaces for Linux Userspace IO. Java
 UIO was built from the ground up to use modern kernel APIs, libraries and code
 generation techniques to provide a best of breed cross platform approach. It
 does not make sense to recreate the wheel like so many other IO libraries. JDK
-17 LTS is supported out of the box.
+21 LTS is supported out of the box.
 ***
 <img src="periphery/images/periphery.png" width="100"/><img src="u8g2/images/u8g2.jpg" width="100"/><img src="u8g2/images/java.png" width="100"/><img src="u8g2/images/sdl.png" width="100"/>
 ***
@@ -42,13 +42,12 @@ performance compared to native C written to specific chip sets. However, since
 I'm wrapping C with JNI it guarantees the fastest userspace experience for Java.
 * Why Armbian? Because Armbian supports many SBCs and the idea is to be truly
 SBC cross platform. See [downloads](https://www.armbian.com/download).
-* Why Java 17? Because Java 17 is the current LTS version of Java. Java 11 the
-previous LTS release is end of life September 2023. I'm only moving forward
-with Java. You can always create a fork and make a Java 8 or Java 11 version of
-Java UIO.
-* Why Zulu OpenJDK? Because it's easy to download without all the crap Oracle
-puts you through. You can always use another JDK 17 vendor, but you will have to
-do that manually.
+* Why Java 21? Because Java 21 is the current LTS version of Java.I'm only moving
+forward with Java. You can always create a fork and make a version of Java UIO
+based on another version.
+* Why OpenJDK? Because it's easy to download without all the crap Oracle puts you
+through. You can always use another JDK 21 vendor, but you will have to do that
+manually.
 
 ## SBC configuration
 * If you are using Armbian then use `armbian-config` or edit `/boot/armbianEnv.txt`
@@ -80,13 +79,13 @@ as needed.
 
 ## Install script
 The install script assumes a clean OS install. If you would like to install on
-a OS with your own version of Java 17, etc. then you can look at what install.sh
+a OS with your own version of Java 21, etc. then you can look at what install.sh
 does and do it manually. What does the script do?
 * Install build dependencies
 * Install UIO Permissions Service and udev rules
-* Installs Zulu JDK 17 to /usr/lib/jvm
+* Installs Open JDK 21 to /usr/lib/jvm
 * Installs Maven to /opt
-* Build HawtJNI (using my fork that works with JDK 17)
+* Build HawtJNI (using my fork that works with JDK 21)
 * Download and copy c-periphery source to Maven module
 * Download and copy U8g2 source to Maven module
 * Build Java UIO

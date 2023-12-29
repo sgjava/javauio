@@ -78,7 +78,7 @@ And finally lets run the performance test
 12:50:48.090 [main] INFO com.codeferm.periphery.mmio.Perf - Running best MMIO write test with 10000000 samples
 12:50:57.510 [main] INFO com.codeferm.periphery.mmio.Perf - 1061.68 KHz
 ```
-So one thing to note is JDK 17 on ARM32 seems to be much slower than JDK 11. Lets switch over to JDK 11:
+So one thing to note is JDK 21 on ARM32 seems to be much slower than JDK 11. Lets switch over to JDK 11:
 ```
 14:20:55.201 [main] DEBUG com.codeferm.periphery.mmio.File - Properties loaded from file opiplus-map.properties
 14:20:55.884 [main] INFO com.codeferm.periphery.mmio.Perf - Running GPIOD write test with 10000000 samples
@@ -90,9 +90,9 @@ So one thing to note is JDK 17 on ARM32 seems to be much slower than JDK 11. Let
 
 ```
 I'll leave it up to you how important that performance delta is. In some cases
-it's overkill and you'll want to stick with JDK 17. For now I'm keeping the code
+it's overkill and you'll want to stick with JDK 21. For now I'm keeping the code
 compatible with JDK11, so it's really just a compile time issue. Using an oscilloscope
-is the only way to know the true speed. In this case JDK 17 allowed around 900 KHz
+is the only way to know the true speed. In this case JDK 21 allowed around 900 KHz
 GPIO toggle.
 
 ## Run u8g2 tools
