@@ -5,7 +5,9 @@
 # @author: sgoldsmith
 #
 # Install dependencies, JDK 21, Maven and HawtJNI for Ubuntu/Debian.
-# If JDK or Maven was already installed with this script then they will be replaced.
+# If JDK or Maven was already installed with this script then they will be 
+# replaced. If an older JDK is present (i.e. JDK 17) remove this directory
+# before running script. 
 #
 # Steven P. Goldsmith
 # sgjava@gmail.com
