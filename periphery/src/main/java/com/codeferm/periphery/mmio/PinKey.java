@@ -3,7 +3,6 @@
  */
 package com.codeferm.periphery.mmio;
 
-import java.util.Comparator;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
