@@ -7,7 +7,7 @@ a simple property file is required to map registers.
 * All wrapper classes support AutoCloseable, so you can use the
 [try-with-resources](https://docs.oracle.com/javase/tutorial/essential/exceptions/tryResourceClose.html)
 statement to automatically close and free native resources. This prevents hard
-to track down native memory leaks.
+to track down native resource leaks.
 ```
 try (final var spi = new Spi("/dev/spidev1.0", 0, 500000)) {
     final var txBuf = new byte[128];
@@ -157,10 +157,3 @@ After bulding Periphery simpily add the following artifact:
 <artifactId>periphery</artifactId>
 <version>1.0.0-SNAPSHOT</version>
 ```
-
-## Azul Mission Control
-[Azul Mission Control](https://www.azul.com/products/components/azul-mission-control) allows
-you to profile your applications.
-[Download](https://www.azul.com/products/components/azul-mission-control/#downloads)
-zmc and launch on your desktop. To profile your Periphery application use:
-`java -Djava.rmi.server.hostname=your_ip -Dcom.sun.management.jmxremote=true -Dcom.sun.management.jmxremote.port=8888 -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -cp periphery-1.0.0-SNAPSHOT.jar:periphery-1.0.0-SNAPSHOT-linux32.jar com.codeferm.periphery.demo.GpioPerf`
