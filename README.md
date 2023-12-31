@@ -1,10 +1,12 @@
 ![Title](images/title.png)
 
-Java UIO provides high performance Java interfaces for Linux Userspace IO. Java
-UIO was built from the ground up to use modern kernel APIs, libraries and code
-generation techniques to provide a best of breed cross platform approach. It
-does not make sense to recreate the wheel like so many other IO libraries. JDK
-21 LTS is supported out of the box.
+Java UIO offers robust Java interfaces optimized for Linux Userspace IO, emphasizing
+high performance. Engineered from scratch, it leverages contemporary kernel APIs,
+libraries, and cutting-edge code generation methodologies, embodying a state-of-the-art
+cross-platform solution. Rather than reinventing established paradigms, Java UIO harnesses
+existing standards, avoiding redundant development commonly observed in other IO libraries.
+Seamlessly supporting JDK 21 LTS, this framework integrates Project Lombok to streamline
+code, enhancing readability and conciseness.
 ***
 <img src="periphery/images/periphery.png" width="100"/><img src="u8g2/images/u8g2.jpg" width="100"/><img src="u8g2/images/java.png" width="100"/><img src="u8g2/images/sdl.png" width="100"/>
 ***
