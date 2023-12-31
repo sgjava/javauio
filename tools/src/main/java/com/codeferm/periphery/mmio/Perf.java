@@ -108,7 +108,7 @@ public class Perf implements Callable<Integer> {
      * @param samples How many samples to run.
      */
     public void perfGpiod(final Pin pin, final long samples) {
-        try (final var gpio = new Gpio(String.format("/dev/gpiochip%d", pin.key().getChip()), pin.key().getPin(), GPIO_DIR_OUT)) {
+        try (final var gpio = new Gpio(String.format("/dev/gpiochip%d", pin.key().chip()), pin.key().pin(), GPIO_DIR_OUT)) {
             var handle = gpio.getHandle();
             logger.info(String.format("Running GPIOD write test with %d samples", samples));
             final var start = Instant.now();
@@ -131,7 +131,7 @@ public class Perf implements Callable<Integer> {
      * @param samples How many samples to run.
      */
     public void perfGood(final Pin pin, final long samples) {
-        try (final var gpio = new Gpio(String.format("/dev/gpiochip%d", pin.key().getChip()), pin.key().getPin(), GPIO_DIR_OUT)) {
+        try (final var gpio = new Gpio(String.format("/dev/gpiochip%d", pin.key().chip()), pin.key().pin(), GPIO_DIR_OUT)) {
             logger.info(String.format("Running good MMIO write test with %d samples", samples));
             final var start = Instant.now();
             // Turn pin on and off, so we can see on a scope
@@ -153,7 +153,7 @@ public class Perf implements Callable<Integer> {
      * @param samples How many samples to run.
      */
     public void perfBest(final Pin pin, final long samples) {
-        try (final var gpio = new Gpio(String.format("/dev/gpiochip%d", pin.key().getChip()), pin.key().getPin(), GPIO_DIR_OUT)) {
+        try (final var gpio = new Gpio(String.format("/dev/gpiochip%d", pin.key().chip()), pin.key().pin(), GPIO_DIR_OUT)) {
             final var handle = pin.mmioHadle();
             final var regOn = new int[1];
             final var dataOutOnOffset = pin.dataOutOn().offset();
@@ -212,7 +212,7 @@ public class Perf implements Callable<Integer> {
             }
             // Set MMIO handle for each pin
             pinMap.entrySet().forEach((entry) -> {
-                entry.getValue().mmioHadle(mmioHandle.get(entry.getKey().getChip()));
+                entry.getValue().mmioHadle(mmioHandle.get(entry.getKey().chip()));
             });
             final var pin = pinMap.get(new PinKey(device, line));
             // Run slower tests?

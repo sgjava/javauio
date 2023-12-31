@@ -128,9 +128,9 @@ public class Gen implements Callable<Integer> {
         } else {
             dataOffset = dataOutOnOffset;
         }
-        final var dev = String.format("/dev/gpiochip%d", pin.key().getChip());
+        final var dev = String.format("/dev/gpiochip%d", pin.key().chip());
         // Set pin for input, output and look for delta
-        try (final var gpio = new Gpio(dev, pin.key().getPin(), Gpio.GpioConfig.builder().bias(GPIO_BIAS_DEFAULT).
+        try (final var gpio = new Gpio(dev, pin.key().pin(), Gpio.GpioConfig.builder().bias(GPIO_BIAS_DEFAULT).
                 direction(GPIO_DIR_OUT).drive(GPIO_DRIVE_DEFAULT).edge(GPIO_EDGE_NONE).inverted(false).label(cString(
                 Gen.class.getSimpleName())).build())) {
             Gpio.gpioWrite(gpio.getHandle(), false);
@@ -152,11 +152,11 @@ public class Gen implements Callable<Integer> {
                     pin.dataOutOff().mask(pin.dataOutOff().mask() ^ 0xffffffff);
                 }
             } else {
-                logger.warn(String.format("Chip %d Pin %d data register change not detected", pin.key().getChip(),
-                        pin.key().getPin()));
+                logger.warn(String.format("Chip %d Pin %d data register change not detected", pin.key().chip(),
+                        pin.key().pin()));
             }
         } catch (RuntimeException e) {
-            logger.error(String.format("Chip %d Pin %d Error %s", pin.key().getChip(), pin.key().getPin(), e.getMessage()));
+            logger.error(String.format("Chip %d Pin %d Error %s", pin.key().chip(), pin.key().pin(), e.getMessage()));
         }
     }
 

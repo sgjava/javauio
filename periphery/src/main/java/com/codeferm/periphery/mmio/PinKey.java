@@ -4,6 +4,11 @@
 package com.codeferm.periphery.mmio;
 
 import java.util.Comparator;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.experimental.Accessors;
 
 /**
  * GPIO pin key used for easy lookup and sorting.
@@ -12,6 +17,11 @@ import java.util.Comparator;
  * @version 1.0.0
  * @since 1.0.0
  */
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+@Accessors(fluent = true)
 public class PinKey implements Comparable<PinKey> {
 
     /**
@@ -24,41 +34,6 @@ public class PinKey implements Comparable<PinKey> {
     private int pin;
 
     /**
-     * Default constructor.
-     */
-    public PinKey() {
-    }
-
-    /**
-     * All fields constructor.
-     *
-     * @param chip Pin chip.
-     * @param pin Pin number.
-     */
-    public PinKey(final int chip, final int pin) {
-        this.chip = chip;
-        this.pin = pin;
-    }
-
-    public int getChip() {
-        return chip;
-    }
-
-    public PinKey setChip(final int chip) {
-        this.chip = chip;
-        return this;
-    }
-
-    public int getPin() {
-        return pin;
-    }
-
-    public PinKey setPin(final int pin) {
-        this.pin = pin;
-        return this;
-    }
-
-    /**
      * Compare to used for sorting.
      *
      * @param key Pin key to compare.
@@ -66,58 +41,11 @@ public class PinKey implements Comparable<PinKey> {
      * object.
      */
     @Override
-    public int compareTo(final PinKey key) {
-        return Comparator.comparing(PinKey::getChip).thenComparing(PinKey::getPin).compare(this, key);
-
-    }
-
-    /**
-     * Object hash code.
-     *
-     * @return Hash code.
-     */
-    @Override
-    public int hashCode() {
-        int hash = 7;
-        hash = 41 * hash + this.chip;
-        hash = 41 * hash + this.pin;
-        return hash;
-    }
-
-    /**
-     * Object equals.
-     *
-     * @param obj Object to compare to.
-     * @return True if equal.
-     */
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
+    public int compareTo(PinKey key) {
+        final int chipCompare = Integer.compare(this.chip, key.chip);
+        if (chipCompare != 0) {
+            return chipCompare;
         }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final PinKey other = (PinKey) obj;
-        if (this.chip != other.chip) {
-            return false;
-        }
-        if (this.pin != other.pin) {
-            return false;
-        }
-        return true;
-    }
-
-    /**
-     * String representation of Object.
-     *
-     * @return String of Object fields.
-     */
-    @Override
-    public String toString() {
-        return "PinKey{" + "chip=" + chip + ", pin=" + pin + '}';
+        return Integer.compare(this.pin, key.pin);
     }
 }

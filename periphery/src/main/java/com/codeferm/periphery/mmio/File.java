@@ -150,7 +150,8 @@ public class File {
     }
 
     /**
-     * Return List of Integer from comma delimited string. Spaces are stripped out.
+     * Return List of Integer from comma delimited string. Spaces are stripped
+     * out.
      *
      * @param str Comma delimited hex string.
      * @return List of Integer.
@@ -160,7 +161,8 @@ public class File {
     }
 
     /**
-     * Return List of Integer from comma delimited string. Spaces are stripped out.
+     * Return List of Integer from comma delimited string. Spaces are stripped
+     * out.
      *
      * @param str Comma delimited decimal string.
      * @return List of Integer.
@@ -170,7 +172,8 @@ public class File {
     }
 
     /**
-     * Return List of String from comma delimited string. Spaces are stripped out.
+     * Return List of String from comma delimited string. Spaces are stripped
+     * out.
      *
      * @param str Comma delimited string.
      * @return List of String.
@@ -243,13 +246,13 @@ public class File {
                 if (value.groupName() != null) {
                     writer.write(String.format(
                             "pin.%d.%d = %s, %s, %s, 0x%02x, 0x%08x, %s, 0x%02x, 0x%08x, %s, 0x%02x, 0x%08x, %s, 0x%02x, 0x%08x\n",
-                            key.getChip(), key.getPin(), value.groupName(), value.name(),
+                            key.chip(), key.pin(), value.groupName(), value.name(),
                             value.dataInOn().name(), value.dataInOn().offset(), value.dataInOn().mask(), value.
                             dataInOff().name(), value.dataInOff().offset(), value.dataInOff().mask(), value.
                             dataOutOn().name(), value.dataOutOn().offset(), value.dataOutOn().mask(), value.
                             dataOutOff().name(), value.dataOutOff().offset(), value.dataOutOff().mask()));
                 } else {
-                    logger.warn(String.format("Chip %d pin %d detection failed, so skipping", key.getChip(), key.getPin()));
+                    logger.warn(String.format("Chip %d pin %d detection failed, so skipping", key.chip(), key.pin()));
                 }
             }
         } catch (IOException e) {
