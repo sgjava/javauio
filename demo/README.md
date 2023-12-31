@@ -23,4 +23,4 @@ To see a list of demos
 [browse](https://github.com/sgjava/javauio/tree/main/demo/src/main/java/com/codeferm/all/demo)
 code. Just pass in --help to get list of command line arguments.
 
-* `java -cp $HOME/javauio/demo/target/demo-1.0.0-SNAPSHOT.jar:$HOME/javauio/periphery/target/periphery-1.0.0-SNAPSHOT-linux32.jar:$HOME/javauio/u8g2/target/u8g2-1.0.0-SNAPSHOT-linux32.jar com.codeferm.u8g2.demo.LedDisplay --help`
+* `java -cp $HOME/javauio/demo/target/demo-1.0.0-SNAPSHOT.jar:$HOME/javauio/periphery/target/periphery-1.0.0-SNAPSHOT-linux32.jar:$HOME/javauio/u8g2/target/u8g2-1.0.0-SNAPSHOT-linux32.jar com.codeferm.all.demo.LedDisplay --help`
