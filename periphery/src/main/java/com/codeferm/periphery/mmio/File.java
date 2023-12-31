@@ -243,13 +243,13 @@ public class File {
                 if (value.groupName() != null) {
                     writer.write(String.format(
                             "pin.%d.%d = %s, %s, %s, 0x%02x, 0x%08x, %s, 0x%02x, 0x%08x, %s, 0x%02x, 0x%08x, %s, 0x%02x, 0x%08x\n",
-                            key.chip(), key.pin(), value.groupName(), value.name(),
+                            key.getChip(), key.getPin(), value.groupName(), value.name(),
                             value.dataInOn().name(), value.dataInOn().offset(), value.dataInOn().mask(), value.
                             dataInOff().name(), value.dataInOff().offset(), value.dataInOff().mask(), value.
                             dataOutOn().name(), value.dataOutOn().offset(), value.dataOutOn().mask(), value.
                             dataOutOff().name(), value.dataOutOff().offset(), value.dataOutOff().mask()));
                 } else {
-                    logger.warn(String.format("Chip %d pin %d detection failed, so skipping", key.chip(), key.pin()));
+                    logger.warn(String.format("Chip %d pin %d detection failed, so skipping", key.getChip(), key.getPin()));
                 }
             }
         } catch (IOException e) {
