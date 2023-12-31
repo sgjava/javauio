@@ -121,5 +121,5 @@ NetBeans right-click Run on a program in Demo project modify project properties:
  * Click OK
 
 Now if you run SimpleText it will use SDL instead of a real display. You will
-need to tweak for Periphry demo programs as well. Basically look at the command
+need to tweak for Periphery demo programs as well. Basically look at the command
 line arguments in the examples provided.
