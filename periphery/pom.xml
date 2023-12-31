@@ -16,11 +16,8 @@
     <description>JNI interface for c-periphery</description>    
     
     <properties>
-        <!-- master branch -->
-        <c.periphery>https://raw.githubusercontent.com/vsergeev/c-periphery/master/src</c.periphery>
-        <!-- devel branch
-        <c.periphery>https://raw.githubusercontent.com/vsergeev/c-periphery/devel/src</c.periphery>
-        -->
+        <!-- My fork -->
+        <c.periphery>https://github.com/sgjava/c-periphery</c.periphery>
         <!--
         To compile for GPIO device use -DPERIPHERY_GPIO_CDEV_SUPPORT=1 and remove this for sysfs only.
         If you would like to use the gpio.h header that matches your distribution you can add it to CFLAGS.
