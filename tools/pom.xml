@@ -62,7 +62,52 @@
             </plugin>
         </plugins>
     </build>
-    
+
+    <profiles>
+        <!-- 
+        GraalVM native profile
+        
+        Use mvn clean package -Pnative
+        -->
+        <profile>
+            <id>native</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.graalvm.buildtools</groupId>
+                        <artifactId>native-maven-plugin</artifactId>
+                        <version>${native.maven.plugin.version}</version>
+                        <extensions>true</extensions>
+                        <executions>
+                            <execution>
+                                <id>build-native</id>
+                                <goals>
+                                    <goal>build</goal>
+                                </goals>
+                                <phase>package</phase>
+                            </execution>
+                            <execution>
+                                <id>test-native</id>
+                                <goals>
+                                    <goal>test</goal>
+                                </goals>
+                                <phase>test</phase>
+                            </execution>
+                        </executions>
+                        <configuration>
+                            <fallback>false</fallback>
+                            <agent>
+                                <enabled>true</enabled>
+                            </agent>
+                            <imageName>perf</imageName>
+                            <mainClass>com.codeferm.periphery.mmio.Perf</mainClass>                         
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+                
     <dependencies>
         <!-- Compile -->
         <dependency>
