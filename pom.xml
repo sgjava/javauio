@@ -23,7 +23,6 @@
         <maven.compiler.source>21</maven.compiler.source>
         <maven.compiler.target>21</maven.compiler.target>
         <hawtjni.version>1.19-SNAPSHOT</hawtjni.version>
-        <native.maven.plugin.version>0.9.28</native.maven.plugin.version>
     </properties>
         
     <build>
