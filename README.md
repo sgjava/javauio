@@ -94,6 +94,7 @@ does and do it manually. What does the script do?
 
 ### Run script
 * `cd ~/javauio/scripts`
+* `./install-java.sh`
 * `./install.sh`
 * Check various log files if you have issues running the demo code. Something
 could have gone wrong during the build/bindings generation processes.
