@@ -5,7 +5,7 @@ high performance. Engineered from scratch, it leverages contemporary kernel APIs
 libraries, and cutting-edge code generation methodologies, embodying a state-of-the-art
 cross-platform solution. Rather than reinventing established paradigms, Java UIO harnesses
 existing standards, avoiding redundant development commonly observed in other IO libraries.
-Seamlessly supporting JDK 21 LTS, this framework integrates Project Lombok to streamline
+Seamlessly supporting JDK 25 LTS, this framework integrates Project Lombok to streamline
 code, enhancing readability and conciseness.
 ***
 <img src="periphery/images/periphery.png" width="100"/><img src="u8g2/images/u8g2.jpg" width="100"/><img src="u8g2/images/java.png" width="100"/><img src="u8g2/images/sdl.png" width="100"/>
@@ -44,11 +44,11 @@ performance compared to native C written to specific chip sets. However, since
 I'm wrapping C with JNI it guarantees the fastest userspace experience for Java.
 * Why Armbian? Because Armbian supports many SBCs and the idea is to be truly
 SBC cross platform. See [downloads](https://www.armbian.com/download).
-* Why Java 21? Because Java 21 is the current LTS version of Java.I'm only moving
+* Why Java 25? Because Java 25 is the current LTS version of Java.I'm only moving
 forward with Java. You can always create a fork and make a version of Java UIO
 based on another version.
 * Why OpenJDK? Because it's easy to download without all the crap Oracle puts you
-through. You can always use another JDK 21 vendor, but you will have to do that
+through. You can always use another JDK 25 vendor, but you will have to do that
 manually.
 
 ## SBC configuration
@@ -81,13 +81,13 @@ as needed.
 
 ## Install script
 The install script assumes a clean OS install. If you would like to install on
-a OS with your own version of Java 21, etc. then you can look at what install.sh
+a OS with your own version of Java 25, etc. then you can look at what install.sh
 does and do it manually. What does the script do?
 * Install build dependencies
 * Install UIO Permissions Service and udev rules
-* Installs Open JDK 21 to /usr/lib/jvm
+* Installs Open JDK 25 to /usr/lib/jvm
 * Installs Maven to /opt
-* Build HawtJNI (using my fork that works with JDK 21)
+* Build HawtJNI (using my fork that works with JDK 25)
 * Download and copy c-periphery source to Maven module
 * Download and copy U8g2 source to Maven module
 * Build Java UIO
