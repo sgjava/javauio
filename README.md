@@ -81,12 +81,10 @@ as needed.
 
 ## Install script
 The install script assumes a clean OS install. If you would like to install on
-a OS with your own version of Java 25, etc. then you can look at what install.sh
+a OS with your own version of Java 25, etc. then you can look at what install-java.sh
 does and do it manually. What does the script do?
 * Install build dependencies
 * Install UIO Permissions Service and udev rules
-* Installs Open JDK 25 to /usr/lib/jvm
-* Installs Maven to /opt
 * Build HawtJNI (using my fork that works with JDK 25)
 * Download and copy c-periphery source to Maven module
 * Download and copy U8g2 source to Maven module
