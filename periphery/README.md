@@ -71,7 +71,7 @@ comment out `-DPERIPHERY_GPIO_CDEV_SUPPORT=1` from `<configureArgs>` in the
 The gcc default include paths usually do not point to the latest gpio.h header.
 In order to use the latest features in c-periphery you will need to use the
 correct gpio.h include. After the install.sh script completes:
-* `sudo armbian-config` Software, Headers_install
+* `sudo armbian-config` Kernel, Install kernel headers
 * `grep -R -i "GPIOHANDLE_REQUEST_BIAS_DISABLE" /usr/src`
 * `mkdir -p $HOME/include/linux`
 * `cp /usr/src/linux-headers-5.9.11-sunxi/include/uapi/linux/gpio.h $HOME/include/linux/.` (use actual path)
