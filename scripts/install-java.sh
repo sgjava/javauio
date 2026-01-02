@@ -16,7 +16,7 @@ echo "--------------------------------------------------"
 echo "Detected Architecture: $ARCH"
 echo "--------------------------------------------------"
 
-SHIPILEV_ARM32_URL="https://builds.shipilev.net/openjdk-jdk25/openjdk-jdk25-linux-arm32-hflt-server.tar.xz"
+SHIPILEV_ARM32_URL="https://builds.shipilev.net/openjdk-jdk25-dev/openjdk-jdk25-dev-linux-arm32-hflt-server.tar.xz"
 JAVA_TMP="$HOME/.java_tmp"
 
 # 2. System Prep & Tmp Dir
