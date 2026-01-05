@@ -9,6 +9,7 @@ import static com.codeferm.periphery.Gpio.GPIO_BIAS_DEFAULT;
 import static com.codeferm.periphery.Gpio.GPIO_DIR_OUT;
 import static com.codeferm.periphery.Gpio.GPIO_DRIVE_DEFAULT;
 import static com.codeferm.periphery.Gpio.GPIO_EDGE_NONE;
+import static com.codeferm.periphery.Gpio.GPIO_EVENT_CLOCK_REALTIME;
 import com.codeferm.periphery.Gpio.GpioConfig;
 import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
@@ -57,7 +58,7 @@ public class LedBlink implements Callable<Integer> {
         var exitCode = 0;
         try (final var gpio = new Gpio(device, line, GpioConfig.builder().bias(GPIO_BIAS_DEFAULT).direction(GPIO_DIR_OUT).
                 drive(GPIO_DRIVE_DEFAULT).edge(GPIO_EDGE_NONE).inverted(false).label(cString(LedBlink.class.getSimpleName())).
-                build())) {
+                event_clock(GPIO_EVENT_CLOCK_REALTIME).debounce_us(0).build())) {
             logger.info("Blinking LED");
             var i = 0;
             while (i < 10) {

@@ -13,6 +13,7 @@ import static com.codeferm.periphery.Gpio.GPIO_DIR_IN;
 import static com.codeferm.periphery.Gpio.GPIO_DIR_OUT;
 import static com.codeferm.periphery.Gpio.GPIO_DRIVE_DEFAULT;
 import static com.codeferm.periphery.Gpio.GPIO_EDGE_NONE;
+import static com.codeferm.periphery.Gpio.GPIO_EVENT_CLOCK_REALTIME;
 import com.codeferm.periphery.Mmio;
 import java.util.ArrayList;
 import java.util.List;
@@ -112,7 +113,8 @@ public class MemScan implements Callable<Integer> {
         final var dev = String.format("/dev/gpiochip%d", device);
         // Set pin for input, output and look for delta
         try (final var gpio = new Gpio(dev, line, Gpio.GpioConfig.builder().bias(GPIO_BIAS_DEFAULT).direction(GPIO_DIR_IN).drive(
-                GPIO_DRIVE_DEFAULT).edge(GPIO_EDGE_NONE).inverted(false).label(cString(MemScan.class.getSimpleName())).build())) {
+                GPIO_DRIVE_DEFAULT).edge(GPIO_EDGE_NONE).inverted(false).label(cString(MemScan.class.getSimpleName())).event_clock(
+                GPIO_EVENT_CLOCK_REALTIME).debounce_us(0).build())) {
             final var list1 = getRegValues(mmioHandle);
             Gpio.gpioSetDirection(gpio.getHandle(), GPIO_DIR_OUT);
             final var list2 = getRegValues(mmioHandle);
@@ -132,7 +134,8 @@ public class MemScan implements Callable<Integer> {
         final var dev = String.format("/dev/gpiochip%d", device);
         // Set pin for input, output and look for delta
         try (final var gpio = new Gpio(dev, line, Gpio.GpioConfig.builder().bias(GPIO_BIAS_DEFAULT).direction(GPIO_DIR_OUT).drive(
-                GPIO_DRIVE_DEFAULT).edge(GPIO_EDGE_NONE).inverted(false).label(cString(MemScan.class.getSimpleName())).build())) {
+                GPIO_DRIVE_DEFAULT).edge(GPIO_EDGE_NONE).inverted(false).label(cString(MemScan.class.getSimpleName())).event_clock(
+                GPIO_EVENT_CLOCK_REALTIME).debounce_us(0).build())) {
             Gpio.gpioWrite(gpio.getHandle(), false);
             final var list1 = getRegValues(mmioHandle);
             Gpio.gpioWrite(gpio.getHandle(), true);
@@ -153,7 +156,8 @@ public class MemScan implements Callable<Integer> {
         final var dev = String.format("/dev/gpiochip%d", device);
         // Set pin for input, output and look for delta
         try (final var gpio = new Gpio(dev, line, Gpio.GpioConfig.builder().bias(GPIO_BIAS_DISABLE).direction(GPIO_DIR_IN).drive(
-                GPIO_DRIVE_DEFAULT).edge(GPIO_EDGE_NONE).inverted(false).label(cString(MemScan.class.getSimpleName())).build())) {
+                GPIO_DRIVE_DEFAULT).edge(GPIO_EDGE_NONE).inverted(false).label(cString(MemScan.class.getSimpleName())).event_clock(
+                GPIO_EVENT_CLOCK_REALTIME).debounce_us(0).build())) {
             var list1 = getRegValues(mmioHandle);
             Gpio.gpioSetBias(gpio.getHandle(), GPIO_BIAS_PULL_UP);
             var list2 = getRegValues(mmioHandle);

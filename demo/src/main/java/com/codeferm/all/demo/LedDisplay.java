@@ -9,6 +9,7 @@ import static com.codeferm.periphery.Gpio.GPIO_BIAS_DEFAULT;
 import static com.codeferm.periphery.Gpio.GPIO_DIR_OUT;
 import static com.codeferm.periphery.Gpio.GPIO_DRIVE_DEFAULT;
 import static com.codeferm.periphery.Gpio.GPIO_EDGE_NONE;
+import static com.codeferm.periphery.Gpio.GPIO_EVENT_CLOCK_REALTIME;
 import com.codeferm.u8g2.demo.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -56,7 +57,7 @@ public class LedDisplay extends Base {
         setSleep(1000);
         try (final var gpio = new Gpio(device, line, Gpio.GpioConfig.builder().bias(GPIO_BIAS_DEFAULT).direction(GPIO_DIR_OUT).
                 drive(GPIO_DRIVE_DEFAULT).edge(GPIO_EDGE_NONE).inverted(false).label(cString(LedDisplay.class.getSimpleName())).
-                build())) {
+                event_clock(GPIO_EVENT_CLOCK_REALTIME).debounce_us(0).build())) {
             logger.info("Blinking LED");
             var i = 0;
             while (i < 10) {

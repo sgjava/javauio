@@ -20,7 +20,6 @@ import org.fusesource.hawtjni.runtime.JniMethod;
 import org.fusesource.hawtjni.runtime.Library;
 import static org.fusesource.hawtjni.runtime.MethodFlag.CONSTANT_INITIALIZER;
 import static com.codeferm.periphery.Common.moveNativeToJava;
-import static com.codeferm.periphery.Common.moveJavaToNative;
 
 /**
  * c-periphery GPIO wrapper methods for Linux userspace character device gpio-cdev and sysfs GPIOs.
@@ -117,6 +116,15 @@ public class Gpio implements AutoCloseable {
     @JniField(flags = {CONSTANT})
     public static int GPIO_EDGE_BOTH;
     /**
+     * Event clock constants.
+     */
+    @JniField(flags = {CONSTANT})
+    public static int GPIO_EVENT_CLOCK_MONOTONIC;
+    @JniField(flags = {CONSTANT})
+    public static int GPIO_EVENT_CLOCK_REALTIME;
+    @JniField(flags = {CONSTANT})
+    public static int GPIO_EVENT_CLOCK_HTE;
+    /**
      * Bias constants.
      */
     @JniField(flags = {CONSTANT})
@@ -163,6 +171,8 @@ public class Gpio implements AutoCloseable {
         private int drive;
         private boolean inverted;
         private long label;
+        private int event_clock;
+        private long debounce_us;
     }
 
     /**
@@ -486,6 +496,26 @@ public class Gpio implements AutoCloseable {
     public static native int gpioGetEdge(long gpio, int[] edge);
 
     /**
+     * Get event clock of the GPIO.
+     *
+     * @param gpio Valid pointer to an allocated GPIO handle structure.
+     * @param event_clock Pointer to an allocated int.
+     * @return
+     */
+    @JniMethod(accessor = "gpio_get_event_clock")
+    public static native int gpioGetEventClock(long gpio, int[] event_clock);
+
+    /**
+     * Get debounce microseconds of the GPIO.
+     *
+     * @param gpio Valid pointer to an allocated GPIO handle structure.
+     * @param debounce_us Pointer to an allocated long.
+     * @return
+     */
+    @JniMethod(accessor = "gpio_get_debounce_us")
+    public static native int gpioGetDebounceUs(long gpio, long[] debounce_us);
+
+    /**
      * Get the configured line bias of the GPIO.
      *
      * @param gpio Valid pointer to an allocated GPIO handle structure.
@@ -534,6 +564,26 @@ public class Gpio implements AutoCloseable {
      */
     @JniMethod(accessor = "gpio_set_edge")
     public static native int gpioSetEdge(long gpio, int edge);
+
+    /**
+     * Set even clock of the GPIO.
+     * 
+     * @param gpio Valid pointer to an allocated GPIO handle structure.
+     * @param event_clock One of the event clock values.
+     * @return 0 on success, or a negative GPIO error code on failure.
+     */
+    @JniMethod(accessor = "gpio_set_event_clock")
+    public static native int gpioSetEventClock(long gpio, int event_clock);
+
+    /**
+     * Set debounce microseconds of the GPIO.
+     * 
+     * @param gpio Valid pointer to an allocated GPIO handle structure.
+     * @param debounce_us Debounce microseconds.
+     * @return 0 on success, or a negative GPIO error code on failure.
+     */
+    @JniMethod(accessor = "gpio_set_debounce_us")
+    public static native int gpioSetDebounceUs(long gpio, long debounce_us);
 
     /**
      * Set the bias of the GPIO.

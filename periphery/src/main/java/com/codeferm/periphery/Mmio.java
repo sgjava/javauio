@@ -15,7 +15,6 @@ import org.fusesource.hawtjni.runtime.JniMethod;
 import org.fusesource.hawtjni.runtime.Library;
 import static org.fusesource.hawtjni.runtime.MethodFlag.CONSTANT_INITIALIZER;
 import static com.codeferm.periphery.Common.moveNativeToJava;
-import static com.codeferm.periphery.Common.moveJavaToNative;
 
 /**
  * c-periphery MMIO wrapper functions for the Linux userspace /dev/mem device.
