@@ -7,6 +7,10 @@ cross-platform solution. Rather than reinventing established paradigms, Java UIO
 existing standards, avoiding redundant development commonly observed in other IO libraries.
 Seamlessly supporting JDK 25 LTS, this framework integrates Project Lombok to streamline
 code, enhancing readability and conciseness.
+
+With Java 25 there's no more support for X86_32 and ARM32 has limited JDKs available. Looks
+like FFM is the future, but this is not supported on X86_32 or ARM32. For now, JavaUIO moves
+into the future supporting ARM32, ARM64 and X86_64.
 ***
 <img src="periphery/images/periphery.png" width="100"/><img src="u8g2/images/u8g2.jpg" width="100"/><img src="u8g2/images/java.png" width="100"/><img src="u8g2/images/sdl.png" width="100"/>
 ***
@@ -82,7 +86,8 @@ as needed.
 ## Install script
 The install script assumes a clean OS install. If you would like to install on
 a OS with your own version of Java 25, etc. then you can look at what install-java.sh
-does and do it manually. What does the script do?
+does and do it manually. What do the scripts do?
+* Install Java 25 JDK, Maven and Ant using SDKMAN
 * Install build dependencies
 * Install UIO Permissions Service and udev rules
 * Build HawtJNI (using my fork that works with JDK 25)

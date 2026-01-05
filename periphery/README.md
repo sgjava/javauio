@@ -127,7 +127,7 @@ performance.
 
 ## How GPIO pins are mapped
 This is based on testing on a NanoPi Duo. gpiochip0 starts at 0 and gpiochip1
-start at 352. Consider the following table:
+starts at 352. Consider the following table:
 
 |Name                           |Chip Name |dev |sysfs|
 | ----------------------------- | -------- | -- | --- |
