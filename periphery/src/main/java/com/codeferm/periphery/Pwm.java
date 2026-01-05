@@ -5,7 +5,6 @@ package com.codeferm.periphery;
 
 import static com.codeferm.periphery.Common.MAX_CHAR_ARRAY_LEN;
 import static com.codeferm.periphery.Common.jString;
-import static com.codeferm.periphery.Common.memMove;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.Setter;
@@ -15,6 +14,8 @@ import org.fusesource.hawtjni.runtime.JniField;
 import org.fusesource.hawtjni.runtime.JniMethod;
 import org.fusesource.hawtjni.runtime.Library;
 import static org.fusesource.hawtjni.runtime.MethodFlag.CONSTANT_INITIALIZER;
+import static com.codeferm.periphery.Common.moveNativeToJava;
+import static com.codeferm.periphery.Common.moveJavaToNative;
 
 /**
  * c-periphery PWM wrapper functions for Linux userspace sysfs PWMs.
@@ -369,7 +370,7 @@ public class Pwm implements AutoCloseable {
     public static String pwmErrMessage(long pwm) {
         var ptr = pwmErrMsg(pwm);
         var str = new byte[MAX_CHAR_ARRAY_LEN];
-        memMove(str, ptr, str.length);
+        moveNativeToJava(str, ptr, str.length);
         return jString(str);
     }
 

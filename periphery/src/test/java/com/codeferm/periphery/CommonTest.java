@@ -31,11 +31,11 @@ class CommonTest {
 
         try {
             // Move Java byte array to C memory
-            Common.memMove(ptr, original, size);
+            Common.moveJavaToNative(ptr, original, size);
 
             // Create a destination array to read back from C memory
             byte[] result = new byte[size];
-            Common.memMove(result, ptr, size);
+            Common.moveNativeToJava(result, ptr, size);
 
             // Verify the data survived the round trip
             assertArrayEquals(original, result, "Data read from native memory should match original");
@@ -58,7 +58,7 @@ class CommonTest {
             // To test jString, we first read the native memory back into a buffer
             // We include the null terminator (+1)
             byte[] buffer = new byte[originalStr.length() + 1];
-            Common.memMove(buffer, cStrPtr, buffer.length);
+            Common.moveNativeToJava(buffer, cStrPtr, buffer.length);
 
             // Convert back to Java String
             String resultStr = Common.jString(buffer);
