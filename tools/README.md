@@ -14,7 +14,7 @@ NanoPi Neo Plus2 (H5) example:
 * `sudo env "PATH=$PATH" java --enable-native-access=ALL-UNNAMED -cp $HOME/javauio/tools/target/tools-1.0.0-SNAPSHOT.jar:$HOME/javauio/periphery/target/periphery-1.0.0-SNAPSHOT-linux64.jar com.codeferm.periphery.mmio.Gen -i neoplus2.properties -o neoplus2-map.properties`
 * `sudo env "PATH=$PATH" java --enable-native-access=ALL-UNNAMED -cp $HOME/javauio/tools/target/tools-1.0.0-SNAPSHOT.jar:$HOME/javauio/periphery/target/periphery-1.0.0-SNAPSHOT-linux64.jar com.codeferm.periphery.mmio.Perf -i neoplus2-map.properties -d 1 -l 203`
 
-Lets try a real MemScan tool example with the Orange Pi PC Plus. For this exercise I'm using latest Armbian Focal.
+Lets try a real MemScan tool example with the Orange Pi PC Plus. For this exercise I'm using latest Armbian nobel.
 
 Install [Java UIO](https://github.com/sgjava/javauio#download-project)
 Compile with latest GPIO header file

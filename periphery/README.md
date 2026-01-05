@@ -117,13 +117,13 @@ performance.
 
 |SBC               |OS           |CPU Freq|GPIOD Write KHz|MMIO Write KHz|Average CPU|
 | ---------------- | ----------- | ------ | ------------- | ------------ | --------- |
-|Nano Pi Duo v1.0  |Armbian Focal|1.0 GHz |242            |1880          |25%        |
-|Nano Pi M1        |Armbian Focal|1.2 GHz |320            |2355          |25%        |
-|Nano Pi Neo Plus2 |Armbian Focal|1.0 GHz |347            |2356          |25%        |
-|Odroid C2         |Armbian Focal|1.5 GHz |365            |2346          |25%        |
-|Odroid XU4        |Armbian Focal|2.0 GHz | 44            | 300          |12%        |
-|Raspberry Pi 3    |Ubuntu Focal |1.2 GHz |119            |4541          |25%        |
-|Orange Pi PC Plus |Armbian Focal|1.3 GHz |314            | 886          |25%        |
+|Nano Pi Duo v1.0  |Armbian nobel|1.0 GHz |242            |1880          |25%        |
+|Nano Pi M1        |Armbian nobel|1.2 GHz |320            |2355          |25%        |
+|Nano Pi Neo Plus2 |Armbian nobel|1.0 GHz |347            |2356          |25%        |
+|Odroid C2         |Armbian nobel|1.5 GHz |365            |2346          |25%        |
+|Odroid XU4        |Armbian nobel|2.0 GHz | 44            | 300          |12%        |
+|Raspberry Pi 3    |Ubuntu nobel |1.2 GHz |119            |4541          |25%        |
+|Orange Pi PC Plus |Armbian nobel|1.3 GHz |314            | 886          |25%        |
 
 ## How GPIO pins are mapped
 This is based on testing on a NanoPi Duo. gpiochip0 starts at 0 and gpiochip1
