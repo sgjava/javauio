@@ -51,7 +51,7 @@ done();
 
 <img src="images/u8g2.jpg" width="300"/>
 
-SSD1306 sendBuffer performance based on JDK 21 and Nano Pi Duo.
+SSD1306 sendBuffer performance based on JDK 25 and Nano Pi Duo.
 
 |Setup                       |Type |Bus KHz | FPS  |
 | -------------------------- | --- | ------ | ---- |
