@@ -7,12 +7,12 @@ as linux32, so depending on your target platform it could be linux64.
 ## High performance GPIO using MMIO
 
 NanoPi Duo (H2+) example:
-* `sudo java -cp $HOME/javauio/tools/target/tools-1.0.0-SNAPSHOT.jar:$HOME/javauio/periphery/target/periphery-1.0.0-SNAPSHOT-linux32.jar com.codeferm.periphery.mmio.Gen -i duo.properties -o duo-map.properties`
-* `sudo java -cp $HOME/javauio/tools/target/tools-1.0.0-SNAPSHOT.jar:$HOME/javauio/periphery/target/periphery-1.0.0-SNAPSHOT-linux32.jar com.codeferm.periphery.mmio.Perf -i duo-map.properties -d 0 -l 203`
+* `sudo env "PATH=$PATH" java --enable-native-access=ALL-UNNAMED -cp $HOME/javauio/tools/target/tools-1.0.0-SNAPSHOT.jar:$HOME/javauio/periphery/target/periphery-1.0.0-SNAPSHOT-linux32.jar com.codeferm.periphery.mmio.Gen -i duo.properties -o duo-map.properties`
+* `sudo env "PATH=$PATH" java --enable-native-access=ALL-UNNAMED -cp $HOME/javauio/tools/target/tools-1.0.0-SNAPSHOT.jar:$HOME/javauio/periphery/target/periphery-1.0.0-SNAPSHOT-linux32.jar com.codeferm.periphery.mmio.Perf -i duo-map.properties -d 0 -l 203`
 
 NanoPi Neo Plus2 (H5) example:
-* `sudo java -cp $HOME/javauio/tools/target/tools-1.0.0-SNAPSHOT.jar:$HOME/javauio/periphery/target/periphery-1.0.0-SNAPSHOT-linux64.jar com.codeferm.periphery.mmio.Gen -i neoplus2.properties -o neoplus2-map.properties`
-* `sudo java -cp $HOME/javauio/tools/target/tools-1.0.0-SNAPSHOT.jar:$HOME/javauio/periphery/target/periphery-1.0.0-SNAPSHOT-linux64.jar com.codeferm.periphery.mmio.Perf -i neoplus2-map.properties -d 1 -l 203`
+* `sudo env "PATH=$PATH" java --enable-native-access=ALL-UNNAMED -cp $HOME/javauio/tools/target/tools-1.0.0-SNAPSHOT.jar:$HOME/javauio/periphery/target/periphery-1.0.0-SNAPSHOT-linux64.jar com.codeferm.periphery.mmio.Gen -i neoplus2.properties -o neoplus2-map.properties`
+* `sudo env "PATH=$PATH" java --enable-native-access=ALL-UNNAMED -cp $HOME/javauio/tools/target/tools-1.0.0-SNAPSHOT.jar:$HOME/javauio/periphery/target/periphery-1.0.0-SNAPSHOT-linux64.jar com.codeferm.periphery.mmio.Perf -i neoplus2-map.properties -d 1 -l 203`
 
 Lets try a real MemScan tool example with the Orange Pi PC Plus. For this exercise I'm using latest Armbian Focal.
 
@@ -42,7 +42,7 @@ Have a look at the [pin names](https://linux-sunxi.org/Xunlong_Orange_Pi_PC#Expa
 * Start with PA0 with A being group name. So group A data register offset is 0x10 for the H3. You can calculate
 the sysfs number (should be the same for GPIOD chip 0) using (position of letter in alphabet - 1) * 32 + pin number. Thus
 PA0 should be at 1(A)-1 = 0 * 32 + 0 or 0. To test this use the following command:
-* `sudo java -cp $HOME/javauio/tools/target/tools-1.0.0-SNAPSHOT.jar:$HOME/javauio/periphery/target/periphery-1.0.0-SNAPSHOT-linux32.jar com.codeferm.periphery.mmio.MemScan -a 0x1c20800 -w 0x10 -d 0 -l 0`
+* `sudo env "PATH=$PATH" java --enable-native-access=ALL-UNNAMED -cp $HOME/javauio/tools/target/tools-1.0.0-SNAPSHOT.jar:$HOME/javauio/periphery/target/periphery-1.0.0-SNAPSHOT-linux32.jar com.codeferm.periphery.mmio.MemScan -a 0x1c20800 -w 0x10 -d 0 -l 0`
 ```
 16:14:08.895 [main] DEBUG com.codeferm.periphery.mmio.MemScan - Memory address 0x01c20800 words 0x00000010
 16:14:09.380 [main] INFO com.codeferm.periphery.mmio.MemScan - Mode difference found at offset 0x00000000 before 0x00200000 after 0x00200001 difference 0x00000001
@@ -53,7 +53,7 @@ PA0 should be at 1(A)-1 = 0 * 32 + 0 or 0. To test this use the following comman
 16:14:09.393 [main] INFO com.codeferm.periphery.mmio.MemScan - Pull down difference found at offset 0x0000001c before 0x0000a6a9 after 0x0000a6aa difference 0x00000001
 ```
 Now take PG9 with G being group name. So group G data register offset is 0xe8. PG9 should be at 7(G)-1 = 6 * 32 + 9 or 201. To test this use the following command:
-* `sudo java -cp $HOME/javauio/tools/target/tools-1.0.0-SNAPSHOT.jar:$HOME/javauio/periphery/target/periphery-1.0.0-SNAPSHOT-linux32.jar com.codeferm.periphery.mmio.MemScan -a 0x1c208e8 -w 0x20 -d 0 -l 201`
+* `sudo env "PATH=$PATH" java --enable-native-access=ALL-UNNAMED -cp $HOME/javauio/tools/target/tools-1.0.0-SNAPSHOT.jar:$HOME/javauio/periphery/target/periphery-1.0.0-SNAPSHOT-linux32.jar com.codeferm.periphery.mmio.MemScan -a 0x1c208e8 -w 0x20 -d 0 -l 201`
 * Notice we add pin group to address (0x1c208e8) and scan 0x20 words?
 ```
 10:30:23.610 [main] DEBUG com.codeferm.periphery.mmio.MemScan - Memory address 0x01c208e8 words 0x00000020
@@ -65,10 +65,10 @@ Now take PG9 with G being group name. So group G data register offset is 0xe8. P
 ```
 I usually test every pin this way to make sure I'm on the right track. So now
 lets copy our register properties to our test device and generate the map file.
-* `sudo java -cp $HOME/javauio/tools/target/tools-1.0.0-SNAPSHOT.jar:$HOME/javauio/periphery/target/periphery-1.0.0-SNAPSHOT-linux32.jar com.codeferm.periphery.mmio.Gen -i opiplus.properties -o opiplus-map.properties`
+* `sudo env "PATH=$PATH" java --enable-native-access=ALL-UNNAMED -cp $HOME/javauio/tools/target/tools-1.0.0-SNAPSHOT.jar:$HOME/javauio/periphery/target/periphery-1.0.0-SNAPSHOT-linux32.jar com.codeferm.periphery.mmio.Gen -i opiplus.properties -o opiplus-map.properties`
 
 And finally lets run the performance test
-* `sudo java -cp $HOME/javauio/tools/target/tools-1.0.0-SNAPSHOT.jar:$HOME/javauio/periphery/target/periphery-1.0.0-SNAPSHOT-linux32.jar com.codeferm.periphery.mmio.Perf -i opiplus-map.properties -d 0 -l 0`
+* `sudo env "PATH=$PATH" java --enable-native-access=ALL-UNNAMED -cp $HOME/javauio/tools/target/tools-1.0.0-SNAPSHOT.jar:$HOME/javauio/periphery/target/periphery-1.0.0-SNAPSHOT-linux32.jar com.codeferm.periphery.mmio.Perf -i opiplus-map.properties -d 0 -l 0`
 ```
 12:49:31.956 [main] DEBUG com.codeferm.periphery.mmio.File - Properties loaded from file opiplus-map.properties
 12:49:32.570 [main] INFO com.codeferm.periphery.mmio.Perf - Running GPIOD write test with 10000000 samples
