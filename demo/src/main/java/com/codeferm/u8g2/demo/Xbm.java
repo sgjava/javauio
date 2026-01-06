@@ -116,7 +116,7 @@ public class Xbm extends Base {
             // Allocate native memory
             final var image = Common.malloc(logo.length);
             // Move Java byte array to native memory
-            Common.memMove(image, logo, logo.length);
+            Common.moveJavaToNative(image, logo, logo.length);
             U8g2.drawXBM(u8g2, 0, 0, 64, 64, image);
             U8g2.sendBuffer(u8g2);
             // Free native memory

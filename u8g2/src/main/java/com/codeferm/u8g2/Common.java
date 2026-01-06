@@ -61,7 +61,7 @@ public class Common {
      * @param size Amount of bytes to move.
      */
     @JniMethod(accessor = "memmove")
-    public static final native void memMove(@JniArg(cast = "void *", flags = {NO_IN, CRITICAL}) byte[] dest, @JniArg(cast
+    public static final native void moveNativeToJava(@JniArg(cast = "void *", flags = {NO_IN, CRITICAL}) byte[] dest, @JniArg(cast
             = "const void *") long src, @JniArg(cast = "size_t") long size);
 
     /**
@@ -72,7 +72,7 @@ public class Common {
      * @param size Amount of bytes to move.
      */
     @JniMethod(accessor = "memmove")
-    public static final native void memMove(
+    public static final native void moveJavaToNative(
             @JniArg(cast = "void *") long dest, @JniArg(cast = "const void *", flags = {NO_OUT, CRITICAL}) byte[] src, @JniArg(cast
                     = "size_t") long size);
 
@@ -126,7 +126,7 @@ public class Common {
         // Allocate native memory
         final var strPtr = malloc(cStr.length());
         // Copy Java String to native memory
-        memMove(strPtr, cStr.getBytes(), cStr.length());
+        moveJavaToNative(strPtr, cStr.getBytes(), cStr.length());
         return strPtr;
     }
 }
