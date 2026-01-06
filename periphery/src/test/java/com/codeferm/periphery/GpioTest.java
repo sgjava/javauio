@@ -27,6 +27,9 @@ import static com.codeferm.periphery.Gpio.GPIO_ERROR_NOT_FOUND;
 import static com.codeferm.periphery.Gpio.GPIO_ERROR_OPEN;
 import static com.codeferm.periphery.Gpio.GPIO_ERROR_QUERY;
 import static com.codeferm.periphery.Gpio.GPIO_ERROR_UNSUPPORTED;
+import static com.codeferm.periphery.Gpio.GPIO_EVENT_CLOCK_HTE;
+import static com.codeferm.periphery.Gpio.GPIO_EVENT_CLOCK_MONOTONIC;
+import static com.codeferm.periphery.Gpio.GPIO_EVENT_CLOCK_REALTIME;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.jupiter.api.Test;
 
@@ -64,6 +67,10 @@ public class GpioTest {
         assertEquals(1, GPIO_EDGE_RISING);
         assertEquals(2, GPIO_EDGE_FALLING);
         assertEquals(3, GPIO_EDGE_BOTH);
+        // enum gpio_event_clock
+        assertEquals(0, GPIO_EVENT_CLOCK_REALTIME);
+        assertEquals(1, GPIO_EVENT_CLOCK_MONOTONIC);
+        assertEquals(2, GPIO_EVENT_CLOCK_HTE);
         // enum gpio_bias
         assertEquals(0, GPIO_BIAS_DEFAULT);
         assertEquals(1, GPIO_BIAS_PULL_UP);
