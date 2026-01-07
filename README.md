@@ -1,19 +1,17 @@
 ![Title](images/title.png)
 
-Java UIO offers robust Java interfaces optimized for Linux Userspace IO, emphasizing
-high performance. Engineered from scratch, it leverages contemporary kernel APIs,
-libraries, and cutting-edge code generation methodologies, embodying a state-of-the-art
-cross-platform solution. Rather than reinventing established paradigms, Java UIO harnesses
-existing standards, avoiding redundant development commonly observed in other IO libraries.
-Seamlessly supporting JDK 25 LTS, this framework integrates Project Lombok to streamline
-code, enhancing readability and conciseness.
+[![JDK 25 LTS](https://img.shields.io/badge/JDK-25_LTS-orange.svg)](https://openjdk.java.net/projects/jdk/25/)
+[![Ubuntu 24.04](https://img.shields.io/badge/Ubuntu-24.04_Noble-blue.svg)](https://ubuntu.com/blog/whats-new-in-security-for-ubuntu-24-04-lts)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-With Java 25 there's no more support for X86_32 and ARM32 has limited JDKs available. Looks
-like FFM is the future, but this is not supported on X86_32 or ARM32. For now, JavaUIO moves
-into the future supporting ARM32, ARM64 and X86_64.
+**Java UIO** offers robust Java interfaces optimized for Linux Userspace IO, emphasizing high performance. Engineered from scratch, it leverages contemporary kernel APIs, libraries, and cutting-edge code generation methodologies, embodying a state-of-the-art cross-platform solution. Rather than reinventing established paradigms, Java UIO harnesses existing standards, avoiding redundant development commonly observed in other IO libraries. Seamlessly supporting **JDK 25 LTS**, this framework integrates **Project Lombok** to streamline code, enhancing readability and conciseness.
+
+### 🌍 The 32-bit & FFM Reality
+With Java 25, there is no more support for X86_32, and ARM32 has limited JDKs available. While **FFM (Foreign Function & Memory API)** is the future, it is **not supported** on X86_32 or ARM32. For now, JavaUIO moves into the future providing a high-performance path for **ARM32**, while fully supporting **ARM64** and **X86_64**.
 ***
 <img src="periphery/images/periphery.png" width="100"/><img src="u8g2/images/u8g2.jpg" width="100"/><img src="u8g2/images/java.png" width="100"/><img src="u8g2/images/sdl.png" width="100"/>
 ***
+## 📦 Project Modules
 * [Periphery](https://github.com/sgjava/javauio/tree/main/periphery) API for
 GPIO, LED, PWM, SPI, I2C, MMIO and Serial peripheral I/O interface access. Based
 on [c-periphery](https://github.com/vsergeev/c-periphery) API which also covers
@@ -29,6 +27,7 @@ for mapping MMIO GPIO register mapping, code generation, etc.
 * [Demo](https://github.com/sgjava/javauio/tree/main/demo) provides CLI based
 demos instead of using mocks or hard coded pins, busses, etc.
 
+## 🛠 Technical Foundation
 * An install script gives you a complete install of [JDK](https://www.azul.com/products/core),
 [Maven](https://maven.apache.org), [HawtJNI](https://github.com/fusesource/hawtjni)
 fork and any required projects, so there is no guessing. This can be run on the target platform
@@ -55,7 +54,7 @@ based on another version.
 through. You can always use another JDK 25 vendor, but you will have to do that
 manually.
 
-## SBC configuration
+## 🔧 SBC Configuration
 * If you are using Armbian then use `armbian-config` or edit `/boot/armbianEnv.txt`
 to configure various devices. Userspace devices are exposed through /dev or
 /sys. Verify the device is showing up prior to trying demo apps.
@@ -83,7 +82,7 @@ as needed.
 * `cd ~/`
 * `git clone --depth 1 https://github.com/sgjava/javauio.git`
 
-## Install script
+## 🚀 Install script
 The install script assumes a clean OS install. If you would like to install on
 a OS with your own version of Java 25, etc. then you can look at what install-java.sh
 does and do it manually. What do the scripts do?
