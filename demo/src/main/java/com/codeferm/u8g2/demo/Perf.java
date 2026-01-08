@@ -51,7 +51,7 @@ public class Perf extends Base {
         final var finish = Instant.now();
         // Elapsed milliseconds
         final var timeElapsed = Duration.between(start, finish).toSeconds();
-        logger.info(String.format("%.2f sendBuffer per second", ((double) samples / (double) timeElapsed)));
+        logger.info("{} sendBuffer per second", (double) samples / timeElapsed);
         done();
         return exitCode;
     }
