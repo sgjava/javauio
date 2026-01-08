@@ -1,7 +1,7 @@
 /*
  * Copyright (c) Steven P. Goldsmith. All rights reserved.
  */
-package com.codeferm.periphery;
+package com.codeferm.u8g2;
 
 import com.codeferm.u8g2.Common;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
