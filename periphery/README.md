@@ -45,7 +45,7 @@ but you'll need to know the correct dtb file and section to remove) :
 * `sudo cp sun8i-h2-plus-nanopi-duo.dtb sun8i-h2-plus-nanopi-duo.dtb.old`
 * `sudo dtc -@ -I dtb -O dts -o sun8i-h2-plus-nanopi-duo.dts sun8i-h2-plus-nanopi-duo.dtb`
 * `sudo nano sun8i-h2-plus-nanopi-duo.dts`
-    * Remove `gpio_keys` section
+    * Remove `gpio-keys` section
 * `sudo dtc -@ -I dts -O dtb -o sun8i-h2-plus-nanopi-duo.dtb sun8i-h2-plus-nanopi-duo.dts`
 * `reboot`
 
