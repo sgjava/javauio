@@ -357,6 +357,10 @@ public class Fonts {
     @JniField(flags = {CONSTANT})
     public static long u8g2_font_tiny5_tr;
     @JniField(flags = {CONSTANT})
+    public static long u8g2_font_tiny5_te;
+    @JniField(flags = {CONSTANT})
+    public static long u8g2_font_tiny5_t_all;
+    @JniField(flags = {CONSTANT})
     public static long u8g2_font_04b_03b_tr;
     @JniField(flags = {CONSTANT})
     public static long u8g2_font_04b_03_tr;
@@ -765,6 +769,8 @@ public class Fonts {
     @JniField(flags = {CONSTANT})
     public static long u8g2_font_t0_11_t_all;
     @JniField(flags = {CONSTANT})
+    public static long u8g2_font_t0_11_t_symbol;
+    @JniField(flags = {CONSTANT})
     public static long u8g2_font_t0_11b_tf;
     @JniField(flags = {CONSTANT})
     public static long u8g2_font_t0_11b_tr;
@@ -796,6 +802,8 @@ public class Fonts {
     public static long u8g2_font_t0_12_mn;
     @JniField(flags = {CONSTANT})
     public static long u8g2_font_t0_12_me;
+    @JniField(flags = {CONSTANT})
+    public static long u8g2_font_t0_12_t_symbol;
     @JniField(flags = {CONSTANT})
     public static long u8g2_font_t0_12b_tf;
     @JniField(flags = {CONSTANT})
@@ -829,6 +837,8 @@ public class Fonts {
     @JniField(flags = {CONSTANT})
     public static long u8g2_font_t0_13_me;
     @JniField(flags = {CONSTANT})
+    public static long u8g2_font_t0_13_t_symbol;
+    @JniField(flags = {CONSTANT})
     public static long u8g2_font_t0_13b_tf;
     @JniField(flags = {CONSTANT})
     public static long u8g2_font_t0_13b_tr;
@@ -860,6 +870,8 @@ public class Fonts {
     public static long u8g2_font_t0_14_mn;
     @JniField(flags = {CONSTANT})
     public static long u8g2_font_t0_14_me;
+    @JniField(flags = {CONSTANT})
+    public static long u8g2_font_t0_14_t_symbol;
     @JniField(flags = {CONSTANT})
     public static long u8g2_font_t0_14b_tf;
     @JniField(flags = {CONSTANT})
@@ -893,6 +905,8 @@ public class Fonts {
     @JniField(flags = {CONSTANT})
     public static long u8g2_font_t0_15_me;
     @JniField(flags = {CONSTANT})
+    public static long u8g2_font_t0_15_t_symbol;
+    @JniField(flags = {CONSTANT})
     public static long u8g2_font_t0_15b_tf;
     @JniField(flags = {CONSTANT})
     public static long u8g2_font_t0_15b_tr;
@@ -924,6 +938,8 @@ public class Fonts {
     public static long u8g2_font_t0_16_mn;
     @JniField(flags = {CONSTANT})
     public static long u8g2_font_t0_16_me;
+    @JniField(flags = {CONSTANT})
+    public static long u8g2_font_t0_16_t_symbol;
     @JniField(flags = {CONSTANT})
     public static long u8g2_font_t0_16b_tf;
     @JniField(flags = {CONSTANT})
@@ -957,6 +973,8 @@ public class Fonts {
     @JniField(flags = {CONSTANT})
     public static long u8g2_font_t0_17_me;
     @JniField(flags = {CONSTANT})
+    public static long u8g2_font_t0_17_t_symbol;
+    @JniField(flags = {CONSTANT})
     public static long u8g2_font_t0_17b_tf;
     @JniField(flags = {CONSTANT})
     public static long u8g2_font_t0_17b_tr;
@@ -988,6 +1006,8 @@ public class Fonts {
     public static long u8g2_font_t0_18_mn;
     @JniField(flags = {CONSTANT})
     public static long u8g2_font_t0_18_me;
+    @JniField(flags = {CONSTANT})
+    public static long u8g2_font_t0_18_t_symbol;
     @JniField(flags = {CONSTANT})
     public static long u8g2_font_t0_18b_tf;
     @JniField(flags = {CONSTANT})
@@ -1021,6 +1041,8 @@ public class Fonts {
     @JniField(flags = {CONSTANT})
     public static long u8g2_font_t0_22_me;
     @JniField(flags = {CONSTANT})
+    public static long u8g2_font_t0_22_t_symbol;
+    @JniField(flags = {CONSTANT})
     public static long u8g2_font_t0_22b_tf;
     @JniField(flags = {CONSTANT})
     public static long u8g2_font_t0_22b_tr;
@@ -1036,6 +1058,74 @@ public class Fonts {
     public static long u8g2_font_t0_22b_mn;
     @JniField(flags = {CONSTANT})
     public static long u8g2_font_t0_22b_me;
+    @JniField(flags = {CONSTANT})
+    public static long u8g2_font_t0_30_tf;
+    @JniField(flags = {CONSTANT})
+    public static long u8g2_font_t0_30_tr;
+    @JniField(flags = {CONSTANT})
+    public static long u8g2_font_t0_30_tn;
+    @JniField(flags = {CONSTANT})
+    public static long u8g2_font_t0_30_te;
+    @JniField(flags = {CONSTANT})
+    public static long u8g2_font_t0_30_mf;
+    @JniField(flags = {CONSTANT})
+    public static long u8g2_font_t0_30_mr;
+    @JniField(flags = {CONSTANT})
+    public static long u8g2_font_t0_30_mn;
+    @JniField(flags = {CONSTANT})
+    public static long u8g2_font_t0_30_me;
+    @JniField(flags = {CONSTANT})
+    public static long u8g2_font_t0_30_t_symbol;
+    @JniField(flags = {CONSTANT})
+    public static long u8g2_font_t0_30b_tf;
+    @JniField(flags = {CONSTANT})
+    public static long u8g2_font_t0_30b_tr;
+    @JniField(flags = {CONSTANT})
+    public static long u8g2_font_t0_30b_tn;
+    @JniField(flags = {CONSTANT})
+    public static long u8g2_font_t0_30b_te;
+    @JniField(flags = {CONSTANT})
+    public static long u8g2_font_t0_30b_mf;
+    @JniField(flags = {CONSTANT})
+    public static long u8g2_font_t0_30b_mr;
+    @JniField(flags = {CONSTANT})
+    public static long u8g2_font_t0_30b_mn;
+    @JniField(flags = {CONSTANT})
+    public static long u8g2_font_t0_30b_me;
+    @JniField(flags = {CONSTANT})
+    public static long u8g2_font_t0_40_tf;
+    @JniField(flags = {CONSTANT})
+    public static long u8g2_font_t0_40_tr;
+    @JniField(flags = {CONSTANT})
+    public static long u8g2_font_t0_40_tn;
+    @JniField(flags = {CONSTANT})
+    public static long u8g2_font_t0_40_te;
+    @JniField(flags = {CONSTANT})
+    public static long u8g2_font_t0_40_mf;
+    @JniField(flags = {CONSTANT})
+    public static long u8g2_font_t0_40_mr;
+    @JniField(flags = {CONSTANT})
+    public static long u8g2_font_t0_40_mn;
+    @JniField(flags = {CONSTANT})
+    public static long u8g2_font_t0_40_me;
+    @JniField(flags = {CONSTANT})
+    public static long u8g2_font_t0_40_t_symbol;
+    @JniField(flags = {CONSTANT})
+    public static long u8g2_font_t0_40b_tf;
+    @JniField(flags = {CONSTANT})
+    public static long u8g2_font_t0_40b_tr;
+    @JniField(flags = {CONSTANT})
+    public static long u8g2_font_t0_40b_tn;
+    @JniField(flags = {CONSTANT})
+    public static long u8g2_font_t0_40b_te;
+    @JniField(flags = {CONSTANT})
+    public static long u8g2_font_t0_40b_mf;
+    @JniField(flags = {CONSTANT})
+    public static long u8g2_font_t0_40b_mr;
+    @JniField(flags = {CONSTANT})
+    public static long u8g2_font_t0_40b_mn;
+    @JniField(flags = {CONSTANT})
+    public static long u8g2_font_t0_40b_me;
     @JniField(flags = {CONSTANT})
     public static long u8g2_font_open_iconic_all_1x_t;
     @JniField(flags = {CONSTANT})
@@ -1823,6 +1913,8 @@ public class Fonts {
     @JniField(flags = {CONSTANT})
     public static long u8g2_font_efraneextracondensed_te;
     @JniField(flags = {CONSTANT})
+    public static long u8g2_font_minimal3x3_tu;
+    @JniField(flags = {CONSTANT})
     public static long u8g2_font_3x3basic_tr;
     @JniField(flags = {CONSTANT})
     public static long u8g2_font_tiny_gk_tr;
@@ -1852,6 +1944,12 @@ public class Fonts {
     public static long u8g2_font_tinyunicode_tr;
     @JniField(flags = {CONSTANT})
     public static long u8g2_font_tinyunicode_te;
+    @JniField(flags = {CONSTANT})
+    public static long u8g2_font_micropixel_tf;
+    @JniField(flags = {CONSTANT})
+    public static long u8g2_font_micropixel_tr;
+    @JniField(flags = {CONSTANT})
+    public static long u8g2_font_micropixel_te;
     @JniField(flags = {CONSTANT})
     public static long u8g2_font_tinypixie2_tr;
     @JniField(flags = {CONSTANT})
@@ -2517,6 +2615,8 @@ public class Fonts {
     @JniField(flags = {CONSTANT})
     public static long u8g2_font_unifont_t_devanagari;
     @JniField(flags = {CONSTANT})
+    public static long u8g2_font_unifont_t_malayalam;
+    @JniField(flags = {CONSTANT})
     public static long u8g2_font_unifont_t_arabic;
     @JniField(flags = {CONSTANT})
     public static long u8g2_font_unifont_t_symbols;
@@ -2538,6 +2638,12 @@ public class Fonts {
     public static long u8g2_font_unifont_t_chinese2;
     @JniField(flags = {CONSTANT})
     public static long u8g2_font_unifont_t_chinese3;
+    @JniField(flags = {CONSTANT})
+    public static long u8g2_font_unifont_t_gb2312;
+    @JniField(flags = {CONSTANT})
+    public static long u8g2_font_unifont_t_gb2312a;
+    @JniField(flags = {CONSTANT})
+    public static long u8g2_font_unifont_t_gb2312b;
     @JniField(flags = {CONSTANT})
     public static long u8g2_font_unifont_t_japanese1;
     @JniField(flags = {CONSTANT})
@@ -2624,6 +2730,72 @@ public class Fonts {
     public static long u8g2_font_wqy16_t_gb2312a;
     @JniField(flags = {CONSTANT})
     public static long u8g2_font_wqy16_t_gb2312b;
+    @JniField(flags = {CONSTANT})
+    public static long u8g2_font_boutique_bitmap_7x7_tf;
+    @JniField(flags = {CONSTANT})
+    public static long u8g2_font_boutique_bitmap_7x7_tr;
+    @JniField(flags = {CONSTANT})
+    public static long u8g2_font_boutique_bitmap_7x7_tn;
+    @JniField(flags = {CONSTANT})
+    public static long u8g2_font_boutique_bitmap_7x7_te;
+    @JniField(flags = {CONSTANT})
+    public static long u8g2_font_boutique_bitmap_7x7_t_all;
+    @JniField(flags = {CONSTANT})
+    public static long u8g2_font_boutique_bitmap_7x7_t_chinese1;
+    @JniField(flags = {CONSTANT})
+    public static long u8g2_font_boutique_bitmap_7x7_t_chinese2;
+    @JniField(flags = {CONSTANT})
+    public static long u8g2_font_boutique_bitmap_7x7_t_chinese3;
+    @JniField(flags = {CONSTANT})
+    public static long u8g2_font_boutique_bitmap_7x7_t_gb2312;
+    @JniField(flags = {CONSTANT})
+    public static long u8g2_font_boutique_bitmap_7x7_t_gb2312a;
+    @JniField(flags = {CONSTANT})
+    public static long u8g2_font_boutique_bitmap_7x7_t_gb2312b;
+    @JniField(flags = {CONSTANT})
+    public static long u8g2_font_boutique_bitmap_9x9_tf;
+    @JniField(flags = {CONSTANT})
+    public static long u8g2_font_boutique_bitmap_9x9_tr;
+    @JniField(flags = {CONSTANT})
+    public static long u8g2_font_boutique_bitmap_9x9_tn;
+    @JniField(flags = {CONSTANT})
+    public static long u8g2_font_boutique_bitmap_9x9_te;
+    @JniField(flags = {CONSTANT})
+    public static long u8g2_font_boutique_bitmap_9x9_t_all;
+    @JniField(flags = {CONSTANT})
+    public static long u8g2_font_boutique_bitmap_9x9_t_chinese1;
+    @JniField(flags = {CONSTANT})
+    public static long u8g2_font_boutique_bitmap_9x9_t_chinese2;
+    @JniField(flags = {CONSTANT})
+    public static long u8g2_font_boutique_bitmap_9x9_t_chinese3;
+    @JniField(flags = {CONSTANT})
+    public static long u8g2_font_boutique_bitmap_9x9_t_gb2312;
+    @JniField(flags = {CONSTANT})
+    public static long u8g2_font_boutique_bitmap_9x9_t_gb2312a;
+    @JniField(flags = {CONSTANT})
+    public static long u8g2_font_boutique_bitmap_9x9_t_gb2312b;
+    @JniField(flags = {CONSTANT})
+    public static long u8g2_font_boutique_bitmap_9x9_bold_tf;
+    @JniField(flags = {CONSTANT})
+    public static long u8g2_font_boutique_bitmap_9x9_bold_tr;
+    @JniField(flags = {CONSTANT})
+    public static long u8g2_font_boutique_bitmap_9x9_bold_tn;
+    @JniField(flags = {CONSTANT})
+    public static long u8g2_font_boutique_bitmap_9x9_bold_te;
+    @JniField(flags = {CONSTANT})
+    public static long u8g2_font_boutique_bitmap_9x9_bold_t_all;
+    @JniField(flags = {CONSTANT})
+    public static long u8g2_font_boutique_bitmap_9x9_bold_t_chinese1;
+    @JniField(flags = {CONSTANT})
+    public static long u8g2_font_boutique_bitmap_9x9_bold_t_chinese2;
+    @JniField(flags = {CONSTANT})
+    public static long u8g2_font_boutique_bitmap_9x9_bold_t_chinese3;
+    @JniField(flags = {CONSTANT})
+    public static long u8g2_font_boutique_bitmap_9x9_bold_t_gb2312;
+    @JniField(flags = {CONSTANT})
+    public static long u8g2_font_boutique_bitmap_9x9_bold_t_gb2312a;
+    @JniField(flags = {CONSTANT})
+    public static long u8g2_font_boutique_bitmap_9x9_bold_t_gb2312b;
     @JniField(flags = {CONSTANT})
     public static long u8g2_font_b10_t_japanese1;
     @JniField(flags = {CONSTANT})
@@ -4090,6 +4262,22 @@ public class Fonts {
     public static long u8g2_font_logisoso78_tn;
     @JniField(flags = {CONSTANT})
     public static long u8g2_font_logisoso92_tn;
+    @JniField(flags = {CONSTANT})
+    public static long u8g2_font_gulim11_t_korean1;
+    @JniField(flags = {CONSTANT})
+    public static long u8g2_font_gulim11_t_korean2;
+    @JniField(flags = {CONSTANT})
+    public static long u8g2_font_gulim12_t_korean1;
+    @JniField(flags = {CONSTANT})
+    public static long u8g2_font_gulim12_t_korean2;
+    @JniField(flags = {CONSTANT})
+    public static long u8g2_font_gulim14_t_korean1;
+    @JniField(flags = {CONSTANT})
+    public static long u8g2_font_gulim14_t_korean2;
+    @JniField(flags = {CONSTANT})
+    public static long u8g2_font_gulim16_t_korean1;
+    @JniField(flags = {CONSTANT})
+    public static long u8g2_font_gulim16_t_korean2;
     @JniField(flags = {CONSTANT})
     public static long u8g2_font_pressstart2p_8f;
     @JniField(flags = {CONSTANT})

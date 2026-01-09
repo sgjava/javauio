@@ -729,6 +729,27 @@ public class U8g2 {
     public static native void setupSh1108I2c128x160F(final long u8g2, final long rotation, final long byteCb,
             final long gpioAndDelayCb);
 
+    @JniMethod(accessor = "u8g2_Setup_ch1120_128x160_1")
+    public static native void setupCh1120128x1601(final long u8g2, final long rotation, final long byteCb, final long gpioAndDelayCb);
+
+    @JniMethod(accessor = "u8g2_Setup_ch1120_128x160_2")
+    public static native void setupCh1120128x1602(final long u8g2, final long rotation, final long byteCb, final long gpioAndDelayCb);
+
+    @JniMethod(accessor = "u8g2_Setup_ch1120_128x160_f")
+    public static native void setupCh1120128x160F(final long u8g2, final long rotation, final long byteCb, final long gpioAndDelayCb);
+
+    @JniMethod(accessor = "u8g2_Setup_ch1120_i2c_128x160_1")
+    public static native void setupCh1120I2c128x1601(final long u8g2, final long rotation, final long byteCb,
+            final long gpioAndDelayCb);
+
+    @JniMethod(accessor = "u8g2_Setup_ch1120_i2c_128x160_2")
+    public static native void setupCh1120I2c128x1602(final long u8g2, final long rotation, final long byteCb,
+            final long gpioAndDelayCb);
+
+    @JniMethod(accessor = "u8g2_Setup_ch1120_i2c_128x160_f")
+    public static native void setupCh1120I2c128x160F(final long u8g2, final long rotation, final long byteCb,
+            final long gpioAndDelayCb);
+
     @JniMethod(accessor = "u8g2_Setup_sh1108_160x160_1")
     public static native void setupSh1108160x1601(final long u8g2, final long rotation, final long byteCb, final long gpioAndDelayCb);
 
@@ -1035,6 +1056,93 @@ public class U8g2 {
     public static native void setupSsd1309I2c128x64Noname0F(final long u8g2, final long rotation, final long byteCb,
             final long gpioAndDelayCb);
 
+    @JniMethod(accessor = "u8g2_Setup_ssd1309_128x128_noname0_1")
+    public static native void setupSsd1309128x128Noname01(final long u8g2, final long rotation, final long byteCb,
+            final long gpioAndDelayCb);
+
+    @JniMethod(accessor = "u8g2_Setup_ssd1309_128x128_noname0_2")
+    public static native void setupSsd1309128x128Noname02(final long u8g2, final long rotation, final long byteCb,
+            final long gpioAndDelayCb);
+
+    @JniMethod(accessor = "u8g2_Setup_ssd1309_128x128_noname0_f")
+    public static native void setupSsd1309128x128Noname0F(final long u8g2, final long rotation, final long byteCb,
+            final long gpioAndDelayCb);
+
+    @JniMethod(accessor = "u8g2_Setup_ssd1309_i2c_128x128_noname0_1")
+    public static native void setupSsd1309I2c128x128Noname01(final long u8g2, final long rotation, final long byteCb,
+            final long gpioAndDelayCb);
+
+    @JniMethod(accessor = "u8g2_Setup_ssd1309_i2c_128x128_noname0_2")
+    public static native void setupSsd1309I2c128x128Noname02(final long u8g2, final long rotation, final long byteCb,
+            final long gpioAndDelayCb);
+
+    @JniMethod(accessor = "u8g2_Setup_ssd1309_i2c_128x128_noname0_f")
+    public static native void setupSsd1309I2c128x128Noname0F(final long u8g2, final long rotation, final long byteCb,
+            final long gpioAndDelayCb);
+
+    @JniMethod(accessor = "u8g2_Setup_ssd1312_128x32_1")
+    public static native void setupSsd1312128x321(final long u8g2, final long rotation, final long byteCb, final long gpioAndDelayCb);
+
+    @JniMethod(accessor = "u8g2_Setup_ssd1312_128x32_2")
+    public static native void setupSsd1312128x322(final long u8g2, final long rotation, final long byteCb, final long gpioAndDelayCb);
+
+    @JniMethod(accessor = "u8g2_Setup_ssd1312_128x32_f")
+    public static native void setupSsd1312128x32F(final long u8g2, final long rotation, final long byteCb, final long gpioAndDelayCb);
+
+    @JniMethod(accessor = "u8g2_Setup_ssd1312_i2c_128x32_1")
+    public static native void setupSsd1312I2c128x321(final long u8g2, final long rotation, final long byteCb,
+            final long gpioAndDelayCb);
+
+    @JniMethod(accessor = "u8g2_Setup_ssd1312_i2c_128x32_2")
+    public static native void setupSsd1312I2c128x322(final long u8g2, final long rotation, final long byteCb,
+            final long gpioAndDelayCb);
+
+    @JniMethod(accessor = "u8g2_Setup_ssd1312_i2c_128x32_f")
+    public static native void setupSsd1312I2c128x32F(final long u8g2, final long rotation, final long byteCb,
+            final long gpioAndDelayCb);
+
+    @JniMethod(accessor = "u8g2_Setup_ssd1312_120x32_1")
+    public static native void setupSsd1312120x321(final long u8g2, final long rotation, final long byteCb, final long gpioAndDelayCb);
+
+    @JniMethod(accessor = "u8g2_Setup_ssd1312_120x28_1")
+    public static native void setupSsd1312120x281(final long u8g2, final long rotation, final long byteCb, final long gpioAndDelayCb);
+
+    @JniMethod(accessor = "u8g2_Setup_ssd1312_120x32_2")
+    public static native void setupSsd1312120x322(final long u8g2, final long rotation, final long byteCb, final long gpioAndDelayCb);
+
+    @JniMethod(accessor = "u8g2_Setup_ssd1312_120x28_2")
+    public static native void setupSsd1312120x282(final long u8g2, final long rotation, final long byteCb, final long gpioAndDelayCb);
+
+    @JniMethod(accessor = "u8g2_Setup_ssd1312_120x32_f")
+    public static native void setupSsd1312120x32F(final long u8g2, final long rotation, final long byteCb, final long gpioAndDelayCb);
+
+    @JniMethod(accessor = "u8g2_Setup_ssd1312_120x28_f")
+    public static native void setupSsd1312120x28F(final long u8g2, final long rotation, final long byteCb, final long gpioAndDelayCb);
+
+    @JniMethod(accessor = "u8g2_Setup_ssd1312_i2c_120x32_1")
+    public static native void setupSsd1312I2c120x321(final long u8g2, final long rotation, final long byteCb,
+            final long gpioAndDelayCb);
+
+    @JniMethod(accessor = "u8g2_Setup_ssd1312_i2c_120x28_1")
+    public static native void setupSsd1312I2c120x281(final long u8g2, final long rotation, final long byteCb,
+            final long gpioAndDelayCb);
+
+    @JniMethod(accessor = "u8g2_Setup_ssd1312_i2c_120x32_2")
+    public static native void setupSsd1312I2c120x322(final long u8g2, final long rotation, final long byteCb,
+            final long gpioAndDelayCb);
+
+    @JniMethod(accessor = "u8g2_Setup_ssd1312_i2c_120x28_2")
+    public static native void setupSsd1312I2c120x282(final long u8g2, final long rotation, final long byteCb,
+            final long gpioAndDelayCb);
+
+    @JniMethod(accessor = "u8g2_Setup_ssd1312_i2c_120x32_f")
+    public static native void setupSsd1312I2c120x32F(final long u8g2, final long rotation, final long byteCb,
+            final long gpioAndDelayCb);
+
+    @JniMethod(accessor = "u8g2_Setup_ssd1312_i2c_120x28_f")
+    public static native void setupSsd1312I2c120x28F(final long u8g2, final long rotation, final long byteCb,
+            final long gpioAndDelayCb);
+
     @JniMethod(accessor = "u8g2_Setup_ssd1316_128x32_1")
     public static native void setupSsd1316128x321(final long u8g2, final long rotation, final long byteCb, final long gpioAndDelayCb);
 
@@ -1319,6 +1427,10 @@ public class U8g2 {
     public static native void setupSsd1327I2cMidas128x1281(final long u8g2, final long rotation, final long byteCb,
             final long gpioAndDelayCb);
 
+    @JniMethod(accessor = "u8g2_Setup_ssd1327_i2c_zjy_128x128_1")
+    public static native void setupSsd1327I2cZjy128x1281(final long u8g2, final long rotation, final long byteCb,
+            final long gpioAndDelayCb);
+
     @JniMethod(accessor = "u8g2_Setup_ssd1327_i2c_ws_128x128_1")
     public static native void setupSsd1327I2cWs128x1281(final long u8g2, final long rotation, final long byteCb,
             final long gpioAndDelayCb);
@@ -1331,6 +1443,10 @@ public class U8g2 {
     public static native void setupSsd1327I2cMidas128x1282(final long u8g2, final long rotation, final long byteCb,
             final long gpioAndDelayCb);
 
+    @JniMethod(accessor = "u8g2_Setup_ssd1327_i2c_zjy_128x128_2")
+    public static native void setupSsd1327I2cZjy128x1282(final long u8g2, final long rotation, final long byteCb,
+            final long gpioAndDelayCb);
+
     @JniMethod(accessor = "u8g2_Setup_ssd1327_i2c_ws_128x128_2")
     public static native void setupSsd1327I2cWs128x1282(final long u8g2, final long rotation, final long byteCb,
             final long gpioAndDelayCb);
@@ -1341,6 +1457,10 @@ public class U8g2 {
 
     @JniMethod(accessor = "u8g2_Setup_ssd1327_i2c_midas_128x128_f")
     public static native void setupSsd1327I2cMidas128x128F(final long u8g2, final long rotation, final long byteCb,
+            final long gpioAndDelayCb);
+
+    @JniMethod(accessor = "u8g2_Setup_ssd1327_i2c_zjy_128x128_f")
+    public static native void setupSsd1327I2cZjy128x128F(final long u8g2, final long rotation, final long byteCb,
             final long gpioAndDelayCb);
 
     @JniMethod(accessor = "u8g2_Setup_ssd1327_i2c_ws_128x128_f")
@@ -1671,6 +1791,18 @@ public class U8g2 {
     public static native void setupLs013b7dh05144x168F(final long u8g2, final long rotation, final long byteCb,
             final long gpioAndDelayCb);
 
+    @JniMethod(accessor = "u8g2_Setup_ls011b7dh03_160x68_1")
+    public static native void setupLs011b7dh03160x681(final long u8g2, final long rotation, final long byteCb,
+            final long gpioAndDelayCb);
+
+    @JniMethod(accessor = "u8g2_Setup_ls011b7dh03_160x68_2")
+    public static native void setupLs011b7dh03160x682(final long u8g2, final long rotation, final long byteCb,
+            final long gpioAndDelayCb);
+
+    @JniMethod(accessor = "u8g2_Setup_ls011b7dh03_160x68_f")
+    public static native void setupLs011b7dh03160x68F(final long u8g2, final long rotation, final long byteCb,
+            final long gpioAndDelayCb);
+
     @JniMethod(accessor = "u8g2_Setup_uc1701_ea_dogs102_1")
     public static native void setupUc1701EaDogs1021(final long u8g2, final long rotation, final long byteCb,
             final long gpioAndDelayCb);
@@ -1713,6 +1845,15 @@ public class U8g2 {
     @JniMethod(accessor = "u8g2_Setup_pcf8812_96x65_f")
     public static native void setupPcf881296x65F(final long u8g2, final long rotation, final long byteCb, final long gpioAndDelayCb);
 
+    @JniMethod(accessor = "u8g2_Setup_pcf8812_101x64_1")
+    public static native void setupPcf8812101x641(final long u8g2, final long rotation, final long byteCb, final long gpioAndDelayCb);
+
+    @JniMethod(accessor = "u8g2_Setup_pcf8812_101x64_2")
+    public static native void setupPcf8812101x642(final long u8g2, final long rotation, final long byteCb, final long gpioAndDelayCb);
+
+    @JniMethod(accessor = "u8g2_Setup_pcf8812_101x64_f")
+    public static native void setupPcf8812101x64F(final long u8g2, final long rotation, final long byteCb, final long gpioAndDelayCb);
+
     @JniMethod(accessor = "u8g2_Setup_hx1230_96x68_1")
     public static native void setupHx123096x681(final long u8g2, final long rotation, final long byteCb, final long gpioAndDelayCb);
 
@@ -1744,6 +1885,30 @@ public class U8g2 {
 
     @JniMethod(accessor = "u8g2_Setup_uc1604_i2c_jlx19264_f")
     public static native void setupUc1604I2cJlx19264F(final long u8g2, final long rotation, final long byteCb,
+            final long gpioAndDelayCb);
+
+    @JniMethod(accessor = "u8g2_Setup_uc1604_jlx12864_1")
+    public static native void setupUc1604Jlx128641(final long u8g2, final long rotation, final long byteCb,
+            final long gpioAndDelayCb);
+
+    @JniMethod(accessor = "u8g2_Setup_uc1604_jlx12864_2")
+    public static native void setupUc1604Jlx128642(final long u8g2, final long rotation, final long byteCb,
+            final long gpioAndDelayCb);
+
+    @JniMethod(accessor = "u8g2_Setup_uc1604_jlx12864_f")
+    public static native void setupUc1604Jlx12864F(final long u8g2, final long rotation, final long byteCb,
+            final long gpioAndDelayCb);
+
+    @JniMethod(accessor = "u8g2_Setup_uc1604_i2c_jlx12864_1")
+    public static native void setupUc1604I2cJlx128641(final long u8g2, final long rotation, final long byteCb,
+            final long gpioAndDelayCb);
+
+    @JniMethod(accessor = "u8g2_Setup_uc1604_i2c_jlx12864_2")
+    public static native void setupUc1604I2cJlx128642(final long u8g2, final long rotation, final long byteCb,
+            final long gpioAndDelayCb);
+
+    @JniMethod(accessor = "u8g2_Setup_uc1604_i2c_jlx12864_f")
+    public static native void setupUc1604I2cJlx12864F(final long u8g2, final long rotation, final long byteCb,
             final long gpioAndDelayCb);
 
     @JniMethod(accessor = "u8g2_Setup_uc1608_erc24064_1")
@@ -2544,6 +2709,18 @@ public class U8g2 {
     public static native void setupSt7567I2cErc13232F(final long u8g2, final long rotation, final long byteCb,
             final long gpioAndDelayCb);
 
+    @JniMethod(accessor = "u8g2_Setup_st7567_erc12864_1")
+    public static native void setupSt7567Erc128641(final long u8g2, final long rotation, final long byteCb,
+            final long gpioAndDelayCb);
+
+    @JniMethod(accessor = "u8g2_Setup_st7567_erc12864_2")
+    public static native void setupSt7567Erc128642(final long u8g2, final long rotation, final long byteCb,
+            final long gpioAndDelayCb);
+
+    @JniMethod(accessor = "u8g2_Setup_st7567_erc12864_f")
+    public static native void setupSt7567Erc12864F(final long u8g2, final long rotation, final long byteCb,
+            final long gpioAndDelayCb);
+
     @JniMethod(accessor = "u8g2_Setup_st7567_96x65_1")
     public static native void setupSt756796x651(final long u8g2, final long rotation, final long byteCb, final long gpioAndDelayCb);
 
@@ -2631,11 +2808,23 @@ public class U8g2 {
     @JniMethod(accessor = "u8g2_Setup_st7567_lw12832_1")
     public static native void setupSt7567Lw128321(final long u8g2, final long rotation, final long byteCb, final long gpioAndDelayCb);
 
+    @JniMethod(accessor = "u8g2_Setup_st7567_yxd12832_1")
+    public static native void setupSt7567Yxd128321(final long u8g2, final long rotation, final long byteCb,
+            final long gpioAndDelayCb);
+
     @JniMethod(accessor = "u8g2_Setup_st7567_lw12832_2")
     public static native void setupSt7567Lw128322(final long u8g2, final long rotation, final long byteCb, final long gpioAndDelayCb);
 
+    @JniMethod(accessor = "u8g2_Setup_st7567_yxd12832_2")
+    public static native void setupSt7567Yxd128322(final long u8g2, final long rotation, final long byteCb,
+            final long gpioAndDelayCb);
+
     @JniMethod(accessor = "u8g2_Setup_st7567_lw12832_f")
     public static native void setupSt7567Lw12832F(final long u8g2, final long rotation, final long byteCb, final long gpioAndDelayCb);
+
+    @JniMethod(accessor = "u8g2_Setup_st7567_yxd12832_f")
+    public static native void setupSt7567Yxd12832F(final long u8g2, final long rotation, final long byteCb,
+            final long gpioAndDelayCb);
 
     @JniMethod(accessor = "u8g2_Setup_st7567_i2c_lw12832_1")
     public static native void setupSt7567I2cLw128321(final long u8g2, final long rotation, final long byteCb,
@@ -2673,23 +2862,80 @@ public class U8g2 {
     @JniMethod(accessor = "u8g2_Setup_st7571_128x96_1")
     public static native void setupSt7571128x961(final long u8g2, final long rotation, final long byteCb, final long gpioAndDelayCb);
 
+    @JniMethod(accessor = "u8g2_Setup_st7571_g12896_1")
+    public static native void setupSt7571G128961(final long u8g2, final long rotation, final long byteCb, final long gpioAndDelayCb);
+
     @JniMethod(accessor = "u8g2_Setup_st7571_128x96_2")
     public static native void setupSt7571128x962(final long u8g2, final long rotation, final long byteCb, final long gpioAndDelayCb);
+
+    @JniMethod(accessor = "u8g2_Setup_st7571_g12896_2")
+    public static native void setupSt7571G128962(final long u8g2, final long rotation, final long byteCb, final long gpioAndDelayCb);
 
     @JniMethod(accessor = "u8g2_Setup_st7571_128x96_f")
     public static native void setupSt7571128x96F(final long u8g2, final long rotation, final long byteCb, final long gpioAndDelayCb);
 
+    @JniMethod(accessor = "u8g2_Setup_st7571_g12896_f")
+    public static native void setupSt7571G12896F(final long u8g2, final long rotation, final long byteCb, final long gpioAndDelayCb);
+
     @JniMethod(accessor = "u8g2_Setup_st7571_i2c_128x96_1")
     public static native void setupSt7571I2c128x961(final long u8g2, final long rotation, final long byteCb,
+            final long gpioAndDelayCb);
+
+    @JniMethod(accessor = "u8g2_Setup_st7571_i2c_g12896_1")
+    public static native void setupSt7571I2cG128961(final long u8g2, final long rotation, final long byteCb,
             final long gpioAndDelayCb);
 
     @JniMethod(accessor = "u8g2_Setup_st7571_i2c_128x96_2")
     public static native void setupSt7571I2c128x962(final long u8g2, final long rotation, final long byteCb,
             final long gpioAndDelayCb);
 
+    @JniMethod(accessor = "u8g2_Setup_st7571_i2c_g12896_2")
+    public static native void setupSt7571I2cG128962(final long u8g2, final long rotation, final long byteCb,
+            final long gpioAndDelayCb);
+
     @JniMethod(accessor = "u8g2_Setup_st7571_i2c_128x96_f")
     public static native void setupSt7571I2c128x96F(final long u8g2, final long rotation, final long byteCb,
             final long gpioAndDelayCb);
+
+    @JniMethod(accessor = "u8g2_Setup_st7571_i2c_g12896_f")
+    public static native void setupSt7571I2cG12896F(final long u8g2, final long rotation, final long byteCb,
+            final long gpioAndDelayCb);
+
+    @JniMethod(accessor = "u8g2_Setup_st7302_122x250_1")
+    public static native void setupSt7302122x2501(final long u8g2, final long rotation, final long byteCb, final long gpioAndDelayCb);
+
+    @JniMethod(accessor = "u8g2_Setup_st7302_122x250_2")
+    public static native void setupSt7302122x2502(final long u8g2, final long rotation, final long byteCb, final long gpioAndDelayCb);
+
+    @JniMethod(accessor = "u8g2_Setup_st7302_122x250_f")
+    public static native void setupSt7302122x250F(final long u8g2, final long rotation, final long byteCb, final long gpioAndDelayCb);
+
+    @JniMethod(accessor = "u8g2_Setup_st7305_122x250_1")
+    public static native void setupSt7305122x2501(final long u8g2, final long rotation, final long byteCb, final long gpioAndDelayCb);
+
+    @JniMethod(accessor = "u8g2_Setup_st7305_122x250_2")
+    public static native void setupSt7305122x2502(final long u8g2, final long rotation, final long byteCb, final long gpioAndDelayCb);
+
+    @JniMethod(accessor = "u8g2_Setup_st7305_122x250_f")
+    public static native void setupSt7305122x250F(final long u8g2, final long rotation, final long byteCb, final long gpioAndDelayCb);
+
+    @JniMethod(accessor = "u8g2_Setup_st7305_200x200_1")
+    public static native void setupSt7305200x2001(final long u8g2, final long rotation, final long byteCb, final long gpioAndDelayCb);
+
+    @JniMethod(accessor = "u8g2_Setup_st7305_200x200_2")
+    public static native void setupSt7305200x2002(final long u8g2, final long rotation, final long byteCb, final long gpioAndDelayCb);
+
+    @JniMethod(accessor = "u8g2_Setup_st7305_200x200_f")
+    public static native void setupSt7305200x200F(final long u8g2, final long rotation, final long byteCb, final long gpioAndDelayCb);
+
+    @JniMethod(accessor = "u8g2_Setup_st7305_168x384_1")
+    public static native void setupSt7305168x3841(final long u8g2, final long rotation, final long byteCb, final long gpioAndDelayCb);
+
+    @JniMethod(accessor = "u8g2_Setup_st7305_168x384_2")
+    public static native void setupSt7305168x3842(final long u8g2, final long rotation, final long byteCb, final long gpioAndDelayCb);
+
+    @JniMethod(accessor = "u8g2_Setup_st7305_168x384_f")
+    public static native void setupSt7305168x384F(final long u8g2, final long rotation, final long byteCb, final long gpioAndDelayCb);
 
     @JniMethod(accessor = "u8g2_Setup_st7586s_s028hn118a_1")
     public static native void setupSt7586sS028hn118a1(final long u8g2, final long rotation, final long byteCb,
@@ -2751,6 +2997,18 @@ public class U8g2 {
     public static native void setupSt7586sJlx320160F(final long u8g2, final long rotation, final long byteCb,
             final long gpioAndDelayCb);
 
+    @JniMethod(accessor = "u8g2_Setup_st7586s_md240128_1")
+    public static native void setupSt7586sMd2401281(final long u8g2, final long rotation, final long byteCb,
+            final long gpioAndDelayCb);
+
+    @JniMethod(accessor = "u8g2_Setup_st7586s_md240128_2")
+    public static native void setupSt7586sMd2401282(final long u8g2, final long rotation, final long byteCb,
+            final long gpioAndDelayCb);
+
+    @JniMethod(accessor = "u8g2_Setup_st7586s_md240128_f")
+    public static native void setupSt7586sMd240128F(final long u8g2, final long rotation, final long byteCb,
+            final long gpioAndDelayCb);
+
     @JniMethod(accessor = "u8g2_Setup_st7588_jlx12864_1")
     public static native void setupSt7588Jlx128641(final long u8g2, final long rotation, final long byteCb,
             final long gpioAndDelayCb);
@@ -2799,6 +3057,30 @@ public class U8g2 {
     public static native void setupSt75160I2cJm16096F(final long u8g2, final long rotation, final long byteCb,
             final long gpioAndDelayCb);
 
+    @JniMethod(accessor = "u8g2_Setup_st75161_jlx160160_1")
+    public static native void setupSt75161Jlx1601601(final long u8g2, final long rotation, final long byteCb,
+            final long gpioAndDelayCb);
+
+    @JniMethod(accessor = "u8g2_Setup_st75161_jlx160160_2")
+    public static native void setupSt75161Jlx1601602(final long u8g2, final long rotation, final long byteCb,
+            final long gpioAndDelayCb);
+
+    @JniMethod(accessor = "u8g2_Setup_st75161_jlx160160_f")
+    public static native void setupSt75161Jlx160160F(final long u8g2, final long rotation, final long byteCb,
+            final long gpioAndDelayCb);
+
+    @JniMethod(accessor = "u8g2_Setup_st75161_i2c_jlx160160_1")
+    public static native void setupSt75161I2cJlx1601601(final long u8g2, final long rotation, final long byteCb,
+            final long gpioAndDelayCb);
+
+    @JniMethod(accessor = "u8g2_Setup_st75161_i2c_jlx160160_2")
+    public static native void setupSt75161I2cJlx1601602(final long u8g2, final long rotation, final long byteCb,
+            final long gpioAndDelayCb);
+
+    @JniMethod(accessor = "u8g2_Setup_st75161_i2c_jlx160160_f")
+    public static native void setupSt75161I2cJlx160160F(final long u8g2, final long rotation, final long byteCb,
+            final long gpioAndDelayCb);
+
     @JniMethod(accessor = "u8g2_Setup_st75256_jlx256128_1")
     public static native void setupSt75256Jlx2561281(final long u8g2, final long rotation, final long byteCb,
             final long gpioAndDelayCb);
@@ -2845,6 +3127,30 @@ public class U8g2 {
 
     @JniMethod(accessor = "u8g2_Setup_st75256_i2c_wo256x128_f")
     public static native void setupSt75256I2cWo256x128F(final long u8g2, final long rotation, final long byteCb,
+            final long gpioAndDelayCb);
+
+    @JniMethod(accessor = "u8g2_Setup_st75256_128x128_1")
+    public static native void setupSt75256128x1281(final long u8g2, final long rotation, final long byteCb,
+            final long gpioAndDelayCb);
+
+    @JniMethod(accessor = "u8g2_Setup_st75256_128x128_2")
+    public static native void setupSt75256128x1282(final long u8g2, final long rotation, final long byteCb,
+            final long gpioAndDelayCb);
+
+    @JniMethod(accessor = "u8g2_Setup_st75256_128x128_f")
+    public static native void setupSt75256128x128F(final long u8g2, final long rotation, final long byteCb,
+            final long gpioAndDelayCb);
+
+    @JniMethod(accessor = "u8g2_Setup_st75256_i2c_128x128_1")
+    public static native void setupSt75256I2c128x1281(final long u8g2, final long rotation, final long byteCb,
+            final long gpioAndDelayCb);
+
+    @JniMethod(accessor = "u8g2_Setup_st75256_i2c_128x128_2")
+    public static native void setupSt75256I2c128x1282(final long u8g2, final long rotation, final long byteCb,
+            final long gpioAndDelayCb);
+
+    @JniMethod(accessor = "u8g2_Setup_st75256_i2c_128x128_f")
+    public static native void setupSt75256I2c128x128F(final long u8g2, final long rotation, final long byteCb,
             final long gpioAndDelayCb);
 
     @JniMethod(accessor = "u8g2_Setup_st75256_jlx256160_1")
@@ -3279,6 +3585,15 @@ public class U8g2 {
     @JniMethod(accessor = "u8g2_Setup_t6963_128x128_f")
     public static native void setupT6963128x128F(final long u8g2, final long rotation, final long byteCb, final long gpioAndDelayCb);
 
+    @JniMethod(accessor = "u8g2_Setup_t6963_128x160_1")
+    public static native void setupT6963128x1601(final long u8g2, final long rotation, final long byteCb, final long gpioAndDelayCb);
+
+    @JniMethod(accessor = "u8g2_Setup_t6963_128x160_2")
+    public static native void setupT6963128x1602(final long u8g2, final long rotation, final long byteCb, final long gpioAndDelayCb);
+
+    @JniMethod(accessor = "u8g2_Setup_t6963_128x160_f")
+    public static native void setupT6963128x160F(final long u8g2, final long rotation, final long byteCb, final long gpioAndDelayCb);
+
     @JniMethod(accessor = "u8g2_Setup_ssd1320_160x32_1")
     public static native void setupSsd1320160x321(final long u8g2, final long rotation, final long byteCb, final long gpioAndDelayCb);
 
@@ -3287,6 +3602,15 @@ public class U8g2 {
 
     @JniMethod(accessor = "u8g2_Setup_ssd1320_160x32_f")
     public static native void setupSsd1320160x32F(final long u8g2, final long rotation, final long byteCb, final long gpioAndDelayCb);
+
+    @JniMethod(accessor = "u8g2_Setup_ssd1320_128x72_1")
+    public static native void setupSsd1320128x721(final long u8g2, final long rotation, final long byteCb, final long gpioAndDelayCb);
+
+    @JniMethod(accessor = "u8g2_Setup_ssd1320_128x72_2")
+    public static native void setupSsd1320128x722(final long u8g2, final long rotation, final long byteCb, final long gpioAndDelayCb);
+
+    @JniMethod(accessor = "u8g2_Setup_ssd1320_128x72_f")
+    public static native void setupSsd1320128x72F(final long u8g2, final long rotation, final long byteCb, final long gpioAndDelayCb);
 
     @JniMethod(accessor = "u8g2_Setup_ssd1320_160x132_1")
     public static native void setupSsd1320160x1321(final long u8g2, final long rotation, final long byteCb,
@@ -3349,12 +3673,24 @@ public class U8g2 {
     public static native void setupSsd1322Nhd256x641(final long u8g2, final long rotation, final long byteCb,
             final long gpioAndDelayCb);
 
+    @JniMethod(accessor = "u8g2_Setup_ssd1322_zjy_256x64_1")
+    public static native void setupSsd1322Zjy256x641(final long u8g2, final long rotation, final long byteCb,
+            final long gpioAndDelayCb);
+
     @JniMethod(accessor = "u8g2_Setup_ssd1322_nhd_256x64_2")
     public static native void setupSsd1322Nhd256x642(final long u8g2, final long rotation, final long byteCb,
             final long gpioAndDelayCb);
 
+    @JniMethod(accessor = "u8g2_Setup_ssd1322_zjy_256x64_2")
+    public static native void setupSsd1322Zjy256x642(final long u8g2, final long rotation, final long byteCb,
+            final long gpioAndDelayCb);
+
     @JniMethod(accessor = "u8g2_Setup_ssd1322_nhd_256x64_f")
     public static native void setupSsd1322Nhd256x64F(final long u8g2, final long rotation, final long byteCb,
+            final long gpioAndDelayCb);
+
+    @JniMethod(accessor = "u8g2_Setup_ssd1322_zjy_256x64_f")
+    public static native void setupSsd1322Zjy256x64F(final long u8g2, final long rotation, final long byteCb,
             final long gpioAndDelayCb);
 
     @JniMethod(accessor = "u8g2_Setup_ssd1322_nhd_128x64_1")
@@ -3409,6 +3745,30 @@ public class U8g2 {
 
     @JniMethod(accessor = "u8g2_Setup_ssd1362_i2c_206x36_f")
     public static native void setupSsd1362I2c206x36F(final long u8g2, final long rotation, final long byteCb,
+            final long gpioAndDelayCb);
+
+    @JniMethod(accessor = "u8g2_Setup_ssd1363_256x128_1")
+    public static native void setupSsd1363256x1281(final long u8g2, final long rotation, final long byteCb,
+            final long gpioAndDelayCb);
+
+    @JniMethod(accessor = "u8g2_Setup_ssd1363_256x128_2")
+    public static native void setupSsd1363256x1282(final long u8g2, final long rotation, final long byteCb,
+            final long gpioAndDelayCb);
+
+    @JniMethod(accessor = "u8g2_Setup_ssd1363_256x128_f")
+    public static native void setupSsd1363256x128F(final long u8g2, final long rotation, final long byteCb,
+            final long gpioAndDelayCb);
+
+    @JniMethod(accessor = "u8g2_Setup_ssd1363_i2c_256x128_1")
+    public static native void setupSsd1363I2c256x1281(final long u8g2, final long rotation, final long byteCb,
+            final long gpioAndDelayCb);
+
+    @JniMethod(accessor = "u8g2_Setup_ssd1363_i2c_256x128_2")
+    public static native void setupSsd1363I2c256x1282(final long u8g2, final long rotation, final long byteCb,
+            final long gpioAndDelayCb);
+
+    @JniMethod(accessor = "u8g2_Setup_ssd1363_i2c_256x128_f")
+    public static native void setupSsd1363I2c256x128F(final long u8g2, final long rotation, final long byteCb,
             final long gpioAndDelayCb);
 
     @JniMethod(accessor = "u8g2_Setup_ssd1606_172x72_1")
@@ -3488,6 +3848,15 @@ public class U8g2 {
     @JniMethod(accessor = "u8g2_Setup_sed1330_240x128_f")
     public static native void setupSed1330240x128F(final long u8g2, final long rotation, final long byteCb,
             final long gpioAndDelayCb);
+
+    @JniMethod(accessor = "u8g2_Setup_sed1330_240x64_1")
+    public static native void setupSed1330240x641(final long u8g2, final long rotation, final long byteCb, final long gpioAndDelayCb);
+
+    @JniMethod(accessor = "u8g2_Setup_sed1330_240x64_2")
+    public static native void setupSed1330240x642(final long u8g2, final long rotation, final long byteCb, final long gpioAndDelayCb);
+
+    @JniMethod(accessor = "u8g2_Setup_sed1330_240x64_f")
+    public static native void setupSed1330240x64F(final long u8g2, final long rotation, final long byteCb, final long gpioAndDelayCb);
 
     @JniMethod(accessor = "u8g2_Setup_sed1330_256x128_1")
     public static native void setupSed1330256x1281(final long u8g2, final long rotation, final long byteCb,
@@ -3571,6 +3940,39 @@ public class U8g2 {
 
     @JniMethod(accessor = "u8g2_Setup_s1d15300_lm6023_f")
     public static native void setupS1d15300Lm6023F(final long u8g2, final long rotation, final long byteCb,
+            final long gpioAndDelayCb);
+
+    @JniMethod(accessor = "u8g2_Setup_s1d15300_97x32_1")
+    public static native void setupS1d1530097x321(final long u8g2, final long rotation, final long byteCb, final long gpioAndDelayCb);
+
+    @JniMethod(accessor = "u8g2_Setup_s1d15300_100x32_1")
+    public static native void setupS1d15300100x321(final long u8g2, final long rotation, final long byteCb,
+            final long gpioAndDelayCb);
+
+    @JniMethod(accessor = "u8g2_Setup_s1d15300_100x32i_1")
+    public static native void setupS1d15300100x32i1(final long u8g2, final long rotation, final long byteCb,
+            final long gpioAndDelayCb);
+
+    @JniMethod(accessor = "u8g2_Setup_s1d15300_97x32_2")
+    public static native void setupS1d1530097x322(final long u8g2, final long rotation, final long byteCb, final long gpioAndDelayCb);
+
+    @JniMethod(accessor = "u8g2_Setup_s1d15300_100x32_2")
+    public static native void setupS1d15300100x322(final long u8g2, final long rotation, final long byteCb,
+            final long gpioAndDelayCb);
+
+    @JniMethod(accessor = "u8g2_Setup_s1d15300_100x32i_2")
+    public static native void setupS1d15300100x32i2(final long u8g2, final long rotation, final long byteCb,
+            final long gpioAndDelayCb);
+
+    @JniMethod(accessor = "u8g2_Setup_s1d15300_97x32_f")
+    public static native void setupS1d1530097x32F(final long u8g2, final long rotation, final long byteCb, final long gpioAndDelayCb);
+
+    @JniMethod(accessor = "u8g2_Setup_s1d15300_100x32_f")
+    public static native void setupS1d15300100x32F(final long u8g2, final long rotation, final long byteCb,
+            final long gpioAndDelayCb);
+
+    @JniMethod(accessor = "u8g2_Setup_s1d15300_100x32i_f")
+    public static native void setupS1d15300100x32iF(final long u8g2, final long rotation, final long byteCb,
             final long gpioAndDelayCb);
 
     @JniMethod(accessor = "u8g2_Setup_s1d15e06_160100_1")
@@ -3661,6 +4063,30 @@ public class U8g2 {
 
     @JniMethod(accessor = "u8g2_Setup_a2printer_384x240_f")
     public static native void setupA2printer384x240F(final long u8g2, final long rotation, final long byteCb,
+            final long gpioAndDelayCb);
+
+    @JniMethod(accessor = "u8g2_Setup_ssd1315_128x64_noname_1")
+    public static native void setupSsd1315128x64Noname1(final long u8g2, final long rotation, final long byteCb,
+            final long gpioAndDelayCb);
+
+    @JniMethod(accessor = "u8g2_Setup_ssd1315_128x64_noname_2")
+    public static native void setupSsd1315128x64Noname2(final long u8g2, final long rotation, final long byteCb,
+            final long gpioAndDelayCb);
+
+    @JniMethod(accessor = "u8g2_Setup_ssd1315_128x64_noname_f")
+    public static native void setupSsd1315128x64NonameF(final long u8g2, final long rotation, final long byteCb,
+            final long gpioAndDelayCb);
+
+    @JniMethod(accessor = "u8g2_Setup_ssd1315_i2c_128x64_noname_1")
+    public static native void setupSsd1315I2c128x64Noname1(final long u8g2, final long rotation, final long byteCb,
+            final long gpioAndDelayCb);
+
+    @JniMethod(accessor = "u8g2_Setup_ssd1315_i2c_128x64_noname_2")
+    public static native void setupSsd1315I2c128x64Noname2(final long u8g2, final long rotation, final long byteCb,
+            final long gpioAndDelayCb);
+
+    @JniMethod(accessor = "u8g2_Setup_ssd1315_i2c_128x64_noname_f")
+    public static native void setupSsd1315I2c128x64NonameF(final long u8g2, final long rotation, final long byteCb,
             final long gpioAndDelayCb);
 
     @JniMethod(accessor = "u8g2_SendBuffer")
@@ -3823,6 +4249,12 @@ public class U8g2 {
     @JniMethod(accessor = "u8g2_GetStrX")
     public static native int getStrX(final long u8g2, final String s);
 
+    @JniMethod(accessor = "u8g2_GetXOffsetGlyph")
+    public static native int getXOffsetGlyph(final long u8g2, final int encoding);
+
+    @JniMethod(accessor = "u8g2_GetXOffsetUTF8")
+    public static native int getXOffsetUTF8(final long u8g2, final String utf8);
+
     @JniMethod(accessor = "u8g2_SetFontDirection")
     public static native void setFontDirection(final long u8g2, final int dir);
 
@@ -3875,6 +4307,9 @@ public class U8g2 {
 
     @JniMethod(accessor = "u8g2_SetFontRefHeightAll")
     public static native void setFontRefHeightAll(final long u8g2);
+
+    @JniMethod(accessor = "u8g2_DrawHB")
+    public static native void drawHB(final long u8g2, final int x, final int y, final String data);
 
     @JniMethod(accessor = "u8g2_DrawLog")
     public static native void drawLog(final long u8g2, final int x, final int y, final long u8log);

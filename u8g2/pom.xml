@@ -50,8 +50,12 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.14.1</version>
                 <configuration>
+                    <fork>true</fork>
                     <source>${maven.compiler.source}</source>
-                    <target>${maven.compiler.target}</target>         
+                    <target>${maven.compiler.target}</target>
+                    <compilerArgs>
+                        <arg>-J--sun-misc-unsafe-memory-access=allow</arg>
+                    </compilerArgs>        
                 </configuration>
             </plugin>
             <plugin>
