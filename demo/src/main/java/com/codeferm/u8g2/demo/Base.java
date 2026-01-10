@@ -13,6 +13,7 @@ import static com.codeferm.u8g2.U8x8.U8X8_PIN_NONE;
 import static com.codeferm.u8g2.demo.Base.DisplayType.I2CHW;
 import static com.codeferm.u8g2.demo.Base.DisplayType.SDL;
 import java.util.concurrent.Callable;
+import lombok.Data;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import picocli.CommandLine.Option;
@@ -24,6 +25,7 @@ import picocli.CommandLine.Option;
  * @version 1.0.0
  * @since 1.0.0
  */
+@Data
 public class Base implements Callable<Integer> {
 
     /**
@@ -144,47 +146,6 @@ public class Base implements Callable<Integer> {
      * Display height.
      */
     private int height;
-
-    public long getSleep() {
-        return sleep;
-    }
-
-    public void setSleep(long sleep) {
-        this.sleep = sleep;
-    }
-
-    public long getU8g2() {
-        return u8g2;
-    }
-
-    public void setU8g2(long u8g2) {
-        this.u8g2 = u8g2;
-    }
-
-    public Display getDisplay() {
-        return display;
-    }
-
-    public void setDisplay(Display display) {
-        this.display = display;
-    }
-
-    public int getWidth() {
-        return width;
-    }
-
-    public void setWidth(int width) {
-        this.width = width;
-    }
-
-    public int getHeight() {
-        return height;
-    }
-
-    public void setHeight(int height) {
-        this.height = height;
-    }
-
     /**
      * Show text with delay. Everything is calculated each time as font can differ between calls. String is wrapped if too long for
      * one line.
