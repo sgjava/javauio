@@ -1,19 +1,16 @@
 ![Title](images/title.png)
 
-U8g2 is a high performance library based on [U8g2](https://github.com/olikraus/u8g2): Library for monochrome displays, version 2.
-I used some custom code to generate the HawtJNI methods and font constants.
-This makes life easier going forawrd as changes are simple to keep in sync.
-* Java code follows C API, so if you used U8g2 in C, C++ or even NodeMcu with Lua it
-will immediately be familar. No goofy Java wrapper with a totally different API.
-* The [Display](https://github.com/sgjava/javauio/blob/main/u8g2/src/main/java/com/codeferm/u8g2/Display.java)
-class allows for runtime setup and font selection, so you can make applications
-that do not need to know the display or font type ahead of time.
-* Works with SDL 2, so you can develop code on desktop without the need for a physical display.
+U8g2 for Java is a high-performance JNI wrapper based on [U8g2](https://github.com/olikraus/u8g2): the definitive library for monochrome displays.
 
-I've been submitting PRs to U8g2 for
-[arm-linux](https://github.com/olikraus/u8g2/tree/master/sys/arm-linux) port and
-made it thread safe and multi-display capable. I also greatly improved
-performance of the I2C and SPI software drivers.
+By using custom automation to generate HawtJNI methods and font constants, this project ensures the Java API remains in lock-step with the underlying C library. This makes updates seamless and maintenance trivial.
+
+## Key Features
+
+* **Massive Hardware Support:** Access to **~200 monochrome display controllers** and over **700 high-quality fonts** out of the box.
+* **Authentic API:** The Java code strictly follows the C API. If you have used U8g2 in C, C++, or NodeMcu (Lua), the methods will be immediately familiar. No "heavy" Java abstractions—just the raw power of U8g2.
+* **Dynamic Configuration:** The [Display](https://github.com/sgjava/javauio/blob/main/u8g2/src/main/java/com/codeferm/u8g2/Display.java) class allows for runtime setup and font selection. Build applications that don't need to know the display or font type at compile time.
+* **Desktop Simulation:** Works with **SDL 2**, allowing you to develop and debug your UI on your desktop without needing a physical display or a logic analyzer.
+* **Performance & Reliability:** This port includes my PRs for the [arm-linux](https://github.com/olikraus/u8g2/tree/master/sys/arm-linux) port, making it thread-safe and multi-display capable. It also features optimized I2C and SPI software drivers for embedded Linux.
 
 Do it all yourself U8g2 style.
 
