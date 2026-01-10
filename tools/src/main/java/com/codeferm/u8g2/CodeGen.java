@@ -141,6 +141,12 @@ public class CodeGen implements Callable<Integer> {
         return result;
     }
 
+    /**
+     * Replace all in last item of String List.
+     * @param list String List.
+     * @param regex Substring to find.
+     * @param replacement Replace with this. 
+     */
     public void replaceAllLastEle(final List<String> list, final String regex, final String replacement) {
         if (!list.isEmpty()) {
             // Get last element
@@ -417,8 +423,7 @@ public class CodeGen implements Callable<Integer> {
     }
 
     /**
-     * Main parsing, error handling and handling user requests for usage help or
-     * version help are done with one line of code.
+     * Main parsing, error handling and handling user requests for usage help or version help are done with one line of code.
      *
      * @param args Argument list.
      */
