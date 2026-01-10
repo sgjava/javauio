@@ -42,10 +42,10 @@ export SDKMAN_DIR="$HOME/.sdkman"
 log "Using JAVA_HOME: $JAVA_HOME"
 log "Using Maven: $(mvn -version | head -n 1)"
 
-# 2. Install Build Dependencies
+# 2. Install Build/Runtime Dependencies
 log "Installing dependencies..."
 sudo apt-get update
-sudo apt-get -y install build-essential autoconf automake libtool git libsdl2-dev >> "$logfile" 2>&1
+sudo apt-get -y install build-essential autoconf automake libtool git libsdl2-dev libfreetype6 libfontconfig1 >> "$logfile" 2>&1
 
 # 3. UIO Permissions Service
 log "Installing UIO Permissions Service..."
