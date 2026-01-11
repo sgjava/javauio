@@ -64,6 +64,9 @@
                 <version>3.5.4</version>
                 <configuration>
                     <trimStackTrace>false</trimStackTrace>
+                    <argLine>
+                        --enable-native-access=ALL-UNNAMED
+                    </argLine>
                 </configuration>            
             </plugin>
             <plugin>
