@@ -79,6 +79,8 @@ public class BufImage extends Base {
 
     /**
      * Renders a frame using standard Java2D calls.
+     * 
+     * @param message String to display. 
      */
     public void renderFrame(final String message) {
         // Clear Java canvas (Black)
