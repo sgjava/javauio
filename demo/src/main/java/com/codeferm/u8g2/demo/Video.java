@@ -42,7 +42,7 @@ public class Video extends Base {
      * Target frames per second.
      */
     @CommandLine.Option(names = {"-fps", "--fps"}, description = "Target FPS, ${DEFAULT-VALUE} by default.")
-    private int fps = 30;
+    private int fps = 24;
 
     /**
      * Display each frame from raw video file with FPS pacing.
