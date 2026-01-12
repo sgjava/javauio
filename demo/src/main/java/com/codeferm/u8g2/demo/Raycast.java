@@ -172,7 +172,6 @@ public class Raycast extends Base {
         super.call();
         final var display = getDisplay();
         final var frameDelay = 1000L / Math.max(1, fps);
-        showText("3D Tour");
         var currentAction = 0;
         for (var i = 0; i < 2000; i++) {
             // Pick a new random movement every 20-40 frames
