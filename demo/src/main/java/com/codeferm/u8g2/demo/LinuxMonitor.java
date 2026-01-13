@@ -22,12 +22,19 @@ import picocli.CommandLine.Option;
 @Command(name = "LinuxMonitor", mixinStandardHelpOptions = true, version = "1.0.0-SNAPSHOT")
 public class LinuxMonitor extends Base {
 
+    /**
+     * FPS.
+     */
     @Option(names = {"-f", "--fps"}, description = "Update rate", defaultValue = "2")
     public int fps;
-
+    /**
+     * Maximum frames.
+     */
     @Option(names = {"-m", "--max-frames"}, description = "Exit after N frames (0 for infinite)", defaultValue = "0")
     public int maxFrames;
-
+    /**
+     * Network interface.
+     */
     @Option(names = {"-i", "--interface"}, description = "Network interface name", defaultValue = "eth0")
     public String netIf;
 

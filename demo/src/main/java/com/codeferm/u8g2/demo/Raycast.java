@@ -20,6 +20,9 @@ import picocli.CommandLine.Option;
         description = "Clean 3D Raycasting walkthrough with full var and final")
 public class Raycast extends Base {
 
+    /**
+     * FPS.
+     */
     @Option(names = {"-f", "--fps"}, description = "Frames per second", defaultValue = "30")
     private int fps;
     /**

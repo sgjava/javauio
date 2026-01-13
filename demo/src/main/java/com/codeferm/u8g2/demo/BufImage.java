@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) Steven P. Goldsmith. All rights reserved.
+ */
 package com.codeferm.u8g2.demo;
 
 import static com.codeferm.u8g2.Common.moveJavaToNative;
@@ -15,9 +18,10 @@ import picocli.CommandLine;
  * This version uses pre-allocated buffers and direct raster bit-scraping.
  *
  * @author Steven P. Goldsmith
- * @version 1.1.0
+ * @version 1.0.0
+ * @since 1.0.0
  */
-@CommandLine.Command(name = "BufImage", mixinStandardHelpOptions = true, version = "1.1.0",
+@CommandLine.Command(name = "BufImage", mixinStandardHelpOptions = true, version = "1.0.0-SNAPSHOT",
         description = "Optimized BufferedImage demo")
 public class BufImage extends Base {
 
@@ -79,8 +83,8 @@ public class BufImage extends Base {
 
     /**
      * Renders a frame using standard Java2D calls.
-     * 
-     * @param message String to display. 
+     *
+     * @param message String to display.
      */
     public void renderFrame(final String message) {
         // Clear Java canvas (Black)
@@ -120,7 +124,9 @@ public class BufImage extends Base {
      * @param args Argument list.
      */
     public static void main(String... args) {
-        System.exit(new CommandLine(new BufImage()).registerConverter(Byte.class, Byte::decode).registerConverter(Integer.class,
-                Integer::decode).execute(args));
+        System.exit(new CommandLine(new BufImage()).registerConverter(Byte.class, Byte::decode).registerConverter(Byte.TYPE,
+                Byte::decode).registerConverter(Short.class, Short::decode).registerConverter(Short.TYPE, Short::decode).
+                registerConverter(Integer.class, Integer::decode).registerConverter(Integer.TYPE, Integer::decode).
+                registerConverter(Long.class, Long::decode).registerConverter(Long.TYPE, Long::decode).execute(args));
     }
 }

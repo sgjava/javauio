@@ -23,6 +23,9 @@ import picocli.CommandLine.Option;
         description = "Space Invaders - Corrected Jitter-Free Demo")
 public class SpaceInvaders extends Base {
 
+    /**
+     * FPS.
+     */
     @Option(names = {"-f", "--fps"}, description = "Frames per second", defaultValue = "60")
     public int fps;
 

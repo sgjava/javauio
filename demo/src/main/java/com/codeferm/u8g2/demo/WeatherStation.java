@@ -12,27 +12,32 @@ import picocli.CommandLine.Option;
 
 /**
  * Weather station simulation for U8g2 displays.
- * 
+ *
  * Implements realistic wind smoothing, cardinal directions, and historical data tracking.
  */
 @Command(name = "WeatherStation", mixinStandardHelpOptions = true, version = "1.0.0-SNAPSHOT")
 public class WeatherStation extends Base {
 
+    /**
+     * FPS.
+     */
     @Option(names = {"-f", "--fps"}, description = "Update rate", defaultValue = "10")
     public int fps;
-
+    /**
+     * Maximum frames.
+     */
     @Option(names = {"-m", "--max-frames"}, description = "Exit after N frames (0 for infinite)", defaultValue = "0")
     public int maxFrames;
 
     private int frameCount = 0;
     private final Random random = new Random();
-    private final float[] tempHistory = new float[35];    
-    private float tempC = 21.2f; 
+    private final float[] tempHistory = new float[35];
+    private float tempC = 21.2f;
     private int humidity = 43;
     private int slowUpdateCounter = 0;
     private float targetWindMph = 5.0f;
     private float currentWindMph = 5.0f;
-    final private float windSmoothing = 0.08f; 
+    final private float windSmoothing = 0.08f;
     private float targetDir = 180.0f;
     private float currentDir = 180.0f;
 
@@ -70,7 +75,8 @@ public class WeatherStation extends Base {
 
     /**
      * Draws an advanced compass rose with cardinal labels and intermediate markers.
-     * * @param u8 The U8g2 display handle
+     *
+     * @param u8 The U8g2 display handle
      * @param x Center X coordinate
      * @param y Center Y coordinate
      * @param r Radius of the compass circle
@@ -83,18 +89,18 @@ public class WeatherStation extends Base {
         U8g2.drawPixel(u8, x, y);
         U8g2.setFont(u8, getDisplay().getFontPtr(FontType.FONT_4X6_TF));
         // Primary cardinal labels
-        U8g2.drawStr(u8, x - 2, y - r - 4, "N");   
-        U8g2.drawStr(u8, x - 2, y + r + 8, "S");   
-        U8g2.drawStr(u8, x + r + 5, y + 3, "E");   
-        U8g2.drawStr(u8, x - r - 10, y + 3, "W");  
+        U8g2.drawStr(u8, x - 2, y - r - 4, "N");
+        U8g2.drawStr(u8, x - 2, y + r + 8, "S");
+        U8g2.drawStr(u8, x + r + 5, y + 3, "E");
+        U8g2.drawStr(u8, x - r - 10, y + 3, "W");
         // Intermediate 45-degree dots
         for (var i = 45; i < 360; i += 90) {
             var rad = Math.toRadians(i - 90);
-            U8g2.drawPixel(u8, x + (int)Math.round(Math.cos(rad) * r), y + (int)Math.round(Math.sin(rad) * r));
+            U8g2.drawPixel(u8, x + (int) Math.round(Math.cos(rad) * r), y + (int) Math.round(Math.sin(rad) * r));
         }
         // Directional needle indicating wind origin
         var rad = Math.toRadians(angle - 90);
-        U8g2.drawLine(u8, x, y, x + (int)(Math.cos(rad) * (r - 2)), y + (int)(Math.sin(rad) * (r - 2)));
+        U8g2.drawLine(u8, x, y, x + (int) (Math.cos(rad) * (r - 2)), y + (int) (Math.sin(rad) * (r - 2)));
     }
 
     /**
@@ -105,14 +111,16 @@ public class WeatherStation extends Base {
         U8g2.clearBuffer(u8);
         // Render Temperature Header
         U8g2.setFont(u8, getDisplay().getFontPtr(FontType.FONT_6X12_TF));
-        U8g2.drawStr(u8, 2, 10, String.format("%.1f F", (tempC * 9/5) + 32));  
+        U8g2.drawStr(u8, 2, 10, String.format("%.1f F", (tempC * 9 / 5) + 32));
         // Render Historical Trend Graph
-        U8g2.drawFrame(u8, 4, 14, 37, 22); 
+        U8g2.drawFrame(u8, 4, 14, 37, 22);
         for (var i = 0; i < tempHistory.length - 1; i++) {
-            if (tempHistory[i] == 0) continue;
+            if (tempHistory[i] == 0) {
+                continue;
+            }
             // Map temperature to box Y-coordinates
-            var y1 = 25 - (int)((tempHistory[i] - 20) * 4);
-            var y2 = 25 - (int)((tempHistory[i+1] - 20) * 4);
+            var y1 = 25 - (int) ((tempHistory[i] - 20) * 4);
+            var y2 = 25 - (int) ((tempHistory[i + 1] - 20) * 4);
             // Clamp line within frame boundaries
             U8g2.drawLine(u8, 5 + i, Math.max(15, Math.min(35, y1)), 6 + i, Math.max(15, Math.min(35, y2)));
         }
@@ -121,11 +129,11 @@ public class WeatherStation extends Base {
         U8g2.drawStr(u8, 48, 8, "RH%");
         U8g2.drawFrame(u8, 50, 12, 8, 26);
         // Calculate vertical fill height
-        var barHeight = (int)(24 * (humidity / 100.0));
+        var barHeight = (int) (24 * (humidity / 100.0));
         U8g2.drawBox(u8, 51, 37 - barHeight, 6, barHeight);
         U8g2.drawStr(u8, 47, 48, humidity + "%");
         // Render the Compass assembly
-        drawAdvancedCompass(u8, 100, 32, 16, currentDir);     
+        drawAdvancedCompass(u8, 100, 32, 16, currentDir);
         // Render Wind Speed Footer
         U8g2.setFont(u8, getDisplay().getFontPtr(FontType.FONT_6X12_TF));
         U8g2.drawStr(u8, 2, 60, String.format("%.1f", currentWindMph));
@@ -136,7 +144,7 @@ public class WeatherStation extends Base {
 
     /**
      * Execution entry point for the simulation.
-     * 
+     *
      * @return Exit status code
      * @throws InterruptedException if thread sleep is interrupted
      */
@@ -148,13 +156,13 @@ public class WeatherStation extends Base {
             tempHistory[i] = tempC;
         }
         // Main execution loop
-        while (maxFrames == 0 || frameCount < maxFrames) { 
-            updateWeather(); 
-            render(); 
-            getDisplay().sleep(1000 / fps); 
+        while (maxFrames == 0 || frameCount < maxFrames) {
+            updateWeather();
+            render();
+            getDisplay().sleep(1000 / fps);
             frameCount++;
-        }       
-        done(); 
+        }
+        done();
         return 0;
     }
 
