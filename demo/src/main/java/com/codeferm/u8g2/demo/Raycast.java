@@ -11,6 +11,10 @@ import picocli.CommandLine.Option;
 
 /**
  * This demo simulates a 3D environment on a 128x64 monochrome display.
+ *
+ * @author Steven P. Goldsmith
+ * @version 1.0.0
+ * @since 1.0.0
  */
 @Command(name = "Raycast", mixinStandardHelpOptions = true, version = "1.0.0-SNAPSHOT",
         description = "Clean 3D Raycasting walkthrough with full var and final")
@@ -191,10 +195,10 @@ public class Raycast extends Base {
      *
      * @param args Argument list.
      */
-    public static void main(final String... args) {
-        System.exit(new CommandLine(new Raycast())
-                .registerConverter(Integer.class, Integer::decode)
-                .registerConverter(Long.class, Long::decode)
-                .execute(args));
+    public static void main(String... args) {
+        System.exit(new CommandLine(new Raycast()).registerConverter(Byte.class, Byte::decode).registerConverter(Byte.TYPE,
+                Byte::decode).registerConverter(Short.class, Short::decode).registerConverter(Short.TYPE, Short::decode).
+                registerConverter(Integer.class, Integer::decode).registerConverter(Integer.TYPE, Integer::decode).
+                registerConverter(Long.class, Long::decode).registerConverter(Long.TYPE, Long::decode).execute(args));
     }
 }

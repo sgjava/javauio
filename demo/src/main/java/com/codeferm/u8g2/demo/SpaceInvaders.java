@@ -14,6 +14,10 @@ import picocli.CommandLine.Option;
 
 /**
  * Space Invaders where player is "AI" driven.
+ *
+ * @author Steven P. Goldsmith
+ * @version 1.0.0
+ * @since 1.0.0
  */
 @Command(name = "SpaceInvaders", mixinStandardHelpOptions = true, version = "1.0.0-SNAPSHOT",
         description = "Space Invaders - Corrected Jitter-Free Demo")
@@ -524,10 +528,10 @@ public class SpaceInvaders extends Base {
      *
      * @param args Argument list.
      */
-    public static void main(String[] args) {
-        System.exit(new CommandLine(new SpaceInvaders())
-                .registerConverter(Integer.class, Integer::decode)
-                .registerConverter(Long.class, Long::decode)
-                .execute(args));
+    public static void main(String... args) {
+        System.exit(new CommandLine(new SpaceInvaders()).registerConverter(Byte.class, Byte::decode).registerConverter(Byte.TYPE,
+                Byte::decode).registerConverter(Short.class, Short::decode).registerConverter(Short.TYPE, Short::decode).
+                registerConverter(Integer.class, Integer::decode).registerConverter(Integer.TYPE, Integer::decode).
+                registerConverter(Long.class, Long::decode).registerConverter(Long.TYPE, Long::decode).execute(args));
     }
 }

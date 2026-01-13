@@ -11,7 +11,7 @@ import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 
 /**
- * A professional-grade weather station simulation for U8g2 displays.
+ * Weather station simulation for U8g2 displays.
  * 
  * Implements realistic wind smoothing, cardinal directions, and historical data tracking.
  */
