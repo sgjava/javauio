@@ -15,7 +15,7 @@ import picocli.CommandLine.Option;
  * 
  * Implements realistic wind smoothing, cardinal directions, and historical data tracking.
  */
-@Command(name = "WeatherStation", mixinStandardHelpOptions = true, version = "2.0.0")
+@Command(name = "WeatherStation", mixinStandardHelpOptions = true, version = "1.0.0-SNAPSHOT")
 public class WeatherStation extends Base {
 
     @Option(names = {"-f", "--fps"}, description = "Update rate", defaultValue = "10")
