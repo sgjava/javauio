@@ -168,6 +168,7 @@ public class SpriteSheet extends Base {
         }
         logger.info("All sprites displayed. Closing...");
         display.sleep(3000);
+        done();
         return 0;
     }
 
