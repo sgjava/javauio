@@ -72,17 +72,12 @@ public class LedDisplay extends Base {
         // Calculate dynamic center positions using base class width and height
         var centerX = (getWidth() - 16) / 2;
         // Lift sprite slightly for text space
-        var centerY = (getHeight() / 2) - 16;
-        // Rough estimate for 6-pixel font width
-        var textX = (getWidth() - (text.length() * 6)) / 2;
-        var textY = centerY + 24;
+        var centerY = (getHeight() / 2) - 12;
         try {
             Common.moveJavaToNative(spritePtr, sprite, sprite.length);
             U8g2.clearBuffer(u8);
             // Render sprite centered
             U8g2.drawBitmap(u8, centerX, centerY, 2, 16, spritePtr);
-            // Render text centered
-            U8g2.drawStr(u8, textX, textY, text);
             U8g2.sendBuffer(u8);
         } finally {
             Common.free(spritePtr);
