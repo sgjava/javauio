@@ -18,7 +18,7 @@ code. Just pass in --help to get list of command line arguments.
 
 * `java --enable-native-access=ALL-UNNAMED -cp $HOME/javauio/demo/target/demo-1.0.0-SNAPSHOT.jar:$HOME/javauio/u8g2/target/u8g2-1.0.0-SNAPSHOT-linux32.jar com.codeferm.u8g2.demo.SimpleText --help`
 
- ### JavaUIO U8g2 Demo Suite: Beyond the Basics
+### JavaUIO U8g2 Demo Suite: Beyond the Basics
 
 This collection of demos demonstrates the high-performance JNI bindings of JavaUIO, moving from simple text to complex real-time graphics and system monitoring.
 
