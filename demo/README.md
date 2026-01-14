@@ -63,7 +63,7 @@ Line wrapping is built in as well.
 * Video.java: Pushes the boundaries of monochrome displays by streaming video frames. It demonstrates highly optimized buffer transfers to achieve fluid playback on I2C/SPI screens.
 
 ### Architecture & Portability
-![u8g2](images/u8g2.png)
+![u8g2](images/u8g2.jpg)
 * MultiDisplay.java: Showcases the unique thread-safe capability of JavaUIO, allowing a single Java application to drive multiple physical displays independently without resource conflicts.
 This will not work on SDL displays.
 ## Run U8g2 plus Periphery demos
