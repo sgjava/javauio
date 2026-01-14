@@ -37,6 +37,9 @@ This collection of demos demonstrates the high-performance JNI bindings of JavaU
 
 ![SpriteSheet](images/SpriteSheet.png)
 * SpriteSheet.java: Demonstrates how to handle tile sheets by slicing and rendering specific frames from a larger image sheet—essential for efficient memory usage in complex UIs.
+
+![WireframeCube](images/WireframeCube.png)
+* WireframeCube.java uses math and drawing primitives to animate rotating 3D wireframe cube. No cheating with sprites here.
 * Xbm.java: Updated for the latest U8g2 version, this demo shows how to load and display X BitMap files, which is the standard for custom icons and branding on monochrome screens.
 
 ### Real-World Applications
