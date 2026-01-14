@@ -4,12 +4,14 @@
 package com.codeferm.all.demo;
 
 import static com.codeferm.periphery.Common.cString;
+import com.codeferm.periphery.Common;
 import com.codeferm.periphery.Gpio;
 import static com.codeferm.periphery.Gpio.GPIO_BIAS_DEFAULT;
 import static com.codeferm.periphery.Gpio.GPIO_DIR_OUT;
 import static com.codeferm.periphery.Gpio.GPIO_DRIVE_DEFAULT;
 import static com.codeferm.periphery.Gpio.GPIO_EDGE_NONE;
 import static com.codeferm.periphery.Gpio.GPIO_EVENT_CLOCK_REALTIME;
+import com.codeferm.u8g2.U8g2;
 import com.codeferm.u8g2.demo.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,54 +19,106 @@ import picocli.CommandLine;
 import picocli.CommandLine.Command;
 
 /**
- * Use mono display and GPIO.
+ * Use mono display and GPIO to show animated LED status with dynamic positioning.
  *
  * @author Steven P. Goldsmith
  * @version 1.0.0
  * @since 1.0.0
  */
 @Command(name = "LedDisplay", mixinStandardHelpOptions = true, version = "1.0.0-SNAPSHOT",
-        description = "Blink LED and show status on mono display")
+        description = "Blink LED and show animated sprite on mono display")
 public class LedDisplay extends Base {
 
-    /**
-     * Logger.
-     */
     private static final Logger logger = LoggerFactory.getLogger(LedDisplay.class);
-
     /**
-     * Device option.
+     * GPIO device.
      */
     @CommandLine.Option(names = {"-d", "--device"}, description = "GPIO device, ${DEFAULT-VALUE} by default.")
     private String device = "/dev/gpiochip0";
     /**
-     * Line option.
+     * GPIO line.
      */
     @CommandLine.Option(names = {"-l", "--line"}, description = "GPIO line, ${DEFAULT-VALUE} by default.")
     private int line = 203;
 
     /**
-     * Simple text display.
-     *
-     * @return Exit code.
-     * @throws InterruptedException Possible exception.
+     * LED Off Sprite (16x16 MSB-first)
      */
+    private static final byte[] LED_OFF = {
+        (byte) 0x07, (byte) 0xe0, (byte) 0x08, (byte) 0x10, (byte) 0x10, (byte) 0x08, (byte) 0x10, (byte) 0x08,
+        (byte) 0x10, (byte) 0x08, (byte) 0x10, (byte) 0x08, (byte) 0x10, (byte) 0x08, (byte) 0x10, (byte) 0x08,
+        (byte) 0x10, (byte) 0x08, (byte) 0x08, (byte) 0x10, (byte) 0x04, (byte) 0x20, (byte) 0x03, (byte) 0xc0,
+        (byte) 0x02, (byte) 0x40, (byte) 0x02, (byte) 0x40, (byte) 0x03, (byte) 0xc0, (byte) 0x00, (byte) 0x00
+    };
+
+    /**
+     * LED On Sprite (16x16 MSB-first)
+     */
+    private static final byte[] LED_ON = {
+        (byte) 0x07, (byte) 0xe0, (byte) 0x0f, (byte) 0xf0, (byte) 0x1f, (byte) 0xf8, (byte) 0x1f, (byte) 0xf8,
+        (byte) 0x1f, (byte) 0xf8, (byte) 0x1f, (byte) 0xf8, (byte) 0x1f, (byte) 0xf8, (byte) 0x1f, (byte) 0xf8,
+        (byte) 0x1f, (byte) 0xf8, (byte) 0x0f, (byte) 0xf0, (byte) 0x07, (byte) 0xe0, (byte) 0x03, (byte) 0xc0,
+        (byte) 0x02, (byte) 0x40, (byte) 0x02, (byte) 0x40, (byte) 0x03, (byte) 0xc0, (byte) 0x00, (byte) 0x00
+    };
+
+    /**
+     * Updates display with centered sprite and status text.
+     *
+     * @param on True for ON sprite, false for OFF.
+     * @param text Status string.
+     */
+    private void drawLedStatus(final boolean on, final String text) {
+        var u8 = getU8g2();
+        var sprite = on ? LED_ON : LED_OFF;
+        var spritePtr = Common.malloc(sprite.length);
+
+        // Calculate dynamic center positions using base class width and height
+        var centerX = (getWidth() - 16) / 2;
+        var centerY = (getHeight() / 2) - 12; // Lift sprite slightly for text space
+        var textX = (getWidth() - (text.length() * 6)) / 2; // Rough estimate for 6-pixel font width
+        var textY = centerY + 24;
+
+        try {
+            Common.moveJavaToNative(spritePtr, sprite, sprite.length);
+            U8g2.clearBuffer(u8);
+
+            // Render sprite centered
+            U8g2.drawBitmap(u8, centerX, centerY, 2, 16, spritePtr);
+
+            // Render text centered
+            U8g2.drawStr(u8, textX, textY, text);
+
+            U8g2.sendBuffer(u8);
+        } finally {
+            Common.free(spritePtr);
+        }
+    }
+
     @Override
     public Integer call() throws InterruptedException {
-        // This will setup display
+        // Setup display through base class
         var exitCode = super.call();
-        // 1 second delay after screen draw
-        setSleep(1000);
-        try (final var gpio = new Gpio(device, line, Gpio.GpioConfig.builder().bias(GPIO_BIAS_DEFAULT).direction(GPIO_DIR_OUT).
-                drive(GPIO_DRIVE_DEFAULT).edge(GPIO_EDGE_NONE).inverted(false).label(cString(LedDisplay.class.getSimpleName())).
-                event_clock(GPIO_EVENT_CLOCK_REALTIME).debounce_us(0).build())) {
-            logger.info("Blinking LED");
+        setSleep(1000); //
+
+        try (final var gpio = new Gpio(device, line, Gpio.GpioConfig.builder()
+                .bias(GPIO_BIAS_DEFAULT).direction(GPIO_DIR_OUT)
+                .drive(GPIO_DRIVE_DEFAULT).edge(GPIO_EDGE_NONE)
+                .inverted(false).label(cString(LedDisplay.class.getSimpleName()))
+                .event_clock(GPIO_EVENT_CLOCK_REALTIME).debounce_us(0).build())) { //
+
+            logger.info("Blinking LED with dynamic animation");
             var i = 0;
             while (i < 10) {
+                // LED ON
                 Gpio.gpioWrite(gpio.getHandle(), true);
-                showText("LED on");
+                drawLedStatus(true, "LED ON ");
+                getDisplay().sleep(500);
+
+                // LED OFF
                 Gpio.gpioWrite(gpio.getHandle(), false);
-                showText("LED off");
+                drawLedStatus(false, "LED OFF");
+                getDisplay().sleep(500);
+
                 i++;
             }
         } catch (RuntimeException e) {
