@@ -57,6 +57,10 @@ done();
 
 <img src="images/u8g2.jpg" width="300"/>
 
+
+Check out all the [demos](https://github.com/sgjava/javauio/tree/main/demo/src/main/java/com/codeferm/u8g2/demo).
+You will find quite a sophisticated selection. 
+
 SSD1306 sendBuffer performance based on JDK 25 and Nano Pi Duo.
 
 |Setup                       |Type |Bus KHz | FPS  |
