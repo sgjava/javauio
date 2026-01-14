@@ -40,24 +40,22 @@ public class LedDisplay extends Base {
      */
     @CommandLine.Option(names = {"-l", "--line"}, description = "GPIO line, ${DEFAULT-VALUE} by default.")
     private int line = 203;
-
     /**
-     * LED Off Sprite (16x16 MSB-first)
+     * Realistic LED Off: Outline with a small internal reflection highlight.
      */
     private static final byte[] LED_OFF = {
-        (byte) 0x07, (byte) 0xe0, (byte) 0x08, (byte) 0x10, (byte) 0x10, (byte) 0x08, (byte) 0x10, (byte) 0x08,
+        (byte) 0x07, (byte) 0xe0, (byte) 0x08, (byte) 0x10, (byte) 0x13, (byte) 0x08, (byte) 0x12, (byte) 0x08,
         (byte) 0x10, (byte) 0x08, (byte) 0x10, (byte) 0x08, (byte) 0x10, (byte) 0x08, (byte) 0x10, (byte) 0x08,
         (byte) 0x10, (byte) 0x08, (byte) 0x08, (byte) 0x10, (byte) 0x04, (byte) 0x20, (byte) 0x03, (byte) 0xc0,
         (byte) 0x02, (byte) 0x40, (byte) 0x02, (byte) 0x40, (byte) 0x03, (byte) 0xc0, (byte) 0x00, (byte) 0x00
     };
-
     /**
-     * LED On Sprite (16x16 MSB-first)
+     * Realistic LED On: Solid core with a "glow" halo around the top.
      */
     private static final byte[] LED_ON = {
-        (byte) 0x07, (byte) 0xe0, (byte) 0x0f, (byte) 0xf0, (byte) 0x1f, (byte) 0xf8, (byte) 0x1f, (byte) 0xf8,
-        (byte) 0x1f, (byte) 0xf8, (byte) 0x1f, (byte) 0xf8, (byte) 0x1f, (byte) 0xf8, (byte) 0x1f, (byte) 0xf8,
-        (byte) 0x1f, (byte) 0xf8, (byte) 0x0f, (byte) 0xf0, (byte) 0x07, (byte) 0xe0, (byte) 0x03, (byte) 0xc0,
+        (byte) 0x07, (byte) 0xe0, (byte) 0x1f, (byte) 0xf8, (byte) 0x3f, (byte) 0xfc, (byte) 0x7f, (byte) 0xfe,
+        (byte) 0x7f, (byte) 0xfe, (byte) 0x7f, (byte) 0xfe, (byte) 0x7f, (byte) 0xfe, (byte) 0x7f, (byte) 0xfe,
+        (byte) 0x7f, (byte) 0xfe, (byte) 0x3f, (byte) 0xfc, (byte) 0x1f, (byte) 0xf8, (byte) 0x03, (byte) 0xc0,
         (byte) 0x02, (byte) 0x40, (byte) 0x02, (byte) 0x40, (byte) 0x03, (byte) 0xc0, (byte) 0x00, (byte) 0x00
     };
 
@@ -71,23 +69,20 @@ public class LedDisplay extends Base {
         var u8 = getU8g2();
         var sprite = on ? LED_ON : LED_OFF;
         var spritePtr = Common.malloc(sprite.length);
-
         // Calculate dynamic center positions using base class width and height
         var centerX = (getWidth() - 16) / 2;
-        var centerY = (getHeight() / 2) - 12; // Lift sprite slightly for text space
-        var textX = (getWidth() - (text.length() * 6)) / 2; // Rough estimate for 6-pixel font width
+        // Lift sprite slightly for text space
+        var centerY = (getHeight() / 2) - 12;
+        // Rough estimate for 6-pixel font width
+        var textX = (getWidth() - (text.length() * 6)) / 2;
         var textY = centerY + 24;
-
         try {
             Common.moveJavaToNative(spritePtr, sprite, sprite.length);
             U8g2.clearBuffer(u8);
-
             // Render sprite centered
             U8g2.drawBitmap(u8, centerX, centerY, 2, 16, spritePtr);
-
             // Render text centered
             U8g2.drawStr(u8, textX, textY, text);
-
             U8g2.sendBuffer(u8);
         } finally {
             Common.free(spritePtr);
@@ -98,14 +93,12 @@ public class LedDisplay extends Base {
     public Integer call() throws InterruptedException {
         // Setup display through base class
         var exitCode = super.call();
-        setSleep(1000); //
-
+        setSleep(1000);
         try (final var gpio = new Gpio(device, line, Gpio.GpioConfig.builder()
                 .bias(GPIO_BIAS_DEFAULT).direction(GPIO_DIR_OUT)
                 .drive(GPIO_DRIVE_DEFAULT).edge(GPIO_EDGE_NONE)
                 .inverted(false).label(cString(LedDisplay.class.getSimpleName()))
-                .event_clock(GPIO_EVENT_CLOCK_REALTIME).debounce_us(0).build())) { //
-
+                .event_clock(GPIO_EVENT_CLOCK_REALTIME).debounce_us(0).build())) {
             logger.info("Blinking LED with dynamic animation");
             var i = 0;
             while (i < 10) {
@@ -113,12 +106,10 @@ public class LedDisplay extends Base {
                 Gpio.gpioWrite(gpio.getHandle(), true);
                 drawLedStatus(true, "LED ON ");
                 getDisplay().sleep(500);
-
                 // LED OFF
                 Gpio.gpioWrite(gpio.getHandle(), false);
                 drawLedStatus(false, "LED OFF");
                 getDisplay().sleep(500);
-
                 i++;
             }
         } catch (RuntimeException e) {
