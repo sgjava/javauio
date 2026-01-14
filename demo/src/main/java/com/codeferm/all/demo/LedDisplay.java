@@ -29,6 +29,9 @@ import picocli.CommandLine.Command;
         description = "Blink LED and show animated sprite on mono display")
 public class LedDisplay extends Base {
 
+    /**
+     * Logger.
+     */
     private static final Logger logger = LoggerFactory.getLogger(LedDisplay.class);
     /**
      * GPIO device.

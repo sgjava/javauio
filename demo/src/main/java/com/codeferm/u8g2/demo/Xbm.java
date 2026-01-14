@@ -109,7 +109,6 @@ public class Xbm extends Base {
      */
     public void xbm() {
         final var u8g2 = getU8g2();
-        showText("XBM image");
         logger.debug(String.format("XBM length %d", logo.length));
         // Make sure image will fit
         if (U8g2.getDisplayHeight(u8g2) >= 64) {
