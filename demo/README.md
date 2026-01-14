@@ -31,8 +31,10 @@ This collection of demos demonstrates the high-performance JNI bindings of JavaU
 ### Advanced Visuals & Games
 ![Raycast](images/Raycast.png)
 * Raycast.java: A sophisticated demo implementing a "pseudo-3D" raycasting engine (similar to Wolfenstein 3D). It demonstrates that the library is fast enough to handle complex per-pixel calculations and real-time perspective rendering.
+
 ![SpaceInvaders](images/SpaceInvaders.png)
 * SpaceInvaders.java: A classic arcade implementation that serves as a masterclass in game loop logic, collision detection, and sprite management within the monochrome constraints of U8g2.
+
 ![SpriteSheet](images/SpriteSheet.png)
 * SpriteSheet.java: Demonstrates how to handle tile sheets by slicing and rendering specific frames from a larger image sheet—essential for efficient memory usage in complex UIs.
 * Xbm.java: Updated for the latest U8g2 version, this demo shows how to load and display X BitMap files, which is the standard for custom icons and branding on monochrome screens.
@@ -40,8 +42,10 @@ This collection of demos demonstrates the high-performance JNI bindings of JavaU
 ### Real-World Applications
 ![WeatherStation](images/WeatherStation.png)
 * WeatherStation.java: A practical dashboard example that combines custom icons, data formatting, and layout management to create a functional, information-dense display.
+
 ![LinuxMonitor](images/LinuxMonitor.png)
 * LinuxMonitor.java: A system utility demo that pulls real-time stats (CPU, Memory, etc.) from the Linux OS and displays them on the hardware, turning your small OLED into a dedicated system monitor.
+
 ![Video](images/Video.png)
 * Video.java: Pushes the boundaries of monochrome displays by streaming video frames. It demonstrates highly optimized buffer transfers to achieve fluid playback on I2C/SPI screens.
 
