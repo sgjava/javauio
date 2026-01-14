@@ -23,11 +23,19 @@ code. Just pass in --help to get list of command line arguments.
 This collection of demos demonstrates the high-performance JNI bindings of JavaUIO, moving from simple text to complex real-time graphics and system monitoring.
 
 ### Core Graphics & Performance
+![SimpleText](images/SimpleText.png)
 * SimpleText.java: The essential starting point. It demonstrates how to initialize the display, select fonts, and render strings with minimal overhead.
+Line wrapping is built in as well.
+
+![Draw](images/Draw.png)
 * Draw.java: A comprehensive test of the U8g2 primitive API. It exercises lines, boxes, circles, and frames to verify that geometric rendering is crisp and accurate across the JNI bridge.
 * Perf.java: A stress-test demo designed to measure frames per second (FPS). It pushes the library to its limits to prove that JavaUIO provides a near-native experience for high-frequency updates.
+
+![BufImage](images/BufImage.png)
 * BufImage.java: Showcases the ability to bridge Java's BufferedImage with U8g2’s native buffers. This is critical for developers who want to use standard Java 2D drawing tools and then "flush" the result to a monochrome OLED/LCD.
 
+![Sdl](images/Sdl.png)
+* Sdl.java is a simple demo the checks for display type then displays message. All demos work with SDL except multi-display enable demos.
 ### Advanced Visuals & Games
 ![Raycast](images/Raycast.png)
 * Raycast.java: A sophisticated demo implementing a "pseudo-3D" raycasting engine (similar to Wolfenstein 3D). It demonstrates that the library is fast enough to handle complex per-pixel calculations and real-time perspective rendering.
@@ -40,6 +48,8 @@ This collection of demos demonstrates the high-performance JNI bindings of JavaU
 
 ![WireframeCube](images/WireframeCube.png)
 * WireframeCube.java uses math and drawing primitives to animate rotating 3D wireframe cube. No cheating with sprites here.
+
+![Xbm](images/Xbm.png)
 * Xbm.java: Updated for the latest U8g2 version, this demo shows how to load and display X BitMap files, which is the standard for custom icons and branding on monochrome screens.
 
 ### Real-World Applications
@@ -53,8 +63,9 @@ This collection of demos demonstrates the high-performance JNI bindings of JavaU
 * Video.java: Pushes the boundaries of monochrome displays by streaming video frames. It demonstrates highly optimized buffer transfers to achieve fluid playback on I2C/SPI screens.
 
 ### Architecture & Portability
+![u8g2](images/u8g2.png)
 * MultiDisplay.java: Showcases the unique thread-safe capability of JavaUIO, allowing a single Java application to drive multiple physical displays independently without resource conflicts.
-
+This will not work on SDL displays.
 ## Run U8g2 plus Periphery demos
 To see a list of demos 
 [browse](https://github.com/sgjava/javauio/tree/main/demo/src/main/java/com/codeferm/all/demo)
