@@ -143,9 +143,6 @@ public class MultiDisplay implements Callable<Integer> {
                 u8g2 = display.initSwSpi(SetupType.valueOf(strMap.get("setup")), intMap.get("gpio"), intMap.get("dc"), intMap.get(
                         "reset"), intMap.get("mosi"), intMap.get("sck"), intMap.get("cs"), intMap.get("delay"));
                 break;
-            case SDL:
-                u8g2 = display.initSdl();
-                break;
             default:
                 throw new RuntimeException(String.format("%s is not a valid type", strMap.get("setup")));
         }
