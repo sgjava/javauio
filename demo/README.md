@@ -35,10 +35,13 @@ Line wrapping is built in as well.
 * BufImage.java: Showcases the ability to bridge Java's BufferedImage with U8g2’s native buffers. This is critical for developers who want to use standard Java 2D drawing tools and then "flush" the result to a monochrome OLED/LCD.
 
 ![Sdl](images/Sdl.png)
-* Sdl.java is a simple demo the checks for display type then displays message. All demos work with SDL except multi-display enable demos.
+* Sdl.java: A simple demo the checks for display type then displays message. All demos work with SDL except multi-display enable demos.
 ### Advanced Visuals & Games
 ![Raycast](images/Raycast.png)
 * Raycast.java: A sophisticated demo implementing a "pseudo-3D" raycasting engine (similar to Wolfenstein 3D). It demonstrates that the library is fast enough to handle complex per-pixel calculations and real-time perspective rendering.
+
+![Plasma](images/Plasma.png)
+* Plasma.java: Creates the illusion of organic, shifting clouds by using three or more overlapping sine waves. Because the display is 1-bit, we use a "dither" or threshold to turn those smooth wave values into a shimmering pattern.
 
 ![SpaceInvaders](images/SpaceInvaders.png)
 * SpaceInvaders.java: A classic arcade implementation that serves as a masterclass in game loop logic, collision detection, and sprite management within the monochrome constraints of U8g2.

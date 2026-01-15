@@ -23,7 +23,13 @@ public class Sdl extends Base {
      * Logger.
      */
     private static final Logger logger = LoggerFactory.getLogger(Sdl.class);
-    
+
+    /**
+     * Run demo.
+     *
+     * @return Exit code.
+     * @throws InterruptedException Possible exception.
+     */    
     @Override
     public Integer call() throws InterruptedException {
         int exitCode = 1;
