@@ -179,79 +179,75 @@ public class MultiDisplay implements Callable<Integer> {
      */
     @Override
     public Integer call() throws InterruptedException {
-        int exitCode = 1;
         // This will setup display
-        if (!type.equals(DisplayType.SDL)) {
-            final var properties = loadProperties(fileName);
-            final var set = getDisplays(properties);
-            final var map = new TreeMap<Integer, Long>();
-            // Setup displays and store in Map.
-            set.forEach(displayNum -> {
-                map.put(displayNum, setup(displayNum, properties));
-                display.sleep(2000);
-            });
-            // Set thread pool to number of displays
-            final var executor = Executors.newFixedThreadPool(set.size());
-            // Write string to each display
-            for (Map.Entry<Integer, Long> entry : map.entrySet()) {
-                executor.execute(new Runnable() {
-                    public void run() {
-                        final var u8g2 = entry.getValue();
-                        final var height = U8g2.getDisplayHeight(u8g2);
-                        final var width = U8g2.getDisplayWidth(u8g2);
-                        // Draw discs in a loop switching drawing colors
-                        for (int i = 0; i < 10; i++) {
-                            U8g2.setDrawColor(u8g2, 1);
-                            for (int r = 4; r < height; r += 4) {
-                                U8g2.drawDisc(u8g2, width / 2, height / 2, r / 2, U8g2.U8G2_DRAW_ALL);
-                                U8g2.sendBuffer(u8g2);
-                                if (typeMap.get(entry.getKey()) == SDL) {
-                                    display.sleep(50);
-                                }
-                            }
-                            U8g2.setDrawColor(u8g2, 0);
-                            for (int r = 4; r < height; r += 4) {
-                                U8g2.drawDisc(u8g2, width / 2, height / 2, r / 2, U8g2.U8G2_DRAW_ALL);
-                                U8g2.sendBuffer(u8g2);
-                                if (typeMap.get(entry.getKey()) == SDL) {
-                                    display.sleep(50);
-                                }
+        var exitCode = 0;
+        final var properties = loadProperties(fileName);
+        final var set = getDisplays(properties);
+        final var map = new TreeMap<Integer, Long>();
+        // Setup displays and store in Map.
+        set.forEach(displayNum -> {
+            map.put(displayNum, setup(displayNum, properties));
+            display.sleep(2000);
+        });
+        // Set thread pool to number of displays
+        final var executor = Executors.newFixedThreadPool(set.size());
+        // Write string to each display
+        for (Map.Entry<Integer, Long> entry : map.entrySet()) {
+            executor.execute(new Runnable() {
+                public void run() {
+                    final var u8g2 = entry.getValue();
+                    final var height = U8g2.getDisplayHeight(u8g2);
+                    final var width = U8g2.getDisplayWidth(u8g2);
+                    // Draw discs in a loop switching drawing colors
+                    for (int i = 0; i < 10; i++) {
+                        U8g2.setDrawColor(u8g2, 1);
+                        for (int r = 4; r < height; r += 4) {
+                            U8g2.drawDisc(u8g2, width / 2, height / 2, r / 2, U8g2.U8G2_DRAW_ALL);
+                            U8g2.sendBuffer(u8g2);
+                            if (typeMap.get(entry.getKey()) == SDL) {
+                                display.sleep(50);
                             }
                         }
-                        logger.debug(Long.toString(u8g2));
+                        U8g2.setDrawColor(u8g2, 0);
+                        for (int r = 4; r < height; r += 4) {
+                            U8g2.drawDisc(u8g2, width / 2, height / 2, r / 2, U8g2.U8G2_DRAW_ALL);
+                            U8g2.sendBuffer(u8g2);
+                            if (typeMap.get(entry.getKey()) == SDL) {
+                                display.sleep(50);
+                            }
+                        }
                     }
-                });
-            }
-            try {
-                // Initiate shutdown
-                executor.shutdown();
-                // Wait for threads to finish
-                if (!executor.isTerminated()) {
-                    logger.info("Waiting for threads to finish");
-                    executor.awaitTermination(Long.MAX_VALUE, NANOSECONDS);
-                }
-            } catch (InterruptedException e) {
-                logger.error("Tasks interrupted");
-            } finally {
-                executor.shutdownNow();
-            }
-            // Shut down displays
-            map.entrySet().stream().map(entry -> {
-                U8g2.setPowerSave(entry.getValue(), 1);
-                return entry;
-            }).forEachOrdered(entry -> {
-                if (typeMap.get(entry.getKey()) == SDL) {
-                    U8g2.done(entry.getValue());
-                } else {
-                    display.done(entry.getValue());
+                    logger.debug(Long.toString(u8g2));
                 }
             });
-            // Free global I2C and SPI handles
-            U8g2.doneI2c();
-            U8g2.doneSpi();
-        } else {
-            logger.error("SDL display type not supported");
         }
+        try {
+            // Initiate shutdown
+            executor.shutdown();
+            // Wait for threads to finish
+            if (!executor.isTerminated()) {
+                logger.info("Waiting for threads to finish");
+                executor.awaitTermination(Long.MAX_VALUE, NANOSECONDS);
+            }
+        } catch (InterruptedException e) {
+            logger.error("Tasks interrupted");
+        } finally {
+            executor.shutdownNow();
+        }
+        // Shut down displays
+        map.entrySet().stream().map(entry -> {
+            U8g2.setPowerSave(entry.getValue(), 1);
+            return entry;
+        }).forEachOrdered(entry -> {
+            if (typeMap.get(entry.getKey()) == SDL) {
+                U8g2.done(entry.getValue());
+            } else {
+                display.done(entry.getValue());
+            }
+        });
+        // Free global I2C and SPI handles
+        U8g2.doneI2c();
+        U8g2.doneSpi();
         return exitCode;
     }
 
