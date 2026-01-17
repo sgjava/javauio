@@ -6,6 +6,7 @@ package com.codeferm.periphery.demo;
 import com.codeferm.periphery.device.Mpu6050;
 import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import picocli.CommandLine;
@@ -19,11 +20,10 @@ import picocli.CommandLine.Option;
  * @version 1.0.0
  * @since 1.0.0
  */
+@Slf4j
 @Command(name = "Mpu6050Test", mixinStandardHelpOptions = true, version = "1.0.0",
         description = "Six-Axis (Gyro + Accelerometer) MEMS MotionTracking demo")
 public class Mpu6050Demo implements Callable<Integer> {
-
-    private static final Logger logger = LoggerFactory.getLogger(Mpu6050Demo.class);
 
     @Option(names = {"--device"}, description = "I2C device, ${DEFAULT-VALUE} by default.")
     private String device = "/dev/i2c-0";
@@ -39,43 +39,43 @@ public class Mpu6050Demo implements Callable<Integer> {
      */
     @Override
     public Integer call() throws InterruptedException {
-        logger.info("Starting on {} address 0x{}", device, Integer.toHexString(address));
+        log.info("Starting on {} address 0x{}", device, Integer.toHexString(address));
 
         try (var mpu = new Mpu6050(device, address)) {
             // Calibration and startup
             mpu.calibrateSensors();
             mpu.startUpdatingThread();
 
-            logger.info("Reading sensor data for 30 seconds...");
+            log.info("Reading sensor data for 30 seconds...");
             for (int i = 0; i < 10; i++) {
                 // Get a single consistent snapshot of all values
                 var data = mpu.getSnapshot();
 
-                logger.info("Accelerometer:");
-                logger.info(Mpu6050.xyzValuesToString(
+                log.info("Accelerometer:");
+                log.info(Mpu6050.xyzValuesToString(
                         Mpu6050.angleToString(data.accelAngleX()),
                         Mpu6050.angleToString(data.accelAngleY()),
                         Mpu6050.angleToString(data.accelAngleZ())));
 
-                logger.info("Accelerations:");
-                logger.info(Mpu6050.xyzValuesToString(
+                log.info("Accelerations:");
+                log.info(Mpu6050.xyzValuesToString(
                         Mpu6050.accelToString(data.accelX()),
                         Mpu6050.accelToString(data.accelY()),
                         Mpu6050.accelToString(data.accelZ())));
 
-                logger.info("Gyroscope:");
-                logger.info(Mpu6050.xyzValuesToString(
+                log.info("Gyroscope:");
+                log.info(Mpu6050.xyzValuesToString(
                         Mpu6050.angleToString(data.gyroAngleX()),
                         Mpu6050.angleToString(data.gyroAngleY()),
                         Mpu6050.angleToString(data.gyroAngleZ())));
 
-                logger.info(Mpu6050.xyzValuesToString(
+                log.info(Mpu6050.xyzValuesToString(
                         Mpu6050.angularSpeedToString(data.gyroSpeedX()),
                         Mpu6050.angularSpeedToString(data.gyroSpeedY()),
                         Mpu6050.angularSpeedToString(data.gyroSpeedZ())));
 
-                logger.info("Filtered angles:");
-                logger.info(Mpu6050.xyzValuesToString(
+                log.info("Filtered angles:");
+                log.info(Mpu6050.xyzValuesToString(
                         Mpu6050.angleToString(data.filteredX()),
                         Mpu6050.angleToString(data.filteredY()),
                         Mpu6050.angleToString(data.filteredZ())));
@@ -83,7 +83,7 @@ public class Mpu6050Demo implements Callable<Integer> {
                 TimeUnit.SECONDS.sleep(3);
             }
         } catch (RuntimeException e) {
-            logger.error("Hardware error: {}", e.getMessage());
+            log.error("Hardware error: {}", e.getMessage());
             return 1;
         }
 

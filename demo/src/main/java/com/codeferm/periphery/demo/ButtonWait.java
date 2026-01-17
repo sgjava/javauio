@@ -5,8 +5,7 @@ package com.codeferm.periphery.demo;
 
 import com.codeferm.periphery.device.BlockingButton;
 import java.util.concurrent.Callable;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
@@ -20,14 +19,10 @@ import picocli.CommandLine.Option;
  * @version 1.0.0
  * @since 1.0.0
  */
+@Slf4j
 @Command(name = "ButtonWait", mixinStandardHelpOptions = true, version = "1.0.0-SNAPSHOT",
         description = "Uses edge detection to wait for button press.")
 public class ButtonWait implements Callable<Integer> {
-
-    /**
-     * Logger.
-     */
-    private static final Logger logger = LoggerFactory.getLogger(ButtonWait.class);
 
     /**
      * Device option.
@@ -49,10 +44,10 @@ public class ButtonWait implements Callable<Integer> {
     @Override
     public Integer call() {
         var exitCode = 0;
-        logger.info("Starting ButtonWait on {} line {}", device, line);
+        log.info("Starting ButtonWait on {} line {}", device, line);
 
         try (final var button = new BlockingButton(device, line)) {
-            logger.info("Press button, stop pressing button for 10 seconds to exit");
+            log.info("Press button, stop pressing button for 10 seconds to exit");
 
             BlockingButton.ButtonEvent event;
             // Poll for event and timeout in 10 seconds if no event
@@ -62,15 +57,15 @@ public class ButtonWait implements Callable<Integer> {
 
                 // Format matches the original logging requirements
                 if (edgeStr.equals("Rising")) {
-                    logger.info(String.format("Edge rising  [%s]", timestampStr));
+                    log.info(String.format("Edge rising  [%s]", timestampStr));
                 } else if (edgeStr.equals("Falling")) {
-                    logger.info(String.format("Edge falling [%s]", timestampStr));
+                    log.info(String.format("Edge falling [%s]", timestampStr));
                 } else {
-                    logger.info(String.format("Invalid edge %d, [%s]", event.edge(), timestampStr));
+                    log.info(String.format("Invalid edge %d, [%s]", event.edge(), timestampStr));
                 }
             }
         } catch (RuntimeException e) {
-            logger.error(e.getMessage());
+            log.error(e.getMessage());
             exitCode = 1;
         }
         return exitCode;

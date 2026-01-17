@@ -8,8 +8,7 @@ import com.codeferm.periphery.Gpio.GpioConfig;
 import static com.codeferm.periphery.Common.cString;
 import static com.codeferm.periphery.Gpio.*;
 import java.util.concurrent.locks.ReentrantLock;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * LED device mapped to a Linux character device GPIO pin. This class is thread-safe.
@@ -18,12 +17,9 @@ import org.slf4j.LoggerFactory;
  * @version 1.0.0
  * @since 1.0.0
  */
+@Slf4j
 public class Led implements AutoCloseable {
 
-    /**
-     * Logger.
-     */
-    private static final Logger logger = LoggerFactory.getLogger(Led.class);
     /**
      * GPIO handle.
      */
@@ -48,9 +44,7 @@ public class Led implements AutoCloseable {
                 .edge(GPIO_EDGE_NONE)
                 .label(cString("LedDevice"))
                 .build());
-        if (logger.isDebugEnabled()) {
-            logger.debug("LED initialized using character device {} line {}", device, line);
-        }
+        log.atDebug().log("LED initialized using character device {} line {}", device, line);
     }
 
     /**
@@ -122,9 +116,7 @@ public class Led implements AutoCloseable {
         try {
             if (gpio != null) {
                 gpio.close();
-                if (logger.isDebugEnabled()) {
-                    logger.debug("LED GPIO character device closed");
-                }
+                log.atDebug().log("LED GPIO character device closed");
             }
         } finally {
             lock.unlock();

@@ -6,6 +6,7 @@ package com.codeferm.periphery.device;
 import com.codeferm.periphery.Pwm;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantLock;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * High-level LED device abstraction using hardware PWM. This class is thread-safe using a ReentrantLock for hardware state
@@ -15,6 +16,7 @@ import java.util.concurrent.locks.ReentrantLock;
  * @version 1.0.0
  * @since 1.0.0
  */
+@Slf4j
 public class LedPwm implements AutoCloseable {
 
     /**

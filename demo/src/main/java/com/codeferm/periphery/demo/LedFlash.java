@@ -6,8 +6,7 @@ package com.codeferm.periphery.demo;
 import com.codeferm.periphery.device.LedPwm;
 import com.codeferm.periphery.Pwm;
 import java.util.concurrent.Callable;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
@@ -19,14 +18,11 @@ import picocli.CommandLine.Option;
  * @version 1.0.0
  * @since 1.0.0
  */
+@Slf4j
 @Command(name = "LedFlash", mixinStandardHelpOptions = true, version = "1.0.0-SNAPSHOT",
         description = "Flash LED with PWM.")
 public class LedFlash implements Callable<Integer> {
 
-    /**
-     * Logger.
-     */
-    private static final Logger logger = LoggerFactory.getLogger(LedFlash.class);
     /**
      * Chip option.
      */
@@ -49,7 +45,7 @@ public class LedFlash implements Callable<Integer> {
         var exitCode = 0;
         // High-level LedPwm is AutoCloseable
         try (final var led = new LedPwm(chip, channel)) {
-            logger.info("Flash LED");
+            log.info("Flash LED");
             led.enable();
 
             for (var i = 0; i < 10; i++) {
@@ -64,7 +60,7 @@ public class LedFlash implements Callable<Integer> {
             led.disable();
 
         } catch (RuntimeException e) {
-            logger.error(e.getMessage());
+            log.error(e.getMessage());
             exitCode = 1;
         }
         return exitCode;

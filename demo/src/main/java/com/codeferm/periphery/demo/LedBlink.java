@@ -6,8 +6,7 @@ package com.codeferm.periphery.demo;
 import com.codeferm.periphery.device.Led;
 import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
@@ -22,14 +21,10 @@ import picocli.CommandLine.Option;
  * @version 1.0.0
  * @since 1.0.0
  */
+@Slf4j
 @Command(name = "LedBlink", mixinStandardHelpOptions = true, version = "1.0.0-SNAPSHOT",
         description = "Blink LED using com.codeferm.periphery.device.Led")
 public class LedBlink implements Callable<Integer> {
-
-    /**
-     * Logger.
-     */
-    private static final Logger logger = LoggerFactory.getLogger(LedBlink.class);
 
     /**
      * Device option.
@@ -54,19 +49,19 @@ public class LedBlink implements Callable<Integer> {
         var exitCode = 0;
         // Using var with try-with-resources for the high-level Led device
         try (var led = new Led(device, line)) {
-            logger.info("Blinking LED on {} line {}", device, line);
+            log.info("Blinking LED on {} line {}", device, line);
 
             for (var i = 0; i < 10; i++) {
-                logger.debug("Cycle {}: LED ON", i);
+                log.debug("Cycle {}: LED ON", i);
                 led.on();
                 TimeUnit.SECONDS.sleep(1);
 
-                logger.debug("Cycle {}: LED OFF", i);
+                log.debug("Cycle {}: LED OFF", i);
                 led.off();
                 TimeUnit.SECONDS.sleep(1);
             }
         } catch (Exception e) {
-            logger.error("Failed to operate LED: {}", e.getMessage());
+            log.error("Failed to operate LED: {}", e.getMessage());
             exitCode = 1;
         }
         return exitCode;

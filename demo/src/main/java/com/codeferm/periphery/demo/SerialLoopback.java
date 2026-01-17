@@ -3,10 +3,9 @@
  */
 package com.codeferm.periphery.demo;
 
-import com.codeferm.periphery.Serial;
+import com.codeferm.periphery.device.SerialDevice;
 import java.util.concurrent.Callable;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
@@ -20,19 +19,17 @@ import picocli.CommandLine.Option;
  * @version 1.0.0
  * @since 1.0.0
  */
+@Slf4j
 @Command(name = "SerialLoopback", mixinStandardHelpOptions = true, version = "1.0.0-SNAPSHOT",
         description = "Send data between RX and TX pins.")
 public class SerialLoopback implements Callable<Integer> {
 
     /**
-     * Logger.
-     */
-    private static final Logger logger = LoggerFactory.getLogger(SerialLoopback.class);
-    /**
      * Device option.
      */
     @Option(names = {"-d", "--device"}, description = "Serial device, ${DEFAULT-VALUE} by default.")
     private String device = "/dev/ttyS1";
+
     /**
      * Baud rate.
      */
@@ -40,7 +37,7 @@ public class SerialLoopback implements Callable<Integer> {
     private int baud = 115200;
 
     /**
-     * Send data via loopback.
+     * Send data via loopback using SerialDevice.
      *
      * @return Exit code.
      * @throws InterruptedException Possible exception.
@@ -48,28 +45,37 @@ public class SerialLoopback implements Callable<Integer> {
     @Override
     public Integer call() throws InterruptedException {
         var exitCode = 0;
-        try (final var serial = new Serial(device, baud)) {
+        try (final var serialDevice = new SerialDevice(device, baud)) {
+            // Log initialization at debug level using parameterized logging
+            log.debug("Serial loopback initialized on {} at {} baud", device, baud);
             final var txBuf = new byte[128];
             // Change some data at beginning and end.
             txBuf[0] = (byte) 0xff;
-            txBuf[127] = (byte) 0x80;
-            final var rxBuf = new byte[128];
-            Serial.serialWrite(serial.getHandle(), txBuf, txBuf.length);
-            Serial.serialRead(serial.getHandle(), rxBuf, rxBuf.length, 2000);
-            logger.info(String.format("%02X, %02X", (short) rxBuf[0] & 0xff, (short) rxBuf[127] & 0xff));
-        } catch (RuntimeException e) {
-            logger.error(e.getMessage());
+            txBuf[127] = (byte) 0x80;         
+            final var rxBuf = new byte[128];       
+            // Perform loopback write and read
+            serialDevice.write(txBuf);
+            final var bytesRead = serialDevice.read(rxBuf, 2000);           
+            if (bytesRead > 0) {
+                log.info(String.format("%s, %s", 
+                        SerialDevice.toHex(rxBuf[0]), 
+                        SerialDevice.toHex(rxBuf[127])));
+            } else {
+                log.warn("No data read during loopback. Is the wire connected between RX and TX?");
+            }
+        } catch (final RuntimeException e) {
+            log.error(e.getMessage());
             exitCode = 1;
         }
         return exitCode;
     }
-    
+
     /**
-     * Main parsing, error handling and handling user requests for usage help or version help are done with one line of code.
+     * Main entry point.
      *
      * @param args Argument list.
      */
-    public static void main(String... args) {
+    public static void main(final String... args) {
         System.exit(new CommandLine(new SerialLoopback()).execute(args));
     }
 }

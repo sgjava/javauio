@@ -7,8 +7,7 @@ import com.codeferm.periphery.I2c;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.concurrent.locks.ReentrantLock;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * This is based on https://github.com/Raspoid/raspoid/blob/master/src/main/com/raspoid/additionalcomponents/MPU6050.java by Julien
@@ -33,12 +32,8 @@ import org.slf4j.LoggerFactory;
  * @version 1.0.0
  * @since 1.0.0
  */
+@Slf4j
 public class Mpu6050 implements AutoCloseable {
-
-    /**
-     * Logger.
-     */
-    private static final Logger logger = LoggerFactory.getLogger(Mpu6050.class);
 
     /**
      * Reentrant lock for thread-safe I2C access and state management.
@@ -239,7 +234,7 @@ public class Mpu6050 implements AutoCloseable {
      * Calibrate the accelerometer and gyroscope sensors by taking multiple readings.
      */
     public void calibrateSensors() {
-        logger.info("Calibration starting in 5 seconds (don't move the sensor)");
+        log.info("Calibration starting in 5 seconds (don't move the sensor)");
         try {
             TimeUnit.SECONDS.sleep(5);
         } catch (InterruptedException e) {
@@ -266,7 +261,7 @@ public class Mpu6050 implements AutoCloseable {
         } finally {
             lock.unlock();
         }
-        logger.info("Calibration ended");
+        log.info("Calibration ended");
     }
 
     /**

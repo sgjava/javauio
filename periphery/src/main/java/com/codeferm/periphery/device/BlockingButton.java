@@ -10,8 +10,7 @@ import static com.codeferm.periphery.Gpio.GPIO_EDGE_FALLING;
 import static com.codeferm.periphery.Gpio.GPIO_EDGE_RISING;
 import static com.codeferm.periphery.Gpio.GPIO_POLL_EVENT;
 import java.util.concurrent.locks.ReentrantLock;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * Blocking button device using GPIO edge detection.
@@ -22,12 +21,8 @@ import org.slf4j.LoggerFactory;
  * @version 1.0.0
  * @since 1.0.0
  */
+@Slf4j
 public class BlockingButton implements AutoCloseable {
-
-    /**
-     * Logger.
-     */
-    private static final Logger logger = LoggerFactory.getLogger(BlockingButton.class);
 
     /**
      * Reentrant lock for thread-safe GPIO access and lifecycle management.
@@ -72,7 +67,7 @@ public class BlockingButton implements AutoCloseable {
      *
      * @param edge Type of edge to detect (GPIO_EDGE_NONE, GPIO_EDGE_RISING, GPIO_EDGE_FALLING, or GPIO_EDGE_BOTH).
      */
-    public final void setEdgeDetection(int edge) {
+    public final void setEdgeDetection(final int edge) {
         lock.lock();
         try {
             Gpio.gpioSetEdge(handle, edge);
@@ -87,7 +82,7 @@ public class BlockingButton implements AutoCloseable {
      * @param timeoutMillis Maximum time to wait in milliseconds.
      * @return ButtonEvent containing edge and timestamp, or null if a timeout occurred.
      */
-    public ButtonEvent waitForEvent(int timeoutMillis) {
+    public ButtonEvent waitForEvent(final int timeoutMillis) {
         lock.lock();
         try {
             // Poll for event and timeout if no event occurs
@@ -109,7 +104,7 @@ public class BlockingButton implements AutoCloseable {
      * @param timestamp Nanosecond timestamp.
      * @return Formatted string.
      */
-    public static String formatTimestamp(long timestamp) {
+    public static String formatTimestamp(final long timestamp) {
         return String.format("%8d.%9d", timestamp / 1000000000, timestamp % 1000000000);
     }
 
@@ -120,7 +115,7 @@ public class BlockingButton implements AutoCloseable {
      * @param edge The edge constant.
      * @return "Rising", "Falling", or "Invalid".
      */
-    public static String edgeToString(int edge) {
+    public static String edgeToString(final int edge) {
         if (edge == GPIO_EDGE_RISING) {
             return "Rising";
         } else if (edge == GPIO_EDGE_FALLING) {
