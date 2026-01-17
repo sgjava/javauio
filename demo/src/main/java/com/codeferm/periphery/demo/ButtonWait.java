@@ -14,8 +14,7 @@ import picocli.CommandLine.Option;
 /**
  * Blocking event using button device class.
  *
- * This version uses the encapsulated BlockingButton device to handle edge detection
- * and thread-safe hardware access.
+ * This version uses the encapsulated BlockingButton device to handle edge detection and thread-safe hardware access.
  *
  * @author Steven P. Goldsmith
  * @version 1.0.0
@@ -54,13 +53,13 @@ public class ButtonWait implements Callable<Integer> {
 
         try (final var button = new BlockingButton(device, line)) {
             logger.info("Press button, stop pressing button for 10 seconds to exit");
-            
+
             BlockingButton.ButtonEvent event;
             // Poll for event and timeout in 10 seconds if no event
             while ((event = button.waitForEvent(10000)) != null) {
                 final var edgeStr = BlockingButton.edgeToString(event.edge());
                 final var timestampStr = BlockingButton.formatTimestamp(event.timestamp());
-                
+
                 // Format matches the original logging requirements
                 if (edgeStr.equals("Rising")) {
                     logger.info(String.format("Edge rising  [%s]", timestampStr));

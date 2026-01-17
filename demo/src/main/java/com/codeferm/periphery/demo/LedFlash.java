@@ -51,18 +51,18 @@ public class LedFlash implements Callable<Integer> {
         try (final var led = new LedPwm(chip, channel)) {
             logger.info("Flash LED");
             led.enable();
-            
+
             for (var i = 0; i < 10; i++) {
                 // Fade in
                 led.changeBrightness(1000, 0, 10, 100, 5000);
                 // Fade out
                 led.changeBrightness(1000, 1000, -10, 100, 5000);
             }
-            
+
             // Clean up states before close
             Pwm.pwmSetPeriod(led.getHandle(), 0);
             led.disable();
-            
+
         } catch (RuntimeException e) {
             logger.error(e.getMessage());
             exitCode = 1;

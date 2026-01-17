@@ -12,8 +12,8 @@ import org.slf4j.LoggerFactory;
 
 /**
  * This is based on https://github.com/Raspoid/raspoid/blob/master/src/main/com/raspoid/additionalcomponents/MPU6050.java by Julien
- * Louette &amp; Gaël Wittorski. The idea here is to show you with simple changes you can use existing code with something complex like
- * the MPU 6050 and easily convert it to Java Periphery.
+ * Louette &amp; Gaël Wittorski. The idea here is to show you with simple changes you can use existing code with something complex
+ * like the MPU 6050 and easily convert it to Java Periphery.
  *
  * <b>Implementation of the MPU6050 component.</b>
  *
@@ -65,15 +65,25 @@ public class Mpu6050 implements AutoCloseable {
      * DEFAULT VALUES
      * -----------------------------------------------------------------------
      */
-    /** Default address of the MPU6050 device. */
+    /**
+     * Default address of the MPU6050 device.
+     */
     public static final int DEFAULT_MPU6050_ADDRESS = 0x68;
-    /** Default value for the digital low pass filter (DLPF) setting. */
+    /**
+     * Default value for the digital low pass filter (DLPF) setting.
+     */
     public static final int DEFAULT_DLPF_CFG = 0x06;
-    /** Default value for the sample rate divider. */
+    /**
+     * Default value for the sample rate divider.
+     */
     public static final int DEFAULT_SMPLRT_DIV = 0x00;
-    /** Coefficient to convert an angle value from radians to degrees. */
+    /**
+     * Coefficient to convert an angle value from radians to degrees.
+     */
     public static final double RADIAN_TO_DEGREE = 180. / Math.PI;
-    /** Default Z angle for accelerometer. */
+    /**
+     * Default Z angle for accelerometer.
+     */
     private static final double ACCEL_Z_ANGLE = 0;
 
     /*
@@ -81,23 +91,32 @@ public class Mpu6050 implements AutoCloseable {
      * REGISTERS ADDRESSES
      * -----------------------------------------------------------------------
      */
-    /** <b>[datasheet 2 - p.11]</b> Sample Rate Divider. */
+    /** <b>[datasheet 2 - p.11]</b> Sample Rate Divider.
+     */
     public static final int MPU6050_REG_ADDR_SMPRT_DIV = 0x19;
-    /** <b>[datasheet 2 - p.13]</b> Configuration. */
+    /** <b>[datasheet 2 - p.13]</b> Configuration.
+     */
     public static final int MPU6050_REG_ADDR_CONFIG = 0x1A;
-    /** <b>[datasheet 2 - p.14]</b> Gyroscope Configuration. */
+    /** <b>[datasheet 2 - p.14]</b> Gyroscope Configuration.
+     */
     public static final int MPU6050_REG_ADDR_GYRO_CONFIG = 0x1B;
-    /** <b>[datasheet 2 - p.15]</b> Accelerometer Configuration. */
+    /** <b>[datasheet 2 - p.15]</b> Accelerometer Configuration.
+     */
     public static final int MPU6050_REG_ADDR_ACCEL_CONFIG = 0x1C;
-    /** <b>[datasheet 2 - p.27]</b> Interrupt Enable. */
+    /** <b>[datasheet 2 - p.27]</b> Interrupt Enable.
+     */
     public static final int MPU6050_REG_ADDR_INT_ENABLE = 0x38;
-    /** <b>[datasheet 2 - p.40]</b> Power Management 1. */
+    /** <b>[datasheet 2 - p.40]</b> Power Management 1.
+     */
     public static final int MPU6050_REG_ADDR_PWR_MGMT_1 = 0x6B;
-    /** <b>[datasheet 2 - p.42]</b> Power Management 2. */
+    /** <b>[datasheet 2 - p.42]</b> Power Management 2.
+     */
     public static final int MPU6050_REG_ADDR_PWR_MGMT_2 = 0x6C;
-    /** <b>[datasheet 2 - p.29]</b> Accelerometer Measurements. */
+    /** <b>[datasheet 2 - p.29]</b> Accelerometer Measurements.
+     */
     public static final int MPU6050_REG_ADDR_ACCEL_XOUT_H = 0x3B;
-    /** <b>[datasheet 2 - p.31]</b> Gyroscope Measurements. */
+    /** <b>[datasheet 2 - p.31]</b> Gyroscope Measurements.
+     */
     public static final int MPU6050_REG_ADDR_GYRO_XOUT_H = 0x43;
 
     /*
@@ -105,26 +124,46 @@ public class Mpu6050 implements AutoCloseable {
      * STATE VARIABLES
      * -----------------------------------------------------------------------
      */
-    /** Current DLPF configuration. */
+    /**
+     * Current DLPF configuration.
+     */
     private int dlpfCfg;
-    /** Current Sample Rate Divider. */
+    /**
+     * Current Sample Rate Divider.
+     */
     private int smplrtDiv;
-    /** Accelerometer LSB sensitivity. */
+    /**
+     * Accelerometer LSB sensitivity.
+     */
     private double accelLSBSensitivity;
-    /** Gyroscope LSB sensitivity. */
+    /**
+     * Gyroscope LSB sensitivity.
+     */
     private double gyroLSBSensitivity;
-    /** Gyroscope X offset. */
+    /**
+     * Gyroscope X offset.
+     */
     private double gyroAngularSpeedOffsetX;
-    /** Gyroscope Y offset. */
+    /**
+     * Gyroscope Y offset.
+     */
     private double gyroAngularSpeedOffsetY;
-    /** Gyroscope Z offset. */
+    /**
+     * Gyroscope Z offset.
+     */
     private double gyroAngularSpeedOffsetZ;
 
-    /** Background update thread. */
+    /**
+     * Background update thread.
+     */
     private Thread updatingThread = null;
-    /** Volatile flag to stop the update thread. */
+    /**
+     * Volatile flag to stop the update thread.
+     */
     private volatile boolean updatingThreadStopped = true;
-    /** Last timestamp of update. */
+    /**
+     * Last timestamp of update.
+     */
     private long lastUpdateTime = 0;
 
     /**
@@ -135,15 +174,19 @@ public class Mpu6050 implements AutoCloseable {
             double accelAngleX, double accelAngleY, double accelAngleZ,
             double gyroSpeedX, double gyroSpeedY, double gyroSpeedZ,
             double gyroAngleX, double gyroAngleY, double gyroAngleZ,
-            double filteredX, double filteredY, double filteredZ) {}
+            double filteredX, double filteredY, double filteredZ) {
+
+    }
 
     /**
      * Thread-safe reference to the latest data snapshot.
      */
-    private final AtomicReference<MpuData> dataSnapshot = new AtomicReference<>(new MpuData(0,0,0,0,0,0,0,0,0,0,0,0,0,0,0));
+    private final AtomicReference<MpuData> dataSnapshot = new AtomicReference<>(
+            new MpuData(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0));
 
     /**
      * Initialize MPU6050 on specified device and address.
+     *
      * @param device I2C device path.
      * @param address I2C address.
      */
@@ -159,9 +202,9 @@ public class Mpu6050 implements AutoCloseable {
      * PUBLIC API METHODS
      * -----------------------------------------------------------------------
      */
-
     /**
      * Returns the Sample Rate of the MPU6050.
+     *
      * @return the sample rate in Hz.
      */
     public int getSampleRate() {
@@ -176,6 +219,7 @@ public class Mpu6050 implements AutoCloseable {
 
     /**
      * Sets the value of the DLPF config.
+     *
      * @param dlpfConfig the new DLPF_CFG value (0-7).
      */
     public final void setDLPFConfig(int dlpfConfig) {
@@ -196,11 +240,17 @@ public class Mpu6050 implements AutoCloseable {
      */
     public void calibrateSensors() {
         logger.info("Calibration starting in 5 seconds (don't move the sensor)");
-        try { TimeUnit.SECONDS.sleep(5); } catch (InterruptedException e) { Thread.currentThread().interrupt(); }
+        try {
+            TimeUnit.SECONDS.sleep(5);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
         lock.lock();
         try {
             var nbReadings = 50;
-            gyroAngularSpeedOffsetX = 0.; gyroAngularSpeedOffsetY = 0.; gyroAngularSpeedOffsetZ = 0.;
+            gyroAngularSpeedOffsetX = 0.;
+            gyroAngularSpeedOffsetY = 0.;
+            gyroAngularSpeedOffsetZ = 0.;
             for (var i = 0; i < nbReadings; i++) {
                 var speeds = readScaledGyroscopeValues();
                 gyroAngularSpeedOffsetX += speeds[0];
@@ -242,6 +292,7 @@ public class Mpu6050 implements AutoCloseable {
 
     /**
      * Stops the update thread and joins.
+     *
      * @throws InterruptedException if interrupted while joining.
      */
     public void stopUpdatingThread() throws InterruptedException {
@@ -254,6 +305,7 @@ public class Mpu6050 implements AutoCloseable {
 
     /**
      * Returns a thread-safe snapshot of all current MPU data.
+     *
      * @return the latest data snapshot.
      */
     public MpuData getSnapshot() {
@@ -262,6 +314,7 @@ public class Mpu6050 implements AutoCloseable {
 
     /**
      * This method updates the value of a specific register and checks success.
+     *
      * @param register register address.
      * @param value value to write.
      */
@@ -271,7 +324,9 @@ public class Mpu6050 implements AutoCloseable {
             I2c.i2cWriteReg8(handle, address, (short) register, (short) value);
             var regVal = new short[1];
             I2c.i2cReadReg8(handle, address, (short) register, regVal);
-            if (regVal[0] != value) throw new RuntimeException("Error updating MPU6050 register");
+            if (regVal[0] != value) {
+                throw new RuntimeException("Error updating MPU6050 register");
+            }
         } finally {
             lock.unlock();
         }
@@ -279,6 +334,7 @@ public class Mpu6050 implements AutoCloseable {
 
     /**
      * Reads the most recent accelerations in g.
+     *
      * @return array of [x, y, z] accelerations.
      */
     public double[] readScaledAccelerometerValues() {
@@ -296,6 +352,7 @@ public class Mpu6050 implements AutoCloseable {
 
     /**
      * Reads the most recent angular speeds in degrees/sec.
+     *
      * @return array of [x, y, z] angular speeds.
      */
     public double[] readScaledGyroscopeValues() {
@@ -312,35 +369,87 @@ public class Mpu6050 implements AutoCloseable {
     }
 
     // Individual Accessors (Fallback for simple usage)
-    /** @return Latest accelerometer values. */
-    public double[] getAccelAccelerations() { var d = getSnapshot(); return new double[]{d.accelX(), d.accelY(), d.accelZ()}; }
-    /** @return Latest calculated accelerometer angles. */
-    public double[] getAccelAngles() { var d = getSnapshot(); return new double[]{d.accelAngleX(), d.accelAngleY(), d.accelAngleZ()}; }
-    /** @return Latest gyroscope angular speeds. */
-    public double[] getGyroAngularSpeeds() { var d = getSnapshot(); return new double[]{d.gyroSpeedX(), d.gyroSpeedY(), d.gyroSpeedZ()}; }
-    /** @return Latest integrated gyroscope angles. */
-    public double[] getGyroAngles() { var d = getSnapshot(); return new double[]{d.gyroAngleX(), d.gyroAngleY(), d.gyroAngleZ()}; }
-    /** @return Latest filtered angles. */
-    public double[] getFilteredAngles() { var d = getSnapshot(); return new double[]{d.filteredX(), d.filteredY(), d.filteredZ()}; }
-    /** @return Gyroscope offsets used for calibration. */
-    public double[] getGyroAngularSpeedsOffsets() { return new double[]{gyroAngularSpeedOffsetX, gyroAngularSpeedOffsetY, gyroAngularSpeedOffsetZ}; }
+    /**
+     * @return Latest accelerometer values.
+     */
+    public double[] getAccelAccelerations() {
+        var d = getSnapshot();
+        return new double[]{d.accelX(), d.accelY(), d.accelZ()};
+    }
+
+    /**
+     * @return Latest calculated accelerometer angles.
+     */
+    public double[] getAccelAngles() {
+        var d = getSnapshot();
+        return new double[]{d.accelAngleX(), d.accelAngleY(), d.accelAngleZ()};
+    }
+
+    /**
+     * @return Latest gyroscope angular speeds.
+     */
+    public double[] getGyroAngularSpeeds() {
+        var d = getSnapshot();
+        return new double[]{d.gyroSpeedX(), d.gyroSpeedY(), d.gyroSpeedZ()};
+    }
+
+    /**
+     * @return Latest integrated gyroscope angles.
+     */
+    public double[] getGyroAngles() {
+        var d = getSnapshot();
+        return new double[]{d.gyroAngleX(), d.gyroAngleY(), d.gyroAngleZ()};
+    }
+
+    /**
+     * @return Latest filtered angles.
+     */
+    public double[] getFilteredAngles() {
+        var d = getSnapshot();
+        return new double[]{d.filteredX(), d.filteredY(), d.filteredZ()};
+    }
+
+    /**
+     * @return Gyroscope offsets used for calibration.
+     */
+    public double[] getGyroAngularSpeedsOffsets() {
+        return new double[]{gyroAngularSpeedOffsetX, gyroAngularSpeedOffsetY, gyroAngularSpeedOffsetZ};
+    }
 
     // Static String formatters
-    /** @param angle angle value. @return formatted string. */
-    public static String angleToString(double angle) { return String.format("%.4f°", angle); }
-    /** @param accel accel value. @return formatted string. */
-    public static String accelToString(double accel) { return String.format("%.6fg", accel); }
-    /** @param speed speed value. @return formatted string. */
-    public static String angularSpeedToString(double speed) { return String.format("%.4f°/s", speed); }
-    /** @param x X @param y Y @param z Z @return combined string. */
-    public static String xyzValuesToString(String x, String y, String z) { return "x: " + x + "\ty: " + y + "\tz: " + z; }
+    /**
+     * @param angle angle value. @return formatted string.
+     */
+    public static String angleToString(double angle) {
+        return String.format("%.4f°", angle);
+    }
+
+    /**
+     * @param accel accel value. @return formatted string.
+     */
+    public static String accelToString(double accel) {
+        return String.format("%.6fg", accel);
+    }
+
+    /**
+     * @param speed speed value. @return formatted string.
+     */
+    public static String angularSpeedToString(double speed) {
+        return String.format("%.4f°/s", speed);
+    }
+
+    /**
+     * @param x X @param y Y @param z Z @return combined string.
+     */
+    public static String xyzValuesToString(String x, String y, String z) {
+        return "x: " + x + "\ty: " + y + "\tz: " + z;
+    }
 
     /*
      * -----------------------------------------------------------------------
      * LIFECYCLE METHOD
      * -----------------------------------------------------------------------
      */
-
     /**
      * Closes resources safely. Releases thread and hardware locks.
      */
@@ -350,7 +459,11 @@ public class Mpu6050 implements AutoCloseable {
         try {
             updatingThreadStopped = true;
             if (updatingThread != null) {
-                try { updatingThread.join(500); } catch (InterruptedException ignored) { Thread.currentThread().interrupt(); }
+                try {
+                    updatingThread.join(500);
+                } catch (InterruptedException ignored) {
+                    Thread.currentThread().interrupt();
+                }
             }
         } finally {
             try {
@@ -366,7 +479,6 @@ public class Mpu6050 implements AutoCloseable {
      * PRIVATE HELPER METHODS
      * -----------------------------------------------------------------------
      */
-
     /**
      * Configures initial power and sensitivity registers.
      */
@@ -413,10 +525,10 @@ public class Mpu6050 implements AutoCloseable {
             double fX = alpha * (prev.filteredX() + (gSX * dt)) + (1. - alpha) * angAX;
             double fY = alpha * (prev.filteredY() + (gSY * dt)) + (1. - alpha) * angAY;
 
-            dataSnapshot.set(new MpuData(aX, aY, aZ, angAX, angAY, ACCEL_Z_ANGLE, 
-                gSX, gSY, gSZ, 
-                prev.gyroAngleX() + (gSX * dt), prev.gyroAngleY() + (gSY * dt), prev.gyroAngleZ() + (gSZ * dt),
-                fX, fY, prev.filteredZ() + (gSZ * dt)));
+            dataSnapshot.set(new MpuData(aX, aY, aZ, angAX, angAY, ACCEL_Z_ANGLE,
+                    gSX, gSY, gSZ,
+                    prev.gyroAngleX() + (gSX * dt), prev.gyroAngleY() + (gSY * dt), prev.gyroAngleZ() + (gSZ * dt),
+                    fX, fY, prev.filteredZ() + (gSZ * dt)));
         } finally {
             lock.unlock();
         }
@@ -424,6 +536,7 @@ public class Mpu6050 implements AutoCloseable {
 
     /**
      * Reads a word (2 bytes) from I2C and converts from 2's complement.
+     *
      * @param register starting register.
      * @return signed integer value.
      */
@@ -433,29 +546,44 @@ public class Mpu6050 implements AutoCloseable {
         return regVal[0];
     }
 
-    /** Helper for magnitude calculation. 
+    /**
+     * Helper for magnitude calculation.
+     *
      * @param a first component.
      * @param b second component.
-     * @return distance. */
-    private double distance(double a, double b) { return Math.sqrt(a * a + b * b); }
+     * @return distance.
+     */
+    private double distance(double a, double b) {
+        return Math.sqrt(a * a + b * b);
+    }
 
-    /** Calculates X angle from accelerometer. 
+    /**
+     * Calculates X angle from accelerometer.
+     *
      * @param x X accel. @param y Y accel. @param z Z accel.
-     * @return calculated angle. */
+     * @return calculated angle.
+     */
     private double getAccelXAngle(double x, double y, double z) {
         double radians = Math.atan2(y, distance(x, z));
         double delta = (y >= 0) ? (z >= 0 ? 0 : 180) : (z <= 0 ? 180 : 360);
-        if (y < 0 && z <= 0 || y >= 0 && z < 0) radians *= -1;
+        if (y < 0 && z <= 0 || y >= 0 && z < 0) {
+            radians *= -1;
+        }
         return radians * RADIAN_TO_DEGREE + delta;
     }
 
-    /** Calculates Y angle from accelerometer. 
+    /**
+     * Calculates Y angle from accelerometer.
+     *
      * @param x X accel. @param y Y accel. @param z Z accel.
-     * @return calculated angle. */
+     * @return calculated angle.
+     */
     private double getAccelYAngle(double x, double y, double z) {
         double tan = -1 * x / distance(y, z);
         double delta = (x <= 0) ? (z >= 0 ? 0 : 180) : (z <= 0 ? 180 : 360);
-        if (x > 0 && z <= 0 || x <= 0 && z < 0) tan *= -1;
+        if (x > 0 && z <= 0 || x <= 0 && z < 0) {
+            tan *= -1;
+        }
         return Math.atan(tan) * RADIAN_TO_DEGREE + delta;
     }
 }

@@ -16,8 +16,7 @@ import org.slf4j.LoggerFactory;
 /**
  * Blocking button device using GPIO edge detection.
  *
- * Provides a thread-safe abstraction for waiting on button events (rising, falling, or both edges)
- * with timeout support.
+ * Provides a thread-safe abstraction for waiting on button events (rising, falling, or both edges) with timeout support.
  *
  * @author Steven P. Goldsmith
  * @version 1.0.0
@@ -51,7 +50,9 @@ public class BlockingButton implements AutoCloseable {
      * @param edge The type of edge detected (RISING, FALLING).
      * @param timestamp The event timestamp in nanoseconds.
      */
-    public record ButtonEvent(int edge, long timestamp) {}
+    public record ButtonEvent(int edge, long timestamp) {
+
+    }
 
     /**
      * Initialize button on specified GPIO device and line.
@@ -113,8 +114,8 @@ public class BlockingButton implements AutoCloseable {
     }
 
     /**
-     * Returns the string representation of an edge type.
-     * Uses if-else logic to avoid constant expression requirements of switch statements.
+     * Returns the string representation of an edge type. Uses if-else logic to avoid constant expression requirements of switch
+     * statements.
      *
      * @param edge The edge constant.
      * @return "Rising", "Falling", or "Invalid".
@@ -130,8 +131,7 @@ public class BlockingButton implements AutoCloseable {
     }
 
     /**
-     * Closes the GPIO resource safely.
-     * Acquires the lock to ensure no concurrent operations happen during shutdown.
+     * Closes the GPIO resource safely. Acquires the lock to ensure no concurrent operations happen during shutdown.
      */
     @Override
     public void close() {
