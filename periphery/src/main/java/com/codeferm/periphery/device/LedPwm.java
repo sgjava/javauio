@@ -5,9 +5,11 @@ package com.codeferm.periphery.device;
 
 import com.codeferm.periphery.Pwm;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.ReentrantLock;
 
 /**
- * High-level LED device abstraction using hardware PWM.
+ * High-level LED device abstraction using hardware PWM. This class is thread-safe using a ReentrantLock for hardware state
+ * management.
  *
  * @author Steven P. Goldsmith
  * @version 1.0.0
@@ -19,6 +21,11 @@ public class LedPwm implements AutoCloseable {
      * PWM wrapper.
      */
     private final Pwm pwm;
+
+    /**
+     * Reentrant lock for thread-safe PWM access.
+     */
+    private final ReentrantLock lock = new ReentrantLock();
 
     /**
      * Initialize LED on specified PWM chip and channel.
@@ -33,7 +40,7 @@ public class LedPwm implements AutoCloseable {
     /**
      * Get PWM handle.
      *
-     * * @return PWM handle.
+     * @return PWM handle.
      */
     public long getHandle() {
         return pwm.getHandle();
@@ -43,14 +50,24 @@ public class LedPwm implements AutoCloseable {
      * Enable PWM.
      */
     public void enable() {
-        Pwm.pwmEnable(pwm.getHandle());
+        lock.lock();
+        try {
+            Pwm.pwmEnable(pwm.getHandle());
+        } finally {
+            lock.unlock();
+        }
     }
 
     /**
      * Disable PWM.
      */
     public void disable() {
-        Pwm.pwmDisable(pwm.getHandle());
+        lock.lock();
+        try {
+            Pwm.pwmDisable(pwm.getHandle());
+        } finally {
+            lock.unlock();
+        }
     }
 
     /**
@@ -65,23 +82,42 @@ public class LedPwm implements AutoCloseable {
      */
     public void changeBrightness(final int period, final int startDc, final int dcInc, final int count,
             final int sleepTime) throws InterruptedException {
-        Pwm.pwmSetPeriodNs(pwm.getHandle(), period);
-        var dutyCycle = startDc;
-        var i = 0;
-        while (i < count) {
-            Pwm.pwmSetDutyCycleNs(pwm.getHandle(), dutyCycle);
-            TimeUnit.MICROSECONDS.sleep(sleepTime);
-            dutyCycle += dcInc;
-            i += 1;
+        lock.lock();
+        try {
+            Pwm.pwmSetPeriodNs(pwm.getHandle(), period);
+            var dutyCycle = startDc;
+            var i = 0;
+            while (i < count) {
+                Pwm.pwmSetDutyCycleNs(pwm.getHandle(), dutyCycle);
+                // Unlock during sleep to allow other threads access if needed, 
+                // though usually brightness ramps are exclusive.
+                lock.unlock();
+                try {
+                    TimeUnit.MICROSECONDS.sleep(sleepTime);
+                } finally {
+                    lock.lock();
+                }
+                dutyCycle += dcInc;
+                i += 1;
+            }
+        } finally {
+            if (lock.isHeldByCurrentThread()) {
+                lock.unlock();
+            }
         }
     }
 
     /**
-     * Set duty cycle to 0 and close PWM handle.
+     * Set duty cycle to 0 and close PWM handle. Uses try-with-resources on the autocloseable Pwm field to ensure OS handles are
+     * released.
      */
     @Override
     public void close() {
-        Pwm.pwmSetDutyCycleNs(pwm.getHandle(), 0);
-        pwm.close();
+        lock.lock();
+        try (pwm) {
+            Pwm.pwmSetDutyCycleNs(pwm.getHandle(), 0);
+        } finally {
+            lock.unlock();
+        }
     }
 }

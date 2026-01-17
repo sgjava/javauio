@@ -13,9 +13,8 @@ import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 
 /**
- * Six-Axis (Gyro + Accelerometer) MEMS MotionTracking test.
- * * This demo utilizes the Mpu6050 device class to perform sensor calibration
- * and retrieve filtered motion data.
+ * Six-Axis (Gyro + Accelerometer) MEMS MotionTracking test. * This demo utilizes the Mpu6050 device class to perform sensor
+ * calibration and retrieve filtered motion data.
  *
  * @author Steven P. Goldsmith
  * @version 1.0.0
@@ -23,12 +22,12 @@ import picocli.CommandLine.Option;
  */
 @Command(name = "Mpu6050Test", mixinStandardHelpOptions = true, version = "1.0.0-SNAPSHOT",
         description = "Six-Axis (Gyro + Accelerometer) MEMS MotionTracking test.")
-public class Mpu6050Test implements Callable<Integer> {
+public class Mpu6050Demo implements Callable<Integer> {
 
     /**
      * Logger.
      */
-    private static final Logger logger = LoggerFactory.getLogger(Mpu6050Test.class);
+    private static final Logger logger = LoggerFactory.getLogger(Mpu6050Demo.class);
 
     /**
      * I2C device option.
@@ -55,7 +54,7 @@ public class Mpu6050Test implements Callable<Integer> {
         try (final var mpu = new Mpu6050(device, address)) {
             // Calibrate sensors (requires 5 seconds of stationary position)
             mpu.calibrateSensors();
-            
+
             // Start background thread for sensor fusion calculations
             mpu.startUpdatingThread();
 
@@ -63,10 +62,10 @@ public class Mpu6050Test implements Callable<Integer> {
             for (var i = 0; i < 10; i++) {
                 // Access processed data without needing to know register addresses
                 var angles = mpu.getFilteredAngles();
-                
-                logger.info(String.format("Iteration %d - Filtered Angles: X: %.4f° | Y: %.4f° | Z: %.4f°", 
+
+                logger.info(String.format("Iteration %d - Filtered Angles: X: %.4f° | Y: %.4f° | Z: %.4f°",
                         i + 1, angles[0], angles[1], angles[2]));
-                
+
                 TimeUnit.SECONDS.sleep(3);
             }
         } catch (RuntimeException e) {
@@ -82,7 +81,7 @@ public class Mpu6050Test implements Callable<Integer> {
      * @param args Argument list.
      */
     public static void main(String... args) {
-        System.exit(new CommandLine(new Mpu6050Test())
+        System.exit(new CommandLine(new Mpu6050Demo())
                 .registerConverter(Short.class, Short::decode)
                 .registerConverter(Short.TYPE, Short::decode)
                 .execute(args));
