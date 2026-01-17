@@ -13,72 +13,87 @@ import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 
 /**
- * Six-Axis (Gyro + Accelerometer) MEMS MotionTracking test. * This demo utilizes the Mpu6050 device class to perform sensor
- * calibration and retrieve filtered motion data.
+ * Six-Axis (Gyro + Accelerometer) MEMS MotionTracking test.
  *
  * @author Steven P. Goldsmith
  * @version 1.0.0
  * @since 1.0.0
  */
-@Command(name = "Mpu6050Test", mixinStandardHelpOptions = true, version = "1.0.0-SNAPSHOT",
+@Command(name = "Mpu6050Test", mixinStandardHelpOptions = true, version = "1.0.0",
         description = "Six-Axis (Gyro + Accelerometer) MEMS MotionTracking test.")
 public class Mpu6050Demo implements Callable<Integer> {
 
-    /**
-     * Logger.
-     */
     private static final Logger logger = LoggerFactory.getLogger(Mpu6050Demo.class);
 
-    /**
-     * I2C device option.
-     */
-    @Option(names = {"-d", "--device"}, description = "I2C device, ${DEFAULT-VALUE} by default.")
+    @Option(names = {"--device"}, description = "I2C device, ${DEFAULT-VALUE} by default.")
     private String device = "/dev/i2c-0";
 
-    /**
-     * I2C address option.
-     */
-    @Option(names = {"-a", "--address"}, description = "I2C address, ${DEFAULT-VALUE} by default.")
+    @Option(names = {"--address"}, description = "Address, ${DEFAULT-VALUE} by default.")
     private short address = Mpu6050.DEFAULT_MPU6050_ADDRESS;
 
     /**
-     * Run the MPU6050 test logic.
+     * Display MPU6050 data in the original format.
      *
      * @return Exit code.
-     * @throws InterruptedException if the sleep is interrupted.
+     * @throws InterruptedException Possible exception.
      */
     @Override
     public Integer call() throws InterruptedException {
-        var exitCode = 0;
-        // Use try-with-resources for automatic hardware cleanup via AutoCloseable
-        try (final var mpu = new Mpu6050(device, address)) {
-            // Calibrate sensors (requires 5 seconds of stationary position)
-            mpu.calibrateSensors();
+        logger.info("Starting Mpu6050Test on {} address 0x{}", device, Integer.toHexString(address));
 
-            // Start background thread for sensor fusion calculations
+        try (var mpu = new Mpu6050(device, address)) {
+            // Calibration and startup
+            mpu.calibrateSensors();
             mpu.startUpdatingThread();
 
-            logger.info("Displaying filtered sensor data for 30 seconds...");
-            for (var i = 0; i < 10; i++) {
-                // Access processed data without needing to know register addresses
-                var angles = mpu.getFilteredAngles();
+            logger.info("Reading sensor data for 30 seconds...");
+            for (int i = 0; i < 10; i++) {
+                // Get a single consistent snapshot of all values
+                var data = mpu.getSnapshot();
 
-                logger.info(String.format("Iteration %d - Filtered Angles: X: %.4f° | Y: %.4f° | Z: %.4f°",
-                        i + 1, angles[0], angles[1], angles[2]));
+                logger.info("Accelerometer:");
+                logger.info(Mpu6050.xyzValuesToString(
+                        Mpu6050.angleToString(data.accelAngleX()),
+                        Mpu6050.angleToString(data.accelAngleY()),
+                        Mpu6050.angleToString(data.accelAngleZ())));
+
+                logger.info("Accelerations:");
+                logger.info(Mpu6050.xyzValuesToString(
+                        Mpu6050.accelToString(data.accelX()),
+                        Mpu6050.accelToString(data.accelY()),
+                        Mpu6050.accelToString(data.accelZ())));
+
+                logger.info("Gyroscope:");
+                logger.info(Mpu6050.xyzValuesToString(
+                        Mpu6050.angleToString(data.gyroAngleX()),
+                        Mpu6050.angleToString(data.gyroAngleY()),
+                        Mpu6050.angleToString(data.gyroAngleZ())));
+
+                logger.info(Mpu6050.xyzValuesToString(
+                        Mpu6050.angularSpeedToString(data.gyroSpeedX()),
+                        Mpu6050.angularSpeedToString(data.gyroSpeedY()),
+                        Mpu6050.angularSpeedToString(data.gyroSpeedZ())));
+
+                logger.info("Filtered angles:");
+                logger.info(Mpu6050.xyzValuesToString(
+                        Mpu6050.angleToString(data.filteredX()),
+                        Mpu6050.angleToString(data.filteredY()),
+                        Mpu6050.angleToString(data.filteredZ())));
 
                 TimeUnit.SECONDS.sleep(3);
             }
         } catch (RuntimeException e) {
             logger.error("Hardware error: {}", e.getMessage());
-            exitCode = 1;
+            return 1;
         }
-        return exitCode;
+
+        return 0;
     }
 
     /**
-     * Main entry point using picocli for command line parsing.
+     * Main entry point.
      *
-     * @param args Argument list.
+     * @param args Command line arguments.
      */
     public static void main(String... args) {
         System.exit(new CommandLine(new Mpu6050Demo())
