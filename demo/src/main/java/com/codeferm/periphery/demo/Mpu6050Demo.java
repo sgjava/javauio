@@ -20,7 +20,7 @@ import picocli.CommandLine.Option;
  * @since 1.0.0
  */
 @Command(name = "Mpu6050Test", mixinStandardHelpOptions = true, version = "1.0.0",
-        description = "Six-Axis (Gyro + Accelerometer) MEMS MotionTracking test.")
+        description = "Six-Axis (Gyro + Accelerometer) MEMS MotionTracking demo")
 public class Mpu6050Demo implements Callable<Integer> {
 
     private static final Logger logger = LoggerFactory.getLogger(Mpu6050Demo.class);
@@ -39,7 +39,7 @@ public class Mpu6050Demo implements Callable<Integer> {
      */
     @Override
     public Integer call() throws InterruptedException {
-        logger.info("Starting Mpu6050Test on {} address 0x{}", device, Integer.toHexString(address));
+        logger.info("Starting on {} address 0x{}", device, Integer.toHexString(address));
 
         try (var mpu = new Mpu6050(device, address)) {
             // Calibration and startup
