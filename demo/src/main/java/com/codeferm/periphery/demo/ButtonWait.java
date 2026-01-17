@@ -3,12 +3,7 @@
  */
 package com.codeferm.periphery.demo;
 
-import com.codeferm.periphery.Gpio;
-import static com.codeferm.periphery.Gpio.GPIO_DIR_IN;
-import static com.codeferm.periphery.Gpio.GPIO_EDGE_BOTH;
-import static com.codeferm.periphery.Gpio.GPIO_EDGE_FALLING;
-import static com.codeferm.periphery.Gpio.GPIO_EDGE_RISING;
-import static com.codeferm.periphery.Gpio.GPIO_POLL_EVENT;
+import com.codeferm.periphery.device.BlockingButton;
 import java.util.concurrent.Callable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,9 +12,10 @@ import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 
 /**
- * Blocking event using button.
+ * Blocking event using button device class.
  *
- * Should work on any board with a button built in or wire one up. Just change device and line arguments as needed.
+ * This version uses the encapsulated BlockingButton device to handle edge detection
+ * and thread-safe hardware access.
  *
  * @author Steven P. Goldsmith
  * @version 1.0.0
@@ -33,11 +29,13 @@ public class ButtonWait implements Callable<Integer> {
      * Logger.
      */
     private static final Logger logger = LoggerFactory.getLogger(ButtonWait.class);
+
     /**
      * Device option.
      */
     @Option(names = {"-d", "--device"}, description = "GPIO device, ${DEFAULT-VALUE} by default.")
     private String device = "/dev/gpiochip1";
+
     /**
      * Line option.
      */
@@ -52,21 +50,24 @@ public class ButtonWait implements Callable<Integer> {
     @Override
     public Integer call() {
         var exitCode = 0;
-        try (final var gpio = new Gpio(device, line, GPIO_DIR_IN)) {
-            final var edge = new int[1];
-            final var timestamp = new long[1];
-            Gpio.gpioSetEdge(gpio.getHandle(), GPIO_EDGE_BOTH);
+        logger.info("Starting ButtonWait on {} line {}", device, line);
+
+        try (final var button = new BlockingButton(device, line)) {
             logger.info("Press button, stop pressing button for 10 seconds to exit");
+            
+            BlockingButton.ButtonEvent event;
             // Poll for event and timeout in 10 seconds if no event
-            while (Gpio.gpioPoll(gpio.getHandle(), 10000) == GPIO_POLL_EVENT) {
-                Gpio.gpioReadEvent(gpio.getHandle(), edge, timestamp);
-                if (edge[0] == GPIO_EDGE_RISING) {
-                    logger.info(String.format("Edge rising  [%8d.%9d]", timestamp[0] / 1000000000, timestamp[0] % 1000000000));
-                } else if (edge[0] == GPIO_EDGE_FALLING) {
-                    logger.info(String.format("Edge falling [%8d.%9d]", timestamp[0] / 1000000000, timestamp[0] % 1000000000));
+            while ((event = button.waitForEvent(10000)) != null) {
+                final var edgeStr = BlockingButton.edgeToString(event.edge());
+                final var timestampStr = BlockingButton.formatTimestamp(event.timestamp());
+                
+                // Format matches the original logging requirements
+                if (edgeStr.equals("Rising")) {
+                    logger.info(String.format("Edge rising  [%s]", timestampStr));
+                } else if (edgeStr.equals("Falling")) {
+                    logger.info(String.format("Edge falling [%s]", timestampStr));
                 } else {
-                    logger.info(String.format("Invalid edge %d, [%8d.%9d]", edge[0], timestamp[0] / 1000000000, timestamp[0]
-                            % 1000000000));
+                    logger.info(String.format("Invalid edge %d, [%s]", event.edge(), timestampStr));
                 }
             }
         } catch (RuntimeException e) {
@@ -77,7 +78,7 @@ public class ButtonWait implements Callable<Integer> {
     }
 
     /**
-     * Main parsing, error handling and handling user requests for usage help or version help are done with one line of code.
+     * Main entry point.
      *
      * @param args Argument list.
      */
