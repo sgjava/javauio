@@ -3,14 +3,7 @@
  */
 package com.codeferm.periphery.demo;
 
-import static com.codeferm.periphery.Common.cString;
-import com.codeferm.periphery.Gpio;
-import static com.codeferm.periphery.Gpio.GPIO_BIAS_DEFAULT;
-import static com.codeferm.periphery.Gpio.GPIO_DIR_OUT;
-import static com.codeferm.periphery.Gpio.GPIO_DRIVE_DEFAULT;
-import static com.codeferm.periphery.Gpio.GPIO_EDGE_NONE;
-import static com.codeferm.periphery.Gpio.GPIO_EVENT_CLOCK_REALTIME;
-import com.codeferm.periphery.Gpio.GpioConfig;
+import com.codeferm.periphery.device.Led;
 import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 import org.slf4j.Logger;
@@ -20,7 +13,7 @@ import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 
 /**
- * Blink LED.
+ * Blink LED using high-level device abstraction.
  *
  * Using the NanoPi Duo connect a 220Ω resistor to ground, then the resistor to the cathode (the short pin) of the LED. Connect the
  * anode (the long pin) of the LED to line 203 (IOG11).
@@ -29,18 +22,21 @@ import picocli.CommandLine.Option;
  * @version 1.0.0
  * @since 1.0.0
  */
-@Command(name = "LedBlink", mixinStandardHelpOptions = true, version = "1.0.0-SNAPSHOT", description = "Turn LED on and off.")
+@Command(name = "LedBlink", mixinStandardHelpOptions = true, version = "1.0.0-SNAPSHOT",
+        description = "Blink LED using com.codeferm.periphery.device.Led")
 public class LedBlink implements Callable<Integer> {
 
     /**
      * Logger.
      */
     private static final Logger logger = LoggerFactory.getLogger(LedBlink.class);
+
     /**
      * Device option.
      */
     @Option(names = {"-d", "--device"}, description = "GPIO device, ${DEFAULT-VALUE} by default.")
     private String device = "/dev/gpiochip0";
+
     /**
      * Line option.
      */
@@ -48,7 +44,7 @@ public class LedBlink implements Callable<Integer> {
     private int line = 203;
 
     /**
-     * Blink LED.
+     * Blink LED using high-level Led device class.
      *
      * @return Exit code.
      * @throws InterruptedException Possible exception.
@@ -56,31 +52,33 @@ public class LedBlink implements Callable<Integer> {
     @Override
     public Integer call() throws InterruptedException {
         var exitCode = 0;
-        try (final var gpio = new Gpio(device, line, GpioConfig.builder().bias(GPIO_BIAS_DEFAULT).direction(GPIO_DIR_OUT).
-                drive(GPIO_DRIVE_DEFAULT).edge(GPIO_EDGE_NONE).inverted(false).label(cString(LedBlink.class.getSimpleName())).
-                event_clock(GPIO_EVENT_CLOCK_REALTIME).debounce_us(0).build())) {
-            logger.info("Blinking LED");
-            var i = 0;
-            while (i < 10) {
-                Gpio.gpioWrite(gpio.getHandle(), true);
+        // Using var with try-with-resources for the high-level Led device
+        try (var led = new Led(device, line)) {
+            logger.info("Blinking LED on {} line {}", device, line);
+
+            for (var i = 0; i < 10; i++) {
+                logger.debug("Cycle {}: LED ON", i);
+                led.on();
                 TimeUnit.SECONDS.sleep(1);
-                Gpio.gpioWrite(gpio.getHandle(), false);
+
+                logger.debug("Cycle {}: LED OFF", i);
+                led.off();
                 TimeUnit.SECONDS.sleep(1);
-                i++;
             }
-        } catch (RuntimeException e) {
-            logger.error(e.getMessage());
+        } catch (Exception e) {
+            logger.error("Failed to operate LED: {}", e.getMessage());
             exitCode = 1;
         }
         return exitCode;
     }
 
     /**
-     * Main parsing, error handling and handling user requests for usage help or version help are done with one line of code.
+     * Main entry point using picocli.
      *
      * @param args Argument list.
      */
-    public static void main(String... args) {
-        System.exit(new CommandLine(new LedBlink()).execute(args));
+    public static void main(String[] args) {
+        var cmd = new CommandLine(new LedBlink());
+        System.exit(cmd.execute(args));
     }
 }

@@ -3,9 +3,9 @@
  */
 package com.codeferm.periphery.demo;
 
+import com.codeferm.periphery.device.LedPwm;
 import com.codeferm.periphery.Pwm;
 import java.util.concurrent.Callable;
-import java.util.concurrent.TimeUnit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import picocli.CommandLine;
@@ -13,7 +13,7 @@ import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 
 /**
- * Flash LED with PWM.
+ * Flash LED with PWM using high-level device abstraction.
  *
  * @author Steven P. Goldsmith
  * @version 1.0.0
@@ -39,30 +39,6 @@ public class LedFlash implements Callable<Integer> {
     private int channel = 0;
 
     /**
-     * Gradually increase and decrease LED brightness.
-     *
-     * @param handle Valid pointer to an allocated LED handle structure.
-     * @param period Set the period in seconds of the PWM.
-     * @param startDc Starting duty cycle in nanoseconds.
-     * @param dcInc Duty cycle increment in nanoseconds.
-     * @param count Number of times to loop.
-     * @param sleepTime Sleep time in microseconds.
-     * @throws InterruptedException Possible exception.
-     */
-    public void changeBrightness(final long handle, final int period, final int startDc, final int dcInc, final int count,
-            final int sleepTime) throws InterruptedException {
-        Pwm.pwmSetPeriodNs(handle, period);
-        var dutyCycle = startDc;
-        var i = 0;
-        while (i < count) {
-            Pwm.pwmSetDutyCycleNs(handle, dutyCycle);
-            TimeUnit.MICROSECONDS.sleep(sleepTime);
-            dutyCycle += dcInc;
-            i += 1;
-        }
-    }
-
-    /**
      * Flash LED.
      *
      * @return Exit code.
@@ -71,23 +47,29 @@ public class LedFlash implements Callable<Integer> {
     @Override
     public Integer call() throws InterruptedException {
         var exitCode = 0;
-        try (final var pwm = new Pwm(chip, channel)) {
+        // High-level LedPwm is AutoCloseable
+        try (final var led = new LedPwm(chip, channel)) {
             logger.info("Flash LED");
-            Pwm.pwmEnable(pwm.getHandle());
+            led.enable();
+            
             for (var i = 0; i < 10; i++) {
-                changeBrightness(pwm.getHandle(), 1000, 0, 10, 100, 5000);
-                changeBrightness(pwm.getHandle(), 1000, 1000, -10, 100, 5000);
+                // Fade in
+                led.changeBrightness(1000, 0, 10, 100, 5000);
+                // Fade out
+                led.changeBrightness(1000, 1000, -10, 100, 5000);
             }
-            Pwm.pwmSetDutyCycleNs(pwm.getHandle(), 0);
-            Pwm.pwmSetPeriod(pwm.getHandle(), 0);
-            Pwm.pwmDisable(pwm.getHandle());
+            
+            // Clean up states before close
+            Pwm.pwmSetPeriod(led.getHandle(), 0);
+            led.disable();
+            
         } catch (RuntimeException e) {
             logger.error(e.getMessage());
             exitCode = 1;
         }
         return exitCode;
     }
-    
+
     /**
      * Main parsing, error handling and handling user requests for usage help or version help are done with one line of code.
      *
@@ -95,5 +77,5 @@ public class LedFlash implements Callable<Integer> {
      */
     public static void main(String... args) {
         System.exit(new CommandLine(new LedFlash()).execute(args));
-    }    
+    }
 }
