@@ -24,7 +24,7 @@ public class Common {
     /**
      * Used for C reference character array arguments.
      */
-    static final int MAX_CHAR_ARRAY_LEN = 256;
+    public static final int MAX_CHAR_ARRAY_LEN = 256;
     /**
      * java-u8g2 library.
      */

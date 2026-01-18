@@ -3,67 +3,64 @@
  */
 package com.codeferm.periphery.demo;
 
-import com.codeferm.periphery.Spi;
+import com.codeferm.periphery.device.SpiBus;
+import java.util.Arrays;
 import java.util.concurrent.Callable;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 
 /**
- * SPI loopback.
- *
- * Connect wire between MOSI and MISO pins.
+ * SPI loopback demo using SpiBus.
  *
  * @author Steven P. Goldsmith
  * @version 1.0.0
  * @since 1.0.0
  */
 @Command(name = "SpiLoopback", mixinStandardHelpOptions = true, version = "1.0.0-SNAPSHOT",
-        description = "Send data between MOSI and MISO pins.")
+        description = "SPI loopback test (requires MISO to MOSI jumper).")
+@Slf4j
 public class SpiLoopback implements Callable<Integer> {
 
-    /**
-     * Logger.
-     */
-    private static final Logger logger = LoggerFactory.getLogger(SpiLoopback.class);
-    /**
-     * Device option.
-     */
     @Option(names = {"-d", "--device"}, description = "SPI device, ${DEFAULT-VALUE} by default.")
-    private String device = "/dev/spidev1.0";
+    private String device = "/dev/spidev0.0";
 
-    /**
-     * Send data via loopback.
-     *
-     * @return Exit code.
-     * @throws InterruptedException Possible exception.
-     */
+    @Option(names = {"-m", "--mode"}, description = "SPI mode, ${DEFAULT-VALUE} by default.")
+    private int mode = 0;
+
+    @Option(names = {"-s", "--speed"}, description = "Max speed in Hz, ${DEFAULT-VALUE} by default.")
+    private int speed = 500000;
+
     @Override
-    public Integer call() throws InterruptedException {
+    public Integer call() {
         var exitCode = 0;
-        try (final var spi = new Spi(device, 0, 500000)) {
-            final var txBuf = new byte[128];
-            // Change some data at beginning and end.
-            txBuf[0] = (byte) 0xff;
-            txBuf[127] = (byte) 0x80;
-            final var rxBuf = new byte[128];
-            Spi.spiTransfer(spi.getHandle(), txBuf, rxBuf, txBuf.length);
-            logger.info(String.format("%02X, %02X", (short) rxBuf[0] & 0xff, (short) rxBuf[127] & 0xff));
-        } catch (RuntimeException e) {
-            logger.error(e.getMessage());
+        try (final var spiBus = new SpiBus(device, mode, speed)) {
+            final var tx = new byte[]{0x01, 0x02, 0x03, 0x04, (byte) 0xff};
+            final var rx = new byte[tx.length];
+
+            log.info("Starting SPI loopback on {}...", device);
+            log.atDebug().log("Bus status: {}", spiBus.toString());
+
+            // Perform hardware transfer
+            spiBus.transfer(tx, rx, tx.length);
+
+            log.info("TX: {}", Arrays.toString(tx));
+            log.info("RX: {}", Arrays.toString(rx));
+
+            if (Arrays.equals(tx, rx)) {
+                log.info("Loopback check passed!");
+            } else {
+                log.warn("Loopback check failed! Jumper MISO and MOSI.");
+            }
+        } catch (final RuntimeException e) {
+            log.error("SPI demo failed: {}", e.getMessage());
             exitCode = 1;
         }
         return exitCode;
     }
-    
-    /**
-     * Main parsing, error handling and handling user requests for usage help or version help are done with one line of code.
-     *
-     * @param args Argument list.
-     */
-    public static void main(String... args) {
+
+    public static void main(final String... args) {
         System.exit(new CommandLine(new SpiLoopback()).execute(args));
-    }    
+    }
 }

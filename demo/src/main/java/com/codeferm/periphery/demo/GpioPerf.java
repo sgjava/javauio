@@ -16,7 +16,7 @@ import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 
 /**
- * GPIO performance.
+ * GPIO performance. We do not use thread safe classes here to give raw performance.
  *
  * @author Steven P. Goldsmith
  * @version 1.0.0

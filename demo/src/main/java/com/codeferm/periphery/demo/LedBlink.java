@@ -3,7 +3,7 @@
  */
 package com.codeferm.periphery.demo;
 
-import com.codeferm.periphery.device.Led;
+import com.codeferm.periphery.device.GpioLed;
 import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 import lombok.extern.slf4j.Slf4j;
@@ -39,7 +39,7 @@ public class LedBlink implements Callable<Integer> {
     private int line = 203;
 
     /**
-     * Blink LED using high-level Led device class.
+     * Blink LED using high-level GpioLed device class.
      *
      * @return Exit code.
      * @throws InterruptedException Possible exception.
@@ -47,8 +47,8 @@ public class LedBlink implements Callable<Integer> {
     @Override
     public Integer call() throws InterruptedException {
         var exitCode = 0;
-        // Using var with try-with-resources for the high-level Led device
-        try (var led = new Led(device, line)) {
+        // Using var with try-with-resources for the high-level GpioLed device
+        try (var led = new GpioLed(device, line)) {
             log.info("Blinking LED on {} line {}", device, line);
 
             for (var i = 0; i < 10; i++) {

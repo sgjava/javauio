@@ -18,7 +18,7 @@ import lombok.extern.slf4j.Slf4j;
  * @since 1.0.0
  */
 @Slf4j
-public class Led implements AutoCloseable {
+public class GpioLed implements AutoCloseable {
 
     /**
      * GPIO handle.
@@ -35,7 +35,7 @@ public class Led implements AutoCloseable {
      * @param device GPIO device path (e.g., "/dev/gpiochip0").
      * @param line GPIO line number.
      */
-    public Led(final String device, final int line) {
+    public GpioLed(final String device, final int line) {
         // Initialize GPIO character device for output using fluent GpioConfig builder
         this.gpio = new Gpio(device, line, GpioConfig.builder()
                 .direction(GPIO_DIR_OUT)

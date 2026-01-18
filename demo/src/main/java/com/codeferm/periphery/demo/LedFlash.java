@@ -3,75 +3,84 @@
  */
 package com.codeferm.periphery.demo;
 
-import com.codeferm.periphery.device.LedPwm;
-import com.codeferm.periphery.Pwm;
+import com.codeferm.periphery.device.PwmLed;
 import java.util.concurrent.Callable;
+import java.util.concurrent.TimeUnit;
 import lombok.extern.slf4j.Slf4j;
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 
 /**
- * Flash LED with PWM using high-level device abstraction.
+ * PWM LED Flash and Fade Demo using picocli.
  *
  * @author Steven P. Goldsmith
  * @version 1.0.0
  * @since 1.0.0
  */
 @Slf4j
-@Command(name = "LedFlash", mixinStandardHelpOptions = true, version = "1.0.0-SNAPSHOT",
-        description = "Flash LED with PWM.")
+@Command(name = "LedFlash", mixinStandardHelpOptions = true, version = "1.0.0",
+        description = "Flash or fade an LED using hardware PWM.")
 public class LedFlash implements Callable<Integer> {
 
-    /**
-     * Chip option.
-     */
-    @Option(names = {"-d", "--device"}, description = "PWM device, ${DEFAULT-VALUE} by default.")
-    private int chip = 0;
-    /**
-     * Line option.
-     */
-    @Option(names = {"-c", "--channel"}, description = "PWM pin, ${DEFAULT-VALUE} by default.")
-    private int channel = 0;
+    @Option(names = {"-c", "--chip"}, description = "PWM chip number", defaultValue = "0")
+    private int chip;
+
+    @Option(names = {"-n", "--channel"}, description = "PWM channel number", defaultValue = "0")
+    private int channel;
+
+    @Option(names = {"-p", "--period"}, description = "PWM period in ns", defaultValue = "1000")
+    private int period;
+
+    @Option(names = {"-s", "--startDc"}, description = "Starting duty cycle in ns", defaultValue = "0")
+    private int startDc;
+
+    @Option(names = {"-i", "--dcInc"}, description = "Duty cycle increment in ns", defaultValue = "10")
+    private int dcInc;
+
+    @Option(names = {"-t", "--count"}, description = "Number of times to loop", defaultValue = "100")
+    private int count;
+
+    @Option(names = {"-w", "--sleepTime"}, description = "Sleep time in microseconds", defaultValue = "5000")
+    private int sleepTime;
 
     /**
-     * Flash LED.
+     * Execution logic for the demo.
      *
      * @return Exit code.
-     * @throws InterruptedException Possible exception.
+     * @throws Exception on error.
      */
     @Override
-    public Integer call() throws InterruptedException {
-        var exitCode = 0;
-        // High-level LedPwm is AutoCloseable
-        try (final var led = new LedPwm(chip, channel)) {
-            log.info("Flash LED");
-            led.enable();
+    public Integer call() throws Exception {
+        log.info("Starting PWM LED Demo on chip {}, channel {}", chip, channel);
+        try (PwmLed pwmLed = new PwmLed(chip, channel)) {
+            pwmLed.enable();
 
-            for (var i = 0; i < 10; i++) {
-                // Fade in
-                led.changeBrightness(1000, 0, 10, 100, 5000);
-                // Fade out
-                led.changeBrightness(1000, 1000, -10, 100, 5000);
+            var dutyCycle = startDc;
+            // Looping logic handled at the application (demo) level
+            for (int i = 0; i < count; i++) {
+                // Update hardware via thread-safe call
+                pwmLed.changeBrightness(period, dutyCycle);
+                
+                TimeUnit.MICROSECONDS.sleep(sleepTime);
+                dutyCycle += dcInc;
             }
-
-            // Clean up states before close
-            Pwm.pwmSetPeriod(led.getHandle(), 0);
-            led.disable();
-
-        } catch (RuntimeException e) {
-            log.error(e.getMessage());
-            exitCode = 1;
+            pwmLed.disable();
+            log.info("Demo finished successfully.");
+        } catch (Exception e) {
+            log.error("PWM Demo failed: {}", e.getMessage());
+            return 1;
         }
-        return exitCode;
+        return 0;
     }
 
     /**
-     * Main parsing, error handling and handling user requests for usage help or version help are done with one line of code.
+     * Main entry point.
      *
-     * @param args Argument list.
+     * @param args Command line arguments.
      */
-    public static void main(String... args) {
-        System.exit(new CommandLine(new LedFlash()).execute(args));
+    public static void main(final String... args) {
+        final int exitCode = new CommandLine(new LedFlash()).execute(args);
+        System.exit(exitCode);
     }
 }
