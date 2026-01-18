@@ -24,7 +24,7 @@ import picocli.CommandLine.Option;
 public class UartLoopback implements Callable<Integer> {
 
     @Option(names = {"-d", "--device"}, description = "Serial device, ${DEFAULT-VALUE} by default.")
-    private String device = "/dev/ttyUSB0";
+    private String device = "/dev/ttyS1";
 
     @Option(names = {"-b", "--baud"}, description = "Baud rate, ${DEFAULT-VALUE} by default.")
     private int baud = 115200;
