@@ -20,6 +20,9 @@ try (final var spi = new Spi("/dev/spidev1.0", 0, 500000)) {
 }
 ```
 
+Device classes provide a high-level, object-oriented abstraction over raw hardware handles, significantly simplifying peripheral interactions for the developer. They ensure robust thread safety by using internal ReentrantLock mechanisms to manage concurrent access to shared hardware resources. Furthermore, these classes enforce safe resource management by implementing AutoCloseable, which guarantees that hardware pointers are properly released and the hardware is left in a safe state (such as resetting a PWM duty cycle to zero) upon closing.
+
+
 <img src="images/periphery.png" width="300"/>
 
 NanoPi Duo rigged up to test Periphery including serial and SPI loopbacks, MPU6050 to test I2C and Led.
