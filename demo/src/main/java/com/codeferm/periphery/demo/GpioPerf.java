@@ -9,8 +9,7 @@ import static com.codeferm.periphery.Gpio.GPIO_DIR_OUT;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.concurrent.Callable;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
@@ -22,14 +21,11 @@ import picocli.CommandLine.Option;
  * @version 1.0.0
  * @since 1.0.0
  */
+@Slf4j
 @Command(name = "GpioPerf", mixinStandardHelpOptions = true, version = "1.0.0-SNAPSHOT",
         description = "Test GPIO performance.")
 public class GpioPerf implements Callable<Integer> {
 
-    /**
-     * Logger.
-     */
-    private static final Logger logger = LoggerFactory.getLogger(GpioPerf.class);
     /**
      * Device option.
      */
@@ -68,7 +64,7 @@ public class GpioPerf implements Callable<Integer> {
         // Write test
         try (final var gpio = new Gpio(device, line, GPIO_DIR_OUT)) {
             var handle = gpio.getHandle();
-            logger.info(String.format("Running write test with %d samples", samples));
+            log.info(String.format("Running write test with %d samples", samples));
             final var start = Instant.now();
             // Turn pin on and off, so we can see on a scope
             for (var i = 0; i < samples; i++) {
@@ -78,12 +74,12 @@ public class GpioPerf implements Callable<Integer> {
             final var finish = Instant.now();
             // Elapsed milliseconds
             final var timeElapsed = Duration.between(start, finish).toMillis();
-            logger.info(String.format("%.2f writes per second (on/off)", ((double) samples / (double) timeElapsed) * 1000));
+            log.info(String.format("%.2f writes per second (on/off)", ((double) samples / (double) timeElapsed) * 1000));
         }
         // Read test
         try (final var gpio = new Gpio(device, line, GPIO_DIR_IN)) {
             var handle = gpio.getHandle();
-            logger.info(String.format("Running read test with %d samples", samples));
+            log.info(String.format("Running read test with %d samples", samples));
             final var value = new boolean[1];
             final var start = Instant.now();
             // Read pin
@@ -93,7 +89,7 @@ public class GpioPerf implements Callable<Integer> {
             final var finish = Instant.now();
             // Elapsed milliseconds
             final var timeElapsed = Duration.between(start, finish).toMillis();
-            logger.info(String.format("%.2f reads per second", ((double) samples / (double) timeElapsed) * 1000));
+            log.info(String.format("%.2f reads per second", ((double) samples / (double) timeElapsed) * 1000));
         }
         return exitCode;
     }

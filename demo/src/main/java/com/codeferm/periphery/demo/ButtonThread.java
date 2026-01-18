@@ -55,7 +55,6 @@ public class ButtonThread implements Callable<Integer> {
                 while ((event = button.waitForEvent(10000)) != null) {
                     final var edgeStr = BlockingButton.edgeToString(event.edge());
                     final var timestampStr = BlockingButton.formatTimestamp(event.timestamp());
-
                     if (edgeStr.equals("Rising")) {
                         log.info(String.format("Edge rising  [%s]", timestampStr));
                     } else if (edgeStr.equals("Falling")) {
@@ -65,7 +64,7 @@ public class ButtonThread implements Callable<Integer> {
                     }
                 }
             } catch (Exception e) {
-                throw new RuntimeException(e); 
+                throw new RuntimeException(e);
             }
         });
     }

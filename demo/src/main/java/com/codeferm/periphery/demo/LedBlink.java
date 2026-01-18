@@ -31,7 +31,6 @@ public class LedBlink implements Callable<Integer> {
      */
     @Option(names = {"-d", "--device"}, description = "GPIO device, ${DEFAULT-VALUE} by default.")
     private String device = "/dev/gpiochip0";
-
     /**
      * Line option.
      */
@@ -52,11 +51,10 @@ public class LedBlink implements Callable<Integer> {
             log.info("Blinking LED on {} line {}", device, line);
 
             for (var i = 0; i < 10; i++) {
-                log.debug("Cycle {}: LED ON", i);
+                log.atDebug().log("Cycle {}: LED ON", i);
                 led.on();
                 TimeUnit.SECONDS.sleep(1);
-
-                log.debug("Cycle {}: LED OFF", i);
+                log.atDebug().log("Cycle {}: LED OFF", i);
                 led.off();
                 TimeUnit.SECONDS.sleep(1);
             }

@@ -19,9 +19,9 @@ import picocli.CommandLine.Option;
  * @version 1.0.0
  * @since 1.0.0
  */
+@Slf4j
 @Command(name = "Adxl345Demo", mixinStandardHelpOptions = true, version = "1.0.0-SNAPSHOT",
         description = "Read ADXL345 data using Adxl345 device class.")
-@Slf4j
 public class Adxl345Demo implements Callable<Integer> {
 
     /**
@@ -29,7 +29,6 @@ public class Adxl345Demo implements Callable<Integer> {
      */
     @Option(names = {"-d", "--device"}, description = "I2C device, ${DEFAULT-VALUE} by default.")
     private String device = "/dev/i2c-0";
-
     /**
      * I2C address of ADXL345.
      */
@@ -46,32 +45,24 @@ public class Adxl345Demo implements Callable<Integer> {
     public Integer call() throws InterruptedException {
         var exitCode = 0;
         // I2cBus is AutoCloseable, Adxl345 is AutoCloseable
-        try (final var i2cBus = new I2cBus(device);
-             final var adxl = new Adxl345(i2cBus, address)) {
-            
+        try (final var i2cBus = new I2cBus(device); final var adxl = new Adxl345(i2cBus, address)) {
             log.atDebug().log("Checking device ID at address 0x{}", Integer.toHexString(address));
-            
             // Validate device is present
             if (adxl.getDeviceId() == 0xe5) {
                 log.info("ADXL345 detected. Initializing...");
-                
                 // Set power mode and defaults
                 adxl.enable();
-                
                 log.info("Range: {}, Data Rate: {}", adxl.getRange(), adxl.getDataRate());
                 log.info("Starting 100 sample collection (0.5s intervals)...");
-                
                 for (var i = 0; i < 100; i++) {
                     // Read scaled data (m/s^2)
                     final var data = adxl.read();
-                    
-                    log.info(String.format("Sample %3d - x: %+5.2f, y: %+5.2f, z: %+5.2f", 
+                    log.info(String.format("Sample %3d - x: %+5.2f, y: %+5.2f, z: %+5.2f",
                             i, data.get("x"), data.get("y"), data.get("z")));
-                    
                     TimeUnit.MILLISECONDS.sleep(500);
                 }
             } else {
-                log.error("Device ID mismatch. Expected 0xE5, got 0x{}", 
+                log.error("Device ID mismatch. Expected 0xE5, got 0x{}",
                         Integer.toHexString(adxl.getDeviceId()));
             }
         } catch (final RuntimeException e) {

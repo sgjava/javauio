@@ -29,7 +29,6 @@ public class ButtonWait implements Callable<Integer> {
      */
     @Option(names = {"-d", "--device"}, description = "GPIO device, ${DEFAULT-VALUE} by default.")
     private String device = "/dev/gpiochip1";
-
     /**
      * Line option.
      */
@@ -45,23 +44,21 @@ public class ButtonWait implements Callable<Integer> {
     public Integer call() {
         var exitCode = 0;
         log.info("Starting ButtonWait on {} line {}", device, line);
-
         try (final var button = new BlockingButton(device, line)) {
             log.info("Press button, stop pressing button for 10 seconds to exit");
-
             BlockingButton.ButtonEvent event;
             // Poll for event and timeout in 10 seconds if no event
             while ((event = button.waitForEvent(10000)) != null) {
                 final var edgeStr = BlockingButton.edgeToString(event.edge());
                 final var timestampStr = BlockingButton.formatTimestamp(event.timestamp());
-
                 // Format matches the original logging requirements
-                if (edgeStr.equals("Rising")) {
-                    log.info(String.format("Edge rising  [%s]", timestampStr));
-                } else if (edgeStr.equals("Falling")) {
-                    log.info(String.format("Edge falling [%s]", timestampStr));
-                } else {
-                    log.info(String.format("Invalid edge %d, [%s]", event.edge(), timestampStr));
+                switch (edgeStr) {
+                    case "Rising" ->
+                        log.info(String.format("Edge rising  [%s]", timestampStr));
+                    case "Falling" ->
+                        log.info(String.format("Edge falling [%s]", timestampStr));
+                    default ->
+                        log.info(String.format("Invalid edge %d, [%s]", event.edge(), timestampStr));
                 }
             }
         } catch (RuntimeException e) {

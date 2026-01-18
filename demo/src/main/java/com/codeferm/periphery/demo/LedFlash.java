@@ -28,7 +28,6 @@ public class LedFlash implements Callable<Integer> {
      */
     @Option(names = {"-d", "--device"}, description = "PWM device, ${DEFAULT-VALUE} by default.", defaultValue = "0")
     private int chip;
-
     /**
      * PWM channel/pin option.
      */
@@ -77,7 +76,6 @@ public class LedFlash implements Callable<Integer> {
                 // Fade down: start at 1000, decrement by 10, 100 steps
                 changeBrightness(pwmLed, 1000, 1000, -10, 100, 5000);
             }
-
             pwmLed.disable();
             log.info("LED Flash Demo completed successfully.");
         } catch (Exception e) {

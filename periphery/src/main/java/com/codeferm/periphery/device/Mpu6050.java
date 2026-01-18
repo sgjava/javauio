@@ -506,20 +506,16 @@ public class Mpu6050 implements AutoCloseable {
             double[] gyro = readScaledGyroscopeValues();
             double dt = Math.abs(System.currentTimeMillis() - lastUpdateTime) / 1000.;
             lastUpdateTime = System.currentTimeMillis();
-
             double aX = acc[0], aY = acc[1], aZ = acc[2];
             double angAX = getAccelXAngle(aX, aY, aZ);
             double angAY = getAccelYAngle(aX, aY, aZ);
-
             double gSX = gyro[0] - gyroAngularSpeedOffsetX;
             double gSY = gyro[1] - gyroAngularSpeedOffsetY;
             double gSZ = gyro[2] - gyroAngularSpeedOffsetZ;
-
             MpuData prev = dataSnapshot.get();
             double alpha = 0.96;
             double fX = alpha * (prev.filteredX() + (gSX * dt)) + (1. - alpha) * angAX;
             double fY = alpha * (prev.filteredY() + (gSY * dt)) + (1. - alpha) * angAY;
-
             dataSnapshot.set(new MpuData(aX, aY, aZ, angAX, angAY, ACCEL_Z_ANGLE,
                     gSX, gSY, gSZ,
                     prev.gyroAngleX() + (gSX * dt), prev.gyroAngleY() + (gSY * dt), prev.gyroAngleZ() + (gSZ * dt),
