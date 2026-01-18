@@ -18,8 +18,7 @@ import com.codeferm.periphery.Mmio;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import picocli.CommandLine;
 
 /**
@@ -32,14 +31,11 @@ import picocli.CommandLine;
  * @version 1.0.0
  * @since 1.0.0
  */
+@Slf4j
 @CommandLine.Command(name = "MemScan", mixinStandardHelpOptions = true, version = "1.0.0-SNAPSHOT",
         description = "Use GPIO device to detect memory changes")
 public class MemScan implements Callable<Integer> {
 
-    /**
-     * Logger.
-     */
-    private static final Logger logger = LoggerFactory.getLogger(MemScan.class);
     /**
      * MMIO path.
      */
@@ -98,7 +94,7 @@ public class MemScan implements Callable<Integer> {
                 } else {
                     diff = list2.get(i) - list1.get(i);
                 }
-                logger.info(String.format("%s difference found at offset 0x%08x before 0x%08x after 0x%08x difference 0x%08x", text,
+                log.info(String.format("%s difference found at offset 0x%08x before 0x%08x after 0x%08x difference 0x%08x", text,
                         i * 4, list1.get(i), list2.get(i), diff));
             }
         }
@@ -121,7 +117,7 @@ public class MemScan implements Callable<Integer> {
             // Show the register delta
             listDiff(list1, list2, "Mode");
         } catch (RuntimeException e) {
-            logger.error(String.format("Device %d line %d Error %s", device, line, e.getMessage()));
+            log.error(String.format("Device %d line %d Error %s", device, line, e.getMessage()));
         }
     }
 
@@ -143,7 +139,7 @@ public class MemScan implements Callable<Integer> {
             // Show the register delta
             listDiff(list1, list2, "Data");
         } catch (RuntimeException e) {
-            logger.error(String.format("Device %d line %d Error %s", device, line, e.getMessage()));
+            log.error(String.format("Device %d line %d Error %s", device, line, e.getMessage()));
         }
     }
 
@@ -169,7 +165,7 @@ public class MemScan implements Callable<Integer> {
             // Show the register delta
             listDiff(list1, list2, "Pull down");
         } catch (RuntimeException e) {
-            logger.error(String.format("Device %d line %d Error %s", device, line, e.getMessage()));
+            log.error(String.format("Device %d line %d Error %s", device, line, e.getMessage()));
         }
     }
 
@@ -182,13 +178,13 @@ public class MemScan implements Callable<Integer> {
     @Override
     public Integer call() throws InterruptedException {
         var exitCode = 0;
-        logger.debug(String.format("Memory address 0x%08x words 0x%08x", address, words));
+        log.atDebug().log(String.format("Memory address 0x%08x words 0x%08x", address, words));
         try (final var mmio = new Mmio(address, words * 4, path)) {
             detectMode(mmio.getHandle());
             detectData(mmio.getHandle());
             detectPull(mmio.getHandle());
         } catch (RuntimeException e) {
-            logger.error(e.getMessage());
+            log.error(e.getMessage());
             exitCode = 1;
         }
         return exitCode;

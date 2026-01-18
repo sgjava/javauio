@@ -11,8 +11,7 @@ import java.time.Instant;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.Callable;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import picocli.CommandLine;
 
 /**
@@ -22,14 +21,11 @@ import picocli.CommandLine;
  * @version 1.0.0
  * @since 1.0.0
  */
+@Slf4j
 @CommandLine.Command(name = "Perf", mixinStandardHelpOptions = true, version = "1.0.0-SNAPSHOT",
         description = "Show performance of MMIO based GPIO")
 public class Perf implements Callable<Integer> {
 
-    /**
-     * Logger.
-     */
-    private static final Logger logger = LoggerFactory.getLogger(Perf.class);
     /**
      * Input file.
      */
@@ -110,7 +106,7 @@ public class Perf implements Callable<Integer> {
     public void perfGpiod(final Pin pin, final long samples) {
         try (final var gpio = new Gpio(String.format("/dev/gpiochip%d", pin.key().chip()), pin.key().pin(), GPIO_DIR_OUT)) {
             var handle = gpio.getHandle();
-            logger.info(String.format("Running GPIOD write test with %d samples", samples));
+            log.info(String.format("Running GPIOD write test with %d samples", samples));
             final var start = Instant.now();
             // Turn pin on and off, so we can see on a scope
             for (var i = 0; i < samples; i++) {
@@ -120,7 +116,7 @@ public class Perf implements Callable<Integer> {
             final var finish = Instant.now();
             // Elapsed milliseconds
             final var timeElapsed = Duration.between(start, finish).toMillis();
-            logger.info(String.format("%.2f KHz", ((double) samples / (double) timeElapsed)));
+            log.info(String.format("%.2f KHz", ((double) samples / (double) timeElapsed)));
         }
     }
 
@@ -132,7 +128,7 @@ public class Perf implements Callable<Integer> {
      */
     public void perfGood(final Pin pin, final long samples) {
         try (final var gpio = new Gpio(String.format("/dev/gpiochip%d", pin.key().chip()), pin.key().pin(), GPIO_DIR_OUT)) {
-            logger.info(String.format("Running good MMIO write test with %d samples", samples));
+            log.info(String.format("Running good MMIO write test with %d samples", samples));
             final var start = Instant.now();
             // Turn pin on and off, so we can see on a scope
             for (var i = 0; i < samples; i++) {
@@ -142,7 +138,7 @@ public class Perf implements Callable<Integer> {
             final var finish = Instant.now();
             // Elapsed milliseconds
             final var timeElapsed = Duration.between(start, finish).toMillis();
-            logger.info(String.format("%.2f KHz", ((double) samples / (double) timeElapsed)));
+            log.info(String.format("%.2f KHz", ((double) samples / (double) timeElapsed)));
         }
     }
 
@@ -163,7 +159,7 @@ public class Perf implements Callable<Integer> {
             final var dataOutOffOffset = pin.dataOutOff().offset();
             // Only do read one time to get current value
             Mmio.mmioRead32(handle, dataOutOffOffset, regOff);
-            logger.info(String.format("Running best MMIO write test with %d samples", samples));
+            log.info(String.format("Running best MMIO write test with %d samples", samples));
             final var start = Instant.now();
             // If on and off registers are the same use AND
             if (dataOutOffOffset.equals(dataOutOnOffset)) {
@@ -185,7 +181,7 @@ public class Perf implements Callable<Integer> {
             final var finish = Instant.now();
             // Elapsed milliseconds
             final var timeElapsed = Duration.between(start, finish).toMillis();
-            logger.info(String.format("%.2f KHz", ((double) samples / (double) timeElapsed)));
+            log.info(String.format("%.2f KHz", ((double) samples / (double) timeElapsed)));
         }
     }
 
@@ -226,7 +222,7 @@ public class Perf implements Callable<Integer> {
                 Mmio.mmioClose(entry.getValue());
             });
         } else {
-            logger.error("Pin map empty. Make sure you have a valid property file.");
+            log.error("Pin map empty. Make sure you have a valid property file.");
             exitCode = 1;
         }
         return exitCode;

@@ -53,9 +53,17 @@
                     <fork>true</fork>
                     <source>${maven.compiler.source}</source>
                     <target>${maven.compiler.target}</target>
+                    <!-- Picocli annotation processor -->                    
+                    <annotationProcessorPaths>
+                        <path>
+                            <groupId>org.projectlombok</groupId>
+                            <artifactId>lombok</artifactId>
+                            <version>1.18.42</version> 
+                        </path>                        
+                    </annotationProcessorPaths>
                     <compilerArgs>
                         <arg>-J--sun-misc-unsafe-memory-access=allow</arg>
-                    </compilerArgs>        
+                    </compilerArgs>
                 </configuration>
             </plugin>
             <plugin>
@@ -150,6 +158,13 @@
     </profiles>    
     
     <dependencies>
+        <!-- Provided -->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.18.42</version>
+            <scope>provided</scope>
+        </dependency>         
         <!-- Compile -->
         <dependency>
             <groupId>org.fusesource.hawtjni</groupId>

@@ -15,8 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import picocli.CommandLine;
 
 /**
@@ -31,14 +30,11 @@ import picocli.CommandLine;
  * @version 1.0.0
  * @since 1.0.0
  */
+@Slf4j
 @CommandLine.Command(name = "Gen", mixinStandardHelpOptions = true, version = "1.0.0-SNAPSHOT",
         description = "GPIO data register offset and mask generator")
 public class Gen implements Callable<Integer> {
 
-    /**
-     * Logger.
-     */
-    private static final Logger logger = LoggerFactory.getLogger(Gen.class);
     /**
      * Input file.
      */
@@ -153,11 +149,11 @@ public class Gen implements Callable<Integer> {
                     pin.dataOutOff().mask(pin.dataOutOff().mask() ^ 0xffffffff);
                 }
             } else {
-                logger.warn(String.format("Chip %d Pin %d data register change not detected", pin.key().chip(),
+                log.warn(String.format("Chip %d Pin %d data register change not detected", pin.key().chip(),
                         pin.key().pin()));
             }
         } catch (RuntimeException e) {
-            logger.error(String.format("Chip %d Pin %d Error %s", pin.key().chip(), pin.key().pin(), e.getMessage()));
+            log.error(String.format("Chip %d Pin %d Error %s", pin.key().chip(), pin.key().pin(), e.getMessage()));
         }
     }
 
@@ -192,7 +188,7 @@ public class Gen implements Callable<Integer> {
                 Mmio.mmioClose(handle);
             });
         } else {
-            logger.error("Pin map empty. Make sure you have a valid property file.");
+            log.error("Pin map empty. Make sure you have a valid property file.");
             exitCode = 1;
         }
         return exitCode;

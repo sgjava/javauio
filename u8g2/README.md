@@ -30,7 +30,7 @@ U8g2.setupSsd1306I2c128x64NonameF(u8g2, U8G2_R0, u8x8_byte_arm_linux_hw_i2c, u8x
 U8g2.initI2cHw(u8g2, 0);
 U8g2.setI2CAddress(u8g2, 0x3c * 2);
 U8g2.initDisplay(u8g2);
-logger.debug(String.format("Size %d x %d, draw color %d", U8g2.getDisplayWidth(u8g2), U8g2.getDisplayHeight(u8g2), U8g2.
+log.atDebug().log(String.format("Size %d x %d, draw color %d", U8g2.getDisplayWidth(u8g2), U8g2.getDisplayHeight(u8g2), U8g2.
         getDrawColor(u8g2)));
 U8g2.setPowerSave(u8g2, 0);
 U8g2.clearBuffer(u8g2);

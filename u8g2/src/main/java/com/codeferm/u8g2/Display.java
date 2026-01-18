@@ -10,8 +10,7 @@ import static com.codeferm.u8g2.U8g2.u8x8_byte_arm_linux_hw_spi;
 import static com.codeferm.u8g2.U8x8.u8x8_byte_4wire_sw_spi;
 import static com.codeferm.u8g2.U8x8.u8x8_byte_sw_i2c;
 import java.util.concurrent.TimeUnit;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * Display allows dynamic selection of setup and fonts at run time. This is a monster class because of the generated switch
@@ -21,12 +20,8 @@ import org.slf4j.LoggerFactory;
  * @version 1.0.0
  * @since 1.0.0
  */
+@Slf4j
 public class Display {
-
-    /**
-     * Logger.
-     */
-    private static final Logger logger = LoggerFactory.getLogger(Display.class);
 
     /**
      * Return font pointer based on enum.
@@ -7254,9 +7249,9 @@ public class Display {
         U8g2.initI2cHw(u8g2, bus);
         U8g2.setI2CAddress(u8g2, address * 2);
         U8g2.initDisplay(u8g2);
-        logger.debug(String.format("Size %d x %d, draw color %d", U8g2.getDisplayWidth(u8g2), U8g2.getDisplayHeight(u8g2), U8g2.
+        log.atDebug().log(String.format("Size %d x %d, draw color %d", U8g2.getDisplayWidth(u8g2), U8g2.getDisplayHeight(u8g2), U8g2.
                 getDrawColor(u8g2)));
-        logger.debug(String.format("Bus 0x%02x, Address %02x", bus, address));
+        log.atDebug().log(String.format("Bus 0x%02x, Address %02x", bus, address));
         return u8g2;
     }
 
@@ -7276,9 +7271,9 @@ public class Display {
         setupI2c(setupType, u8g2, U8G2_R0, u8x8_byte_sw_i2c, u8x8_arm_linux_gpio_and_delay);
         U8g2.initI2cSw(u8g2, gpio, scl, sda, res, delay);
         U8g2.initDisplay(u8g2);
-        logger.debug(String.format("Size %d x %d, draw color %d", U8g2.getDisplayWidth(u8g2), U8g2.getDisplayHeight(u8g2), U8g2.
+        log.atDebug().log(String.format("Size %d x %d, draw color %d", U8g2.getDisplayWidth(u8g2), U8g2.getDisplayHeight(u8g2), U8g2.
                 getDrawColor(u8g2)));
-        logger.debug(String.format("GPIO chip %d, SCL %d, SDA %d, RES %d, Delay %d", gpio, scl, sda, res, delay));
+        log.atDebug().log(String.format("GPIO chip %d, SCL %d, SDA %d, RES %d, Delay %d", gpio, scl, sda, res, delay));
         return u8g2;
     }
 
@@ -7301,9 +7296,9 @@ public class Display {
         setupSpi(setupType, u8g2, U8G2_R0, u8x8_byte_arm_linux_hw_spi, u8x8_arm_linux_gpio_and_delay);
         U8g2.initSpiHwAdvanced(u8g2, gpio, bus, dc, res, cs, spiMode, maxSpeed);
         U8g2.initDisplay(u8g2);
-        logger.debug(String.format("Size %d x %d, draw color %d", U8g2.getDisplayWidth(u8g2), U8g2.getDisplayHeight(u8g2), U8g2.
+        log.atDebug().log(String.format("Size %d x %d, draw color %d", U8g2.getDisplayWidth(u8g2), U8g2.getDisplayHeight(u8g2), U8g2.
                 getDrawColor(u8g2)));
-        logger.debug(String.format("GPIO chip %d, bus 0x%02x, DC %d, RES %d, CS %d", gpio, bus, dc, res, cs));
+        log.atDebug().log(String.format("GPIO chip %d, bus 0x%02x, DC %d, RES %d, CS %d", gpio, bus, dc, res, cs));
         return u8g2;
     }
 
@@ -7327,9 +7322,9 @@ public class Display {
         setupSpi(setupType, u8g2, U8G2_R0, u8x8_byte_4wire_sw_spi, u8x8_arm_linux_gpio_and_delay);
         U8g2.initSpiSw(u8g2, gpio, dc, res, mosi, sck, cs, delay);
         U8g2.initDisplay(u8g2);
-        logger.debug(String.format("Size %d x %d, draw color %d", U8g2.getDisplayWidth(u8g2), U8g2.getDisplayHeight(u8g2), U8g2.
+        log.atDebug().log(String.format("Size %d x %d, draw color %d", U8g2.getDisplayWidth(u8g2), U8g2.getDisplayHeight(u8g2), U8g2.
                 getDrawColor(u8g2)));
-        logger.debug(String.format("GPIO chip %d, DC %d, RES %d, MOSI %d, SCK %d, CS %d, Delay %d", gpio, dc, res, mosi, sck, cs,
+        log.atDebug().log(String.format("GPIO chip %d, DC %d, RES %d, MOSI %d, SCK %d, CS %d, Delay %d", gpio, dc, res, mosi, sck, cs,
                 delay));
         return u8g2;
     }
@@ -7343,7 +7338,7 @@ public class Display {
         final var u8g2 = U8g2.initU8g2();
         U8g2.setupbufferSdl128x64(u8g2, U8G2_R0);
         U8g2.initDisplay(u8g2);
-        logger.debug(String.format("Size %d x %d, draw color %d", U8g2.getDisplayWidth(u8g2), U8g2.getDisplayHeight(u8g2), U8g2.
+        log.atDebug().log(String.format("Size %d x %d, draw color %d", U8g2.getDisplayWidth(u8g2), U8g2.getDisplayHeight(u8g2), U8g2.
                 getDrawColor(u8g2)));
         return u8g2;
     }
@@ -7367,7 +7362,7 @@ public class Display {
      * @param u8g2 Pointer to u8g2_t structure.
      */
     public void done(final long u8g2) {
-        logger.debug("Done");
+        log.atDebug().log("Done");
         U8g2.doneUserData(u8g2);
         U8g2.done(u8g2);
     }

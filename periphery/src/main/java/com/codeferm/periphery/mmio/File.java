@@ -21,8 +21,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * Parse property files containing board specific information.
@@ -36,12 +35,8 @@ import org.slf4j.LoggerFactory;
 @AllArgsConstructor
 @Builder
 @Accessors(fluent = true)
+@Slf4j
 public class File {
-
-    /**
-     * Logger.
-     */
-    private static final Logger logger = LoggerFactory.getLogger(File.class);
 
     /**
      * File description.
@@ -115,13 +110,13 @@ public class File {
         try {
             // Get properties from file
             props.load(new FileInputStream(propertyFile));
-            logger.debug("Properties loaded from file {}", propertyFile);
+            log.atDebug().log("Properties loaded from file {}", propertyFile);
         } catch (IOException e1) {
-            logger.warn("Properties file not found {}", propertyFile);
+            log.warn("Properties file not found {}", propertyFile);
             // Get properties from classpath
             try (final var stream = File.class.getClassLoader().getResourceAsStream(propertyFile)) {
                 props.load(stream);
-                logger.debug("Properties loaded from class path {}", propertyFile);
+                log.atDebug().log("Properties loaded from class path {}", propertyFile);
             } catch (IOException e2) {
                 throw new RuntimeException("No properties found", e2);
             }
@@ -150,8 +145,7 @@ public class File {
     }
 
     /**
-     * Return List of Integer from comma delimited string. Spaces are stripped
-     * out.
+     * Return List of Integer from comma delimited string. Spaces are stripped out.
      *
      * @param str Comma delimited hex string.
      * @return List of Integer.
@@ -161,8 +155,7 @@ public class File {
     }
 
     /**
-     * Return List of Integer from comma delimited string. Spaces are stripped
-     * out.
+     * Return List of Integer from comma delimited string. Spaces are stripped out.
      *
      * @param str Comma delimited decimal string.
      * @return List of Integer.
@@ -172,8 +165,7 @@ public class File {
     }
 
     /**
-     * Return List of String from comma delimited string. Spaces are stripped
-     * out.
+     * Return List of String from comma delimited string. Spaces are stripped out.
      *
      * @param str Comma delimited string.
      * @return List of String.
@@ -225,7 +217,7 @@ public class File {
      * @param outFileName Output property file.
      */
     public void genProperties(final Map<PinKey, Pin> pinMap, final String inFileName, final String outFileName) {
-        logger.debug("Generating output file {}", outFileName);
+        log.atDebug().log("Generating output file {}", outFileName);
         final var properties = loadProperties(inFileName);
         try (final var writer = new BufferedWriter(new FileWriter(outFileName))) {
             // Write header comment
@@ -252,11 +244,11 @@ public class File {
                             dataOutOn().name(), value.dataOutOn().offset(), value.dataOutOn().mask(), value.
                             dataOutOff().name(), value.dataOutOff().offset(), value.dataOutOff().mask()));
                 } else {
-                    logger.warn(String.format("Chip %d pin %d detection failed, so skipping", key.chip(), key.pin()));
+                    log.warn(String.format("Chip %d pin %d detection failed, so skipping", key.chip(), key.pin()));
                 }
             }
         } catch (IOException e) {
-            logger.error(String.format("Error %s", e.getMessage()));
+            log.error(String.format("Error %s", e.getMessage()));
         }
     }
 

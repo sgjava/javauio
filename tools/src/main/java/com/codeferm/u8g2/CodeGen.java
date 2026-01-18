@@ -21,8 +21,7 @@ import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
@@ -34,14 +33,11 @@ import picocli.CommandLine.Option;
  * @version 1.0.0
  * @since 1.0.0
  */
+@Slf4j
 @Command(name = "CodeGen", mixinStandardHelpOptions = true, version = "1.0.0-SNAPSHOT",
         description = "Generate Java code from U8g2 header files")
 public class CodeGen implements Callable<Integer> {
 
-    /**
-     * Logger.
-     */
-    private static final Logger logger = LoggerFactory.getLogger(CodeGen.class);
     /**
      * u8g2.h file.
      */
@@ -143,9 +139,10 @@ public class CodeGen implements Callable<Integer> {
 
     /**
      * Replace all in last item of String List.
+     *
      * @param list String List.
      * @param regex Substring to find.
-     * @param replacement Replace with this. 
+     * @param replacement Replace with this.
      */
     public void replaceAllLastEle(final List<String> list, final String regex, final String replacement) {
         if (!list.isEmpty()) {
