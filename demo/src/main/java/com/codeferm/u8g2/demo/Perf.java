@@ -6,8 +6,7 @@ package com.codeferm.u8g2.demo;
 import com.codeferm.u8g2.U8g2;
 import java.time.Duration;
 import java.time.Instant;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
 
@@ -18,14 +17,11 @@ import picocli.CommandLine.Command;
  * @version 1.0.0
  * @since 1.0.0
  */
+@Slf4j
 @Command(name = "Perf", mixinStandardHelpOptions = true, version = "1.0.0-SNAPSHOT",
         description = "U8g2 buffer write performance demo")
 public class Perf extends Base {
 
-    /**
-     * Logger.
-     */
-    private static final Logger logger = LoggerFactory.getLogger(Perf.class);
     /**
      * Line option.
      */
@@ -44,14 +40,14 @@ public class Perf extends Base {
         var exitCode = super.call();
         final var u8g2 = getU8g2();
         final var start = Instant.now();
-        logger.info(String.format("Timing %d sendBuffer", samples));
+        log.info(String.format("Timing %d sendBuffer", samples));
         for (var i = 0; i < samples; i++) {
             U8g2.sendBuffer(u8g2);
         }
         final var finish = Instant.now();
         // Elapsed milliseconds
         final var timeElapsed = Duration.between(start, finish).toSeconds();
-        logger.info(String.format("%.2f sendBuffer per second", ((double) samples / (double) timeElapsed)));
+        log.info(String.format("%.2f sendBuffer per second", ((double) samples / (double) timeElapsed)));
         done();
         return exitCode;
     }

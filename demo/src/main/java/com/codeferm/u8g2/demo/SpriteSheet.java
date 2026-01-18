@@ -13,8 +13,7 @@ import javax.imageio.ImageIO;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * Processes a PNG sprite sheet into native memory and renders it in a tiled grid.
@@ -26,13 +25,10 @@ import org.slf4j.LoggerFactory;
  * @version 1.0.0
  * @since 1.0.0
  */
+@Slf4j
 @Command(name = "SpriteSheetProcessor", mixinStandardHelpOptions = true, version = "2.9.0")
 public class SpriteSheet extends Base {
 
-    /**
-     * Logger.
-     */
-    private static final Logger logger = LoggerFactory.getLogger(SpriteSheet.class);
     /**
      * File to process.
      */
@@ -166,7 +162,7 @@ public class SpriteSheet extends Base {
                 y = 0;
             }
         }
-        logger.info("All sprites displayed. Closing...");
+        log.info("All sprites displayed. Closing...");
         display.sleep(3000);
         done();
         return 0;

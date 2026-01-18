@@ -4,8 +4,7 @@
 package com.codeferm.u8g2.demo;
 
 import com.codeferm.u8g2.U8g2;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
@@ -17,13 +16,10 @@ import picocli.CommandLine.Option;
  * @version 1.0.0
  * @since 1.0.0
  */
+@Slf4j
 @Command(name = "Plasma", mixinStandardHelpOptions = true, version = "1.0.0-SNAPSHOT")
 public class Plasma extends Base {
 
-    /**
-     * Logger.
-     */
-    private static final Logger logger = LoggerFactory.getLogger(Plasma.class);
     /**
      * FPS.
      */
@@ -41,7 +37,7 @@ public class Plasma extends Base {
         var maxFrames = fps * 60;
         var frameCount = 0;
         var time = 0.0f;
-        logger.info("Starting 30 FPS Plasma (60s run)...");
+        log.info("Starting 30 FPS Plasma (60s run)...");
         while (frameCount < maxFrames) {
             U8g2.clearBuffer(u8);
             for (var y = 0; y < h; y++) {
@@ -67,7 +63,7 @@ public class Plasma extends Base {
             // Maintain timing for FPS
             display.sleep(1000L / fps);
         }
-        logger.info("Demo complete.");
+        log.info("Demo complete.");
     }
 
     /**

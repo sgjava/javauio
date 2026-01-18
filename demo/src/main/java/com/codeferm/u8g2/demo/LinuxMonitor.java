@@ -8,8 +8,7 @@ import com.codeferm.u8g2.U8g2;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
@@ -21,13 +20,10 @@ import picocli.CommandLine.Option;
  * @version 1.0.0
  * @since 1.0.0
  */
+@Slf4j
 @Command(name = "LinuxMonitor", mixinStandardHelpOptions = true, version = "1.0.0-SNAPSHOT")
 public class LinuxMonitor extends Base {
 
-    /**
-     * Logger.
-     */
-    private static final Logger logger = LoggerFactory.getLogger(LinuxMonitor.class);
     /**
      * FPS.
      */

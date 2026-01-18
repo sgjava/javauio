@@ -26,8 +26,7 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.Executors;
 import static java.util.concurrent.TimeUnit.NANOSECONDS;
 import java.util.regex.Pattern;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
@@ -39,14 +38,11 @@ import picocli.CommandLine.Option;
  * @version 1.0.0
  * @since 1.0.0
  */
+@Slf4j
 @Command(name = "MultiDisplay", mixinStandardHelpOptions = true, version = "1.0.0-SNAPSHOT",
         description = "Multiple display demo")
 public class MultiDisplay implements Callable<Integer> {
 
-    /**
-     * Logger.
-     */
-    private static final Logger logger = LoggerFactory.getLogger(MultiDisplay.class);
     /**
      * Integer regex.
      */
@@ -81,13 +77,13 @@ public class MultiDisplay implements Callable<Integer> {
         try {
             // Get properties from file
             props.load(new FileInputStream(propertyFile));
-            logger.debug("Properties loaded from file {}", propertyFile);
+            log.atDebug().log("Properties loaded from file {}", propertyFile);
         } catch (IOException e1) {
-            logger.warn("Properties file not found {}", propertyFile);
+            log.warn("Properties file not found {}", propertyFile);
             // Get properties from classpath
             try (final var stream = MultiDisplay.class.getClassLoader().getResourceAsStream(propertyFile)) {
                 props.load(stream);
-                logger.debug("Properties loaded from class path {}", propertyFile);
+                log.atDebug().log("Properties loaded from class path {}", propertyFile);
             } catch (IOException e2) {
                 throw new RuntimeException("No properties found", e2);
             }
@@ -103,7 +99,7 @@ public class MultiDisplay implements Callable<Integer> {
      * @return Pointer to u8g2 struct.
      */
     public long setup(final int displayNum, final Properties properties) {
-        logger.debug(String.format("Display %d", displayNum));
+        log.atDebug().log(String.format("Display %d", displayNum));
         final var keys = properties.stringPropertyNames();
         final var intMap = new HashMap<String, Integer>();
         final var strMap = new HashMap<String, String>();
@@ -123,9 +119,9 @@ public class MultiDisplay implements Callable<Integer> {
         });
         // Save off type by display number
         typeMap.put(displayNum, DisplayType.valueOf(strMap.get("type")));
-        logger.debug(String.format("Setup %s", strMap.get("setup")));
-        logger.debug(String.format("Type %s", strMap.get("type")));
-        logger.debug(String.format("Font %s", strMap.get("font")));
+        log.atDebug().log(String.format("Setup %s", strMap.get("setup")));
+        log.atDebug().log(String.format("Type %s", strMap.get("type")));
+        log.atDebug().log(String.format("Font %s", strMap.get("font")));
         long u8g2 = 0;
         switch (DisplayType.valueOf(strMap.get("type"))) {
             case I2CHW:
@@ -214,7 +210,7 @@ public class MultiDisplay implements Callable<Integer> {
                             }
                         }
                     }
-                    logger.debug(Long.toString(u8g2));
+                    log.atDebug().log(Long.toString(u8g2));
                 }
             });
         }
@@ -223,11 +219,11 @@ public class MultiDisplay implements Callable<Integer> {
             executor.shutdown();
             // Wait for threads to finish
             if (!executor.isTerminated()) {
-                logger.info("Waiting for threads to finish");
+                log.info("Waiting for threads to finish");
                 executor.awaitTermination(Long.MAX_VALUE, NANOSECONDS);
             }
         } catch (InterruptedException e) {
-            logger.error("Tasks interrupted");
+            log.error("Tasks interrupted");
         } finally {
             executor.shutdownNow();
         }

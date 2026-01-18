@@ -8,8 +8,7 @@ import picocli.CommandLine;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 import java.util.Random;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * 3D Wireframe Cube with dynamic scaling, randomized movement, and FPS control.
@@ -18,14 +17,11 @@ import org.slf4j.LoggerFactory;
  * @version 1.0.0
  * @since 1.0.0
  */
+@Slf4j
 @Command(name = "WireframeCube", mixinStandardHelpOptions = true, version = "1.0.0-SNAPSHOT",
         description = "Bouncing 3D cube with dynamic scaling and coordinate clipping")
 public class WireframeCube extends Base {
 
-    /**
-     * Logger.
-     */
-    private static final Logger logger = LoggerFactory.getLogger(WireframeCube.class);
     /**
      * FPS.
      */

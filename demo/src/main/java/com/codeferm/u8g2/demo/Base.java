@@ -14,8 +14,7 @@ import static com.codeferm.u8g2.demo.Base.DisplayType.I2CHW;
 import static com.codeferm.u8g2.demo.Base.DisplayType.SDL;
 import java.util.concurrent.Callable;
 import lombok.Data;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import picocli.CommandLine.Option;
 
 /**
@@ -26,12 +25,8 @@ import picocli.CommandLine.Option;
  * @since 1.0.0
  */
 @Data
+@Slf4j
 public class Base implements Callable<Integer> {
-
-    /**
-     * Logger.
-     */
-    private static final Logger logger = LoggerFactory.getLogger(Base.class);
 
     /**
      * Add display types here and in setup method.
@@ -153,7 +148,7 @@ public class Base implements Callable<Integer> {
      * @param text Text to show.
      */
     public void showText(final String text) {
-        logger.debug(text);
+        log.atDebug().log(text);
         final var maxHeight = U8g2.getMaxCharHeight(u8g2);
         U8g2.clearBuffer(u8g2);
         // Does string fit display width?
@@ -214,9 +209,9 @@ public class Base implements Callable<Integer> {
         var exitCode = 0;
         display = new Display();
         // Initialize user_data_struct based on display type
-        logger.debug(String.format("Setup %s", setup));
-        logger.debug(String.format("Type %s", type));
-        logger.debug(String.format("Font %s", font));
+        log.atDebug().log(String.format("Setup %s", setup));
+        log.atDebug().log(String.format("Type %s", type));
+        log.atDebug().log(String.format("Font %s", font));
         switch (type) {
             case I2CHW:
                 u8g2 = display.initHwI2c(setup, bus, address);

@@ -3,8 +3,7 @@
  */
 package com.codeferm.u8g2.demo;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
 
@@ -15,14 +14,10 @@ import picocli.CommandLine.Command;
  * @version 1.0.0
  * @since 1.0.0
  */
+@Slf4j
 @Command(name = "SimpleText", mixinStandardHelpOptions = true, version = "1.0.0-SNAPSHOT",
         description = "Simple text demo")
 public class SimpleText extends Base {
-
-    /**
-     * Logger.
-     */
-    private static final Logger logger = LoggerFactory.getLogger(SimpleText.class);
 
     /**
      * Simple text display.

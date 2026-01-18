@@ -12,6 +12,7 @@ import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferByte;
 import java.util.Arrays;
+import lombok.extern.slf4j.Slf4j;
 import picocli.CommandLine;
 
 /**
@@ -21,6 +22,7 @@ import picocli.CommandLine;
  * @version 1.0.0
  * @since 1.0.0
  */
+@Slf4j
 @CommandLine.Command(name = "BufImage", mixinStandardHelpOptions = true, version = "1.0.0-SNAPSHOT",
         description = "Optimized BufferedImage demo")
 public class BufImage extends Base {

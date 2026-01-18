@@ -5,8 +5,7 @@ package com.codeferm.u8g2.demo;
 
 import com.codeferm.u8g2.Common;
 import com.codeferm.u8g2.U8g2;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
 
@@ -17,14 +16,11 @@ import picocli.CommandLine.Command;
  * @version 1.0.0
  * @since 1.0.0
  */
+@Slf4j
 @Command(name = "Xbm", mixinStandardHelpOptions = true, version = "1.0.0-SNAPSHOT",
         description = "Xbm demo")
 public class Xbm extends Base {
 
-    /**
-     * Logger.
-     */
-    private static final Logger logger = LoggerFactory.getLogger(Xbm.class);
     /**
      * XBM Java logo.
      */
@@ -103,13 +99,13 @@ public class Xbm extends Base {
         (byte) 0x00, (byte) 0x00, (byte) 0x00,
         (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00
     };
-    
+
     /**
      * Draw XBM image.
      */
     public void xbm() {
         final var u8g2 = getU8g2();
-        logger.debug(String.format("XBM length %d", logo.length));
+        log.atDebug().log(String.format("XBM length %d", logo.length));
         // Make sure image will fit
         if (U8g2.getDisplayHeight(u8g2) >= 64) {
             // Allocate native memory
@@ -122,9 +118,9 @@ public class Xbm extends Base {
             Common.free(image);
             getDisplay().sleep(getSleep());
         } else {
-            logger.warn("Display height less than what's required");
+            log.warn("Display height less than what's required");
         }
-    }    
+    }
 
     /**
      * Show XBM image.

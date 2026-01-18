@@ -6,8 +6,7 @@ package com.codeferm.u8g2.demo;
 import com.codeferm.u8g2.FontType;
 import com.codeferm.u8g2.U8g2;
 import java.util.Random;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
@@ -17,13 +16,10 @@ import picocli.CommandLine.Option;
  *
  * Implements realistic wind smoothing, cardinal directions, and historical data tracking.
  */
+@Slf4j
 @Command(name = "WeatherStation", mixinStandardHelpOptions = true, version = "1.0.0-SNAPSHOT")
 public class WeatherStation extends Base {
 
-    /**
-     * Logger.
-     */
-    private static final Logger logger = LoggerFactory.getLogger(WeatherStation.class);
     /**
      * FPS.
      */

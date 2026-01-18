@@ -3,8 +3,7 @@
  */
 package com.codeferm.u8g2.demo;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
 
@@ -15,21 +14,17 @@ import picocli.CommandLine.Command;
  * @version 1.0.0
  * @since 1.0.0
  */
+@Slf4j
 @Command(name = "SDL", mixinStandardHelpOptions = true, version = "1.0.0-SNAPSHOT",
         description = "SDL demo")
 public class Sdl extends Base {
-
-    /**
-     * Logger.
-     */
-    private static final Logger logger = LoggerFactory.getLogger(Sdl.class);
 
     /**
      * Run demo.
      *
      * @return Exit code.
      * @throws InterruptedException Possible exception.
-     */    
+     */
     @Override
     public Integer call() throws InterruptedException {
         int exitCode = 1;
@@ -39,7 +34,7 @@ public class Sdl extends Base {
             showText("SDL test");
             done();
         } else {
-            logger.error("Only SDL display type supported");
+            log.error("Only SDL display type supported");
         }
         return exitCode;
     }

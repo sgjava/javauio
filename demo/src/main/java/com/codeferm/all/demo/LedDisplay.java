@@ -13,8 +13,7 @@ import static com.codeferm.periphery.Gpio.GPIO_EDGE_NONE;
 import static com.codeferm.periphery.Gpio.GPIO_EVENT_CLOCK_REALTIME;
 import com.codeferm.u8g2.U8g2;
 import com.codeferm.u8g2.demo.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
 
@@ -25,14 +24,11 @@ import picocli.CommandLine.Command;
  * @version 1.0.0
  * @since 1.0.0
  */
+@Slf4j
 @Command(name = "LedDisplay", mixinStandardHelpOptions = true, version = "1.0.0-SNAPSHOT",
         description = "Blink LED and show animated sprite on mono display")
 public class LedDisplay extends Base {
 
-    /**
-     * Logger.
-     */
-    private static final Logger logger = LoggerFactory.getLogger(LedDisplay.class);
     /**
      * GPIO device.
      */
@@ -97,7 +93,7 @@ public class LedDisplay extends Base {
                 .drive(GPIO_DRIVE_DEFAULT).edge(GPIO_EDGE_NONE)
                 .inverted(false).label(cString(LedDisplay.class.getSimpleName()))
                 .event_clock(GPIO_EVENT_CLOCK_REALTIME).debounce_us(0).build())) {
-            logger.info("Blinking LED with dynamic animation");
+            log.info("Blinking LED with dynamic animation");
             var i = 0;
             while (i < 10) {
                 // LED ON
@@ -111,7 +107,7 @@ public class LedDisplay extends Base {
                 i++;
             }
         } catch (RuntimeException e) {
-            logger.error(e.getMessage());
+            log.error(e.getMessage());
             exitCode = 1;
         }
         done();

@@ -11,8 +11,7 @@ import java.nio.channels.FileChannel;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.util.concurrent.TimeUnit;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
 
@@ -25,14 +24,11 @@ import picocli.CommandLine.Command;
  * @version 1.0.0
  * @since 1.0.0
  */
+@Slf4j
 @Command(name = "Video", mixinStandardHelpOptions = true, version = "1.0.0-SNAPSHOT",
         description = "Video demo")
 public class Video extends Base {
 
-    /**
-     * Logger.
-     */
-    private static final Logger logger = LoggerFactory.getLogger(Video.class);
     /**
      * Input file.
      */
@@ -58,7 +54,7 @@ public class Video extends Base {
         final ByteBuffer buffer = ByteBuffer.allocateDirect(frameSize);
         final byte[] frameArray = new byte[frameSize];
         final var image = Common.malloc(frameSize);
-        logger.info("Reading {} at {} FPS using NIO FileChannel", fileName, fps);
+        log.info("Reading {} at {} FPS using NIO FileChannel", fileName, fps);
         try (var channel = FileChannel.open(Path.of(fileName), StandardOpenOption.READ)) {
             while (channel.read(buffer) != -1) {
                 long startTime = System.nanoTime();

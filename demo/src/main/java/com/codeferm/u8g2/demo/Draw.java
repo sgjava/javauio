@@ -5,8 +5,7 @@ package com.codeferm.u8g2.demo;
 
 import com.codeferm.u8g2.U8g2;
 import java.util.Random;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
 
@@ -17,14 +16,10 @@ import picocli.CommandLine.Command;
  * @version 1.0.0
  * @since 1.0.0
  */
+@Slf4j
 @Command(name = "Draw", mixinStandardHelpOptions = true, version = "1.0.0-SNAPSHOT",
         description = "Draw demo")
 public class Draw extends Base {
-
-    /**
-     * Logger.
-     */
-    private static final Logger logger = LoggerFactory.getLogger(Draw.class);
 
     /**
      * Line examples.
