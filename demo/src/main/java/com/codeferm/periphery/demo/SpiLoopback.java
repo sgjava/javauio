@@ -24,7 +24,7 @@ import picocli.CommandLine.Option;
 public class SpiLoopback implements Callable<Integer> {
 
     @Option(names = {"-d", "--device"}, description = "SPI device, ${DEFAULT-VALUE} by default.")
-    private String device = "/dev/spidev0.0";
+    private String device = "/dev/spidev1.0";
 
     @Option(names = {"-m", "--mode"}, description = "SPI mode, ${DEFAULT-VALUE} by default.")
     private int mode = 0;
