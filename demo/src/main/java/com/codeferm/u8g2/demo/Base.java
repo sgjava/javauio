@@ -63,7 +63,7 @@ public class Base implements Callable<Integer> {
     /**
      * I2C or SPI bus number.
      */
-    @Option(names = {"--bus"}, description = "I2C or SPI bus number , ${DEFAULT-VALUE} by default.")
+    @Option(names = {"--bus"}, description = "I2C or SPI bus number, ${DEFAULT-VALUE} by default.")
     private int bus = 0x0;
     /**
      * I2C address.
@@ -141,6 +141,7 @@ public class Base implements Callable<Integer> {
      * Display height.
      */
     private int height;
+
     /**
      * Show text with delay. Everything is calculated each time as font can differ between calls. String is wrapped if too long for
      * one line.
@@ -151,33 +152,44 @@ public class Base implements Callable<Integer> {
         log.atDebug().log(text);
         final var maxHeight = U8g2.getMaxCharHeight(u8g2);
         U8g2.clearBuffer(u8g2);
-        // Does string fit display width?
+        // If it fits on one line, just draw it
         if (U8g2.getStrWidth(u8g2, text) < width) {
             U8g2.drawStr(u8g2, 1, maxHeight, text);
         } else {
-            // String exceeds width, so let's wrap
+            // String exceeds width, let's wrap
             var y = maxHeight;
             var pos = 0;
-            var str = "";
-            while (y < height && pos < text.length()) {
-                if (U8g2.getStrWidth(u8g2, str) < width) {
-                    str += text.charAt(pos++);
+            var lineStr = "";
+            // Loop until we run out of text or screen height
+            while (y <= height && pos < text.length()) {
+                char c = text.charAt(pos);
+                // PEEK: Check if adding the next character exceeds width
+                if (U8g2.getStrWidth(u8g2, lineStr + c) < width) {
+                    lineStr += c;
+                    pos++;
                 } else {
-                    U8g2.drawStr(u8g2, 1, y, str);
-                    str = "";
+                    // Current line is full, draw it
+                    U8g2.drawStr(u8g2, 1, y, lineStr);
+                    // Reset line string and move Y down
+                    lineStr = "";
                     y += maxHeight;
-                    pos--;
-                    // Skip leading spaces on new line
-                    while (text.charAt(pos) == ' ' && pos < text.length()) {
+                    // Break if the next line would be off-screen
+                    if (y > height) {
+                        break;
+                    }
+                    // Skip leading spaces for the new line to prevent ragged left edges
+                    while (pos < text.length() && text.charAt(pos) == ' ') {
                         pos++;
                     }
                 }
             }
-            // Draw last line
-            if (!str.isEmpty()) {
-                U8g2.drawStr(u8g2, 1, y, str);
+
+            // Draw remaining text if we haven't exceeded display height
+            if (!lineStr.isEmpty() && y <= height) {
+                U8g2.drawStr(u8g2, 1, y, lineStr);
             }
         }
+
         U8g2.sendBuffer(u8g2);
         U8g2.clearBuffer(u8g2);
         display.sleep(sleep);
