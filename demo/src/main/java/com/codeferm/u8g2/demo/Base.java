@@ -156,40 +156,32 @@ public class Base implements Callable<Integer> {
         if (U8g2.getStrWidth(u8g2, text) < width) {
             U8g2.drawStr(u8g2, 1, maxHeight, text);
         } else {
-            // String exceeds width, let's wrap
             var y = maxHeight;
             var pos = 0;
             var lineStr = "";
-            // Loop until we run out of text or screen height
+            // Single exit point: combined condition for vertical space and string length
             while (y <= height && pos < text.length()) {
                 char c = text.charAt(pos);
-                // PEEK: Check if adding the next character exceeds width
+                // If character fits, append it
                 if (U8g2.getStrWidth(u8g2, lineStr + c) < width) {
                     lineStr += c;
                     pos++;
                 } else {
-                    // Current line is full, draw it
+                    // Line is full: draw it and increment vertical position
                     U8g2.drawStr(u8g2, 1, y, lineStr);
-                    // Reset line string and move Y down
                     lineStr = "";
                     y += maxHeight;
-                    // Break if the next line would be off-screen
-                    if (y > height) {
-                        break;
-                    }
-                    // Skip leading spaces for the new line to prevent ragged left edges
+                    // Skip leading spaces for the next line
                     while (pos < text.length() && text.charAt(pos) == ' ') {
                         pos++;
                     }
                 }
             }
-
-            // Draw remaining text if we haven't exceeded display height
+            // Final check to draw the last buffered line if within display bounds
             if (!lineStr.isEmpty() && y <= height) {
                 U8g2.drawStr(u8g2, 1, y, lineStr);
             }
         }
-
         U8g2.sendBuffer(u8g2);
         U8g2.clearBuffer(u8g2);
         display.sleep(sleep);
