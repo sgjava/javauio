@@ -14,7 +14,8 @@ import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 
 /**
- * A hardware monitor for Linux systems. Samples kernel data to drive a high-density graphical dashboard.
+ * A hardware monitor for Linux systems with dynamic layout scaling. This demo samples kernel data (procfs/sysfs) and renders a
+ * graphical dashboard that automatically adjusts its layout based on the display resolution.
  *
  * @author Steven P. Goldsmith
  * @version 1.0.0
@@ -25,37 +26,50 @@ import picocli.CommandLine.Option;
 public class LinuxMonitor extends Base {
 
     /**
-     * FPS.
+     * Update rate in frames per second.
      */
     @Option(names = {"-f", "--fps"}, description = "Update rate", defaultValue = "2")
-    public int fps;
+    private int fps;
+
     /**
-     * Maximum frames.
+     * Maximum number of frames to render before exiting (0 for infinite).
      */
     @Option(names = {"-m", "--max-frames"}, description = "Exit after N frames (0 for infinite)", defaultValue = "0")
-    public int maxFrames;
+    private int maxFrames;
+
     /**
-     * Network interface.
+     * Target network interface for bandwidth monitoring.
      */
     @Option(names = {"-i", "--interface"}, description = "Network interface name", defaultValue = "eth0")
-    public String netIf;
+    private String netIf;
 
+    /**
+     * Current frame count.
+     */
     private int frameCount = 0;
+
+    /**
+     * History buffer for CPU sparkline.
+     */
     private final float[] cpuHistory = new float[40];
+
+    /**
+     * History buffer for Network sparkline.
+     */
     private final float[] netHistory = new float[40];
+
     private long lastIdle = 0;
     private long lastTotal = 0;
     private long lastNetBytes = 0;
     private float currentCpuLoad = 0;
     private float currentNetKbps = 0;
     private float loadAvg = 0.0f;
-    private float cpuTempC = -1.0f;
+    private float cpuTempF = -1.0f;
     private long memAvailableKb = 0;
     private long memTotalKb = 0;
-    private boolean interfaceFound = false;
 
     /**
-     * Samples CPU usage by calculating the delta between idle and total jiffies.
+     * Updates CPU utilization by parsing /proc/stat.
      */
     public void updateCpuMetric() {
         try (var lines = Files.lines(Paths.get("/proc/stat"))) {
@@ -76,29 +90,29 @@ public class LinuxMonitor extends Base {
             System.arraycopy(cpuHistory, 1, cpuHistory, 0, cpuHistory.length - 1);
             cpuHistory[cpuHistory.length - 1] = currentCpuLoad;
         } catch (IOException | NumberFormatException e) {
-            throw new RuntimeException(e);
+            log.error("CPU metric error: {}", e.getMessage());
         }
     }
 
     /**
-     * Attempts to read thermal data; defaults to N/A if sensor is unavailable.
+     * Updates CPU temperature from sysfs and converts Celsius to Fahrenheit.
      */
     public void updateThermalMetric() {
         var thermalPath = Paths.get("/sys/class/thermal/thermal_zone0/temp");
         if (Files.exists(thermalPath)) {
             try {
                 var content = Files.readString(thermalPath).trim();
-                cpuTempC = Float.parseFloat(content) / 1000.0f;
+                var cpuTempC = Float.parseFloat(content) / 1000.0f;
+                // Convert to Fahrenheit
+                cpuTempF = (cpuTempC * 9 / 5) + 32;
             } catch (IOException | NumberFormatException e) {
-                cpuTempC = -1.0f;
+                cpuTempF = -1.0f;
             }
-        } else {
-            cpuTempC = -1.0f;
         }
     }
 
     /**
-     * Reads the 1-minute load average from the kernel.
+     * Updates 1-minute load average from /proc/loadavg.
      */
     public void updateLoadAvg() {
         try {
@@ -110,7 +124,7 @@ public class LinuxMonitor extends Base {
     }
 
     /**
-     * Parses memory metrics to determine utilization.
+     * Updates Memory statistics from /proc/meminfo.
      */
     public void updateMemMetric() {
         try (var lines = Files.lines(Paths.get("/proc/meminfo"))) {
@@ -122,18 +136,17 @@ public class LinuxMonitor extends Base {
                 }
             });
         } catch (IOException e) {
-            // memory stats unavailable
+            log.error("Memory metric error");
         }
     }
 
     /**
-     * Tracks network throughput for the configured interface.
+     * Updates network throughput for the specified interface.
      */
     public void updateNetMetric() {
         try (var lines = Files.lines(Paths.get("/proc/net/dev"))) {
             var bytesWrapper = lines.filter(l -> l.contains(netIf + ":")).findFirst();
             if (bytesWrapper.isPresent()) {
-                interfaceFound = true;
                 var p = bytesWrapper.get().trim().split("\\s+");
                 var totalBytes = Long.parseLong(p[1]) + Long.parseLong(p[9]);
                 var deltaBytes = totalBytes - lastNetBytes;
@@ -141,88 +154,85 @@ public class LinuxMonitor extends Base {
                     currentNetKbps = (deltaBytes / 1024.0f) * fps * 8;
                 }
                 lastNetBytes = totalBytes;
-            } else {
-                interfaceFound = false;
-                currentNetKbps = 0;
             }
             System.arraycopy(netHistory, 1, netHistory, 0, netHistory.length - 1);
             netHistory[netHistory.length - 1] = Math.min(100, currentNetKbps / 10.0f);
         } catch (IOException | NumberFormatException e) {
-            // net stats unavailable
+            log.error("Network metric error");
         }
     }
 
     /**
-     * Renders a small pulsing heartbeat indicator to show application activity.
+     * Draws a sparkline graph that scales to the assigned bounding box.
      *
-     * * @param u8 The U8g2 handle
+     * @param u8 Native U8g2 handle.
+     * @param x X start coordinate.
+     * @param y Y start coordinate.
+     * @param w Width of the bounding box.
+     * @param h Height of the bounding box.
+     * @param data Array of float values (0-100 scale).
+     * @param label Text label to display above graph.
      */
-    private void drawHeartbeat(long u8) {
-        var x = 123;
-        var y = 2;
-        // Toggle between solid and hollow box for better visibility
-        if (frameCount % 2 == 0) {
-            U8g2.drawBox(u8, x, y, 4, 4);
-        } else {
-            U8g2.drawFrame(u8, x, y, 4, 4);
-        }
-    }
-
-    /**
-     * Draws a labeled sparkline graph.
-     *
-     * * @param u8 The U8g2 handle.
-     * @param x X coordinate.
-     * @param y Y coordinate.
-     * @param data history array.
-     * @param label Section name.
-     */
-    private void drawGraph(long u8, int x, int y, float[] data, String label) {
+    private void drawDynamicGraph(final long u8, final int x, final int y, final int w, final int h,
+            final float[] data, final String label) {
         U8g2.setFont(u8, getDisplay().getFontPtr(FontType.FONT_4X6_TF));
-        U8g2.drawStr(u8, x, y - 2, label);
-        U8g2.drawFrame(u8, x, y, 42, 18);
-        for (var i = 0; i < data.length - 1; i++) {
-            var y1 = (y + 17) - (int) ((data[i] / 100.0f) * 16);
-            var y2 = (y + 17) - (int) ((data[i + 1] / 100.0f) * 16);
-            U8g2.drawLine(u8, x + 1 + i, Math.max(y + 1, y1), x + 2 + i, Math.max(y + 1, y2));
+        if (!label.isEmpty()) {
+            U8g2.drawStr(u8, x, y - 1, label);
+        }
+        U8g2.drawFrame(u8, x, y, w, h);
+        for (var i = 0; i < data.length - 1 && i < (w - 2); i++) {
+            var y1 = (y + h - 1) - (int) ((data[i] / 100.0f) * (h - 2));
+            var y2 = (y + h - 1) - (int) ((data[i + 1] / 100.0f) * (h - 2));
+            U8g2.drawLine(u8, x + 1 + i, y1, x + 2 + i, y2);
         }
     }
 
     /**
-     * Main rendering routine.
+     * Renders the hardware dashboard. Coordinates are calculated based on the display's width and height via getters.
      */
     public void render() {
         var u8 = getU8g2();
         U8g2.clearBuffer(u8);
-        // Header Section
-        U8g2.setFont(u8, getDisplay().getFontPtr(FontType.FONT_5X7_TF));
-        U8g2.drawStr(u8, 2, 8, "LINUX MONITOR");
-        drawHeartbeat(u8);
-        U8g2.drawLine(u8, 0, 10, 127, 10);
-        // Trend Graphs
-        drawGraph(u8, 2, 22, cpuHistory, String.format("CPU:%.1f%%", currentCpuLoad));
-        var netLabel = interfaceFound ? "NET:LIVE" : "NET:ERR";
-        drawGraph(u8, 46, 22, netHistory, netLabel);
-        // Memory usage gauge
+
+        final var displayWidth = getWidth();
+        final var displayHeight = getHeight();
+
+        var smallFont = getDisplay().getFontPtr(FontType.FONT_4X6_TF);
+        var medFont = getDisplay().getFontPtr(displayHeight >= 64 ? FontType.FONT_5X8_TF : FontType.FONT_4X6_TF);
+
+        U8g2.setFont(u8, smallFont);
+        var headerY = U8g2.getMaxCharHeight(u8);
+
+        // Header row with Fahrenheit temperature
+        var status = String.format("CPU:%.0f%% L:%.2f T:%.0fF", currentCpuLoad, loadAvg, cpuTempF);
+        U8g2.drawStr(u8, 1, headerY, status);
+
+        var graphY = headerY + 2;
+        var graphH = (displayHeight / 2) - 4;
+        var graphW = (displayWidth / 3) - 2;
+
+        drawDynamicGraph(u8, 1, graphY, graphW, graphH, cpuHistory, "");
+        drawDynamicGraph(u8, graphW + 3, graphY, graphW, graphH, netHistory, "");
+
+        var memX = (graphW * 2) + 6;
         var used = memTotalKb - memAvailableKb;
         var ratio = (float) used / Math.max(1, memTotalKb);
-        U8g2.drawFrame(u8, 92, 22, 34, 18);
-        U8g2.drawBox(u8, 94, 38 - (int) (14 * ratio), 30, (int) (14 * ratio));
-        U8g2.setFont(u8, getDisplay().getFontPtr(FontType.FONT_4X6_TF));
-        U8g2.drawStr(u8, 92, 20, "MEMORY");
-        // Footer Section
-        var tempStr = (cpuTempC < 0) ? "TEMP: N/A" : String.format("TEMP: %.1f C", cpuTempC);
-        U8g2.drawStr(u8, 2, 48, tempStr);
-        U8g2.drawStr(u8, 2, 56, String.format("NET:  %.2f Kbps", currentNetKbps));
-        U8g2.drawStr(u8, 2, 64, String.format("LOAD: %.2f  MEM: %dMB", loadAvg, used / 1024));
+        U8g2.drawStr(u8, memX, graphY - 1, String.format("%dM", used / 1024));
+        U8g2.drawFrame(u8, memX, graphY, displayWidth - memX - 1, graphH);
+        U8g2.drawBox(u8, memX + 1, graphY + 1, (int) ((displayWidth - memX - 3) * ratio), graphH - 2);
+
+        U8g2.setFont(u8, medFont);
+        var footerText = String.format("IF:%s RAM:%d/%dMB", netIf, used / 1024, memTotalKb / 1024);
+        U8g2.drawStr(u8, 1, displayHeight - 1, footerText);
+
         U8g2.sendBuffer(u8);
     }
 
     /**
-     * Update info.
+     * Main execution loop.
      *
      * @return Exit code.
-     * @throws InterruptedException Possible exception.
+     * @throws InterruptedException If sleep is interrupted.
      */
     @Override
     public Integer call() throws InterruptedException {
@@ -242,14 +252,14 @@ public class LinuxMonitor extends Base {
     }
 
     /**
-     * Main parsing, error handling and handling user requests for usage help or version help are done with one line of code.
+     * Entry point for the Linux Monitor demo.
      *
-     * @param args Argument list.
+     * @param args CLI arguments.
      */
-    public static void main(String... args) {
-        System.exit(new CommandLine(new LinuxMonitor()).registerConverter(Byte.class, Byte::decode).registerConverter(Byte.TYPE,
-                Byte::decode).registerConverter(Short.class, Short::decode).registerConverter(Short.TYPE, Short::decode).
-                registerConverter(Integer.class, Integer::decode).registerConverter(Integer.TYPE, Integer::decode).
-                registerConverter(Long.class, Long::decode).registerConverter(Long.TYPE, Long::decode).execute(args));
+    public static void main(final String... args) {
+        System.exit(new CommandLine(new LinuxMonitor())
+                .registerConverter(Integer.class, Integer::decode)
+                .registerConverter(Integer.TYPE, Integer::decode)
+                .execute(args));
     }
 }
