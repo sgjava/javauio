@@ -14,8 +14,11 @@ import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 
 /**
- * A hardware monitor for Linux systems with dynamic layout scaling. This demo samples kernel data (procfs/sysfs) and renders a
- * graphical dashboard that automatically adjusts its layout based on the display resolution.
+ * A hardware monitor for Linux systems with dynamic layout scaling.
+ * <p>
+ * This demo samples kernel data (procfs/sysfs) and renders a graphical dashboard that automatically adjusts fonts and coordinates
+ * based on the display resolution.
+ * </p>
  *
  * @author Steven P. Goldsmith
  * @version 1.0.0
@@ -30,29 +33,24 @@ public class LinuxMonitor extends Base {
      */
     @Option(names = {"-f", "--fps"}, description = "Update rate", defaultValue = "2")
     private int fps;
-
     /**
      * Maximum number of frames to render before exiting (0 for infinite).
      */
     @Option(names = {"-m", "--max-frames"}, description = "Exit after N frames (0 for infinite)", defaultValue = "0")
     private int maxFrames;
-
     /**
      * Target network interface for bandwidth monitoring.
      */
     @Option(names = {"-i", "--interface"}, description = "Network interface name", defaultValue = "eth0")
     private String netIf;
-
     /**
      * Current frame count.
      */
     private int frameCount = 0;
-
     /**
      * History buffer for CPU sparkline.
      */
     private final float[] cpuHistory = new float[40];
-
     /**
      * History buffer for Network sparkline.
      */
@@ -103,7 +101,6 @@ public class LinuxMonitor extends Base {
             try {
                 var content = Files.readString(thermalPath).trim();
                 var cpuTempC = Float.parseFloat(content) / 1000.0f;
-                // Convert to Fahrenheit
                 cpuTempF = (cpuTempC * 9 / 5) + 32;
             } catch (IOException | NumberFormatException e) {
                 cpuTempF = -1.0f;
@@ -188,7 +185,7 @@ public class LinuxMonitor extends Base {
     }
 
     /**
-     * Renders the hardware dashboard. Coordinates are calculated based on the display's width and height via getters.
+     * Renders the hardware dashboard. Layout is adjusted using font metrics to prevent collisions between graphs and text lines.
      */
     public void render() {
         var u8 = getU8g2();
@@ -196,35 +193,38 @@ public class LinuxMonitor extends Base {
 
         final var displayWidth = getWidth();
         final var displayHeight = getHeight();
-
-        var smallFont = getDisplay().getFontPtr(FontType.FONT_4X6_TF);
-        var medFont = getDisplay().getFontPtr(displayHeight >= 64 ? FontType.FONT_5X8_TF : FontType.FONT_4X6_TF);
-
-        U8g2.setFont(u8, smallFont);
-        var headerY = U8g2.getMaxCharHeight(u8);
-
-        // Header row with Fahrenheit temperature
-        var status = String.format("CPU:%.0f%% L:%.2f T:%.0fF", currentCpuLoad, loadAvg, cpuTempF);
-        U8g2.drawStr(u8, 1, headerY, status);
-
-        var graphY = headerY + 2;
-        var graphH = (displayHeight / 2) - 4;
+        // Use a consistent font for Header and Footer to maintain uniform spacing
+        long uiFontPtr;
+        if (displayHeight >= 64) {
+            uiFontPtr = getDisplay().getFontPtr(FontType.FONT_6X12_TF);
+        } else {
+            uiFontPtr = getDisplay().getFontPtr(FontType.FONT_4X6_TF);
+        }
+        U8g2.setFont(u8, uiFontPtr);
+        final var ascent = U8g2.getAscent(u8);
+        final var descent = U8g2.getDescent(u8);
+        final var fontHeight = ascent - descent;
+        // --- Header (Top Line) ---
+        var headerText = String.format("CPU:%.0f%% L:%.2f T:%.0fF", currentCpuLoad, loadAvg, cpuTempF);
+        U8g2.drawStr(u8, 1, ascent, headerText);
+        // --- Footer (Bottom Line) ---
+        var used = memTotalKb - memAvailableKb;
+        var footerText = String.format("IF:%s RAM:%dMB", netIf, used / 1024);
+        U8g2.drawStr(u8, 1, displayHeight + descent - 1, footerText);
+        // --- Middle Content (Sparklines & Gauge) ---
+        // graphY starts safely below the header's descent
+        var graphY = fontHeight + 2;
+        // graphH is whatever space is left between header and footer
+        var graphH = displayHeight - (fontHeight * 2) - 4;
         var graphW = (displayWidth / 3) - 2;
-
+        // Sparklines use FONT_4X6_TF internally via drawDynamicGraph
         drawDynamicGraph(u8, 1, graphY, graphW, graphH, cpuHistory, "");
         drawDynamicGraph(u8, graphW + 3, graphY, graphW, graphH, netHistory, "");
-
+        // Memory Gauge
         var memX = (graphW * 2) + 6;
-        var used = memTotalKb - memAvailableKb;
         var ratio = (float) used / Math.max(1, memTotalKb);
-        U8g2.drawStr(u8, memX, graphY - 1, String.format("%dM", used / 1024));
         U8g2.drawFrame(u8, memX, graphY, displayWidth - memX - 1, graphH);
         U8g2.drawBox(u8, memX + 1, graphY + 1, (int) ((displayWidth - memX - 3) * ratio), graphH - 2);
-
-        U8g2.setFont(u8, medFont);
-        var footerText = String.format("IF:%s RAM:%d/%dMB", netIf, used / 1024, memTotalKb / 1024);
-        U8g2.drawStr(u8, 1, displayHeight - 1, footerText);
-
         U8g2.sendBuffer(u8);
     }
 

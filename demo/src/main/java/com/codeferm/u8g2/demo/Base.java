@@ -217,23 +217,12 @@ public class Base implements Callable<Integer> {
         log.atDebug().log(String.format("Type %s", type));
         log.atDebug().log(String.format("Font %s", font));
         switch (type) {
-            case I2CHW:
-                u8g2 = display.initHwI2c(setup, bus, address);
-                break;
-            case I2CSW:
-                u8g2 = display.initSwI2c(setup, gpio, scl, sda, U8X8_PIN_NONE, delay);
-                break;
-            case SPIHW:
-                u8g2 = display.initHwSpi(setup, gpio, bus, dc, reset, U8X8_PIN_NONE, mode, speed);
-                break;
-            case SPISW:
-                u8g2 = display.initSwSpi(setup, gpio, dc, reset, mosi, sck, cs, delay);
-                break;
-            case SDL:
-                u8g2 = display.initSdl();
-                break;
-            default:
-                throw new RuntimeException(String.format("%s is not a valid type", type));
+            case I2CHW -> u8g2 = display.initHwI2c(setup, bus, address);
+            case I2CSW -> u8g2 = display.initSwI2c(setup, gpio, scl, sda, U8X8_PIN_NONE, delay);
+            case SPIHW -> u8g2 = display.initHwSpi(setup, gpio, bus, dc, reset, U8X8_PIN_NONE, mode, speed);
+            case SPISW -> u8g2 = display.initSwSpi(setup, gpio, dc, reset, mosi, sck, cs, delay);
+            case SDL -> u8g2 = display.initSdl(setup);
+            default -> throw new RuntimeException(String.format("%s is not a valid type", type));
         }
         width = U8g2.getDisplayWidth(u8g2);
         height = U8g2.getDisplayHeight(u8g2);

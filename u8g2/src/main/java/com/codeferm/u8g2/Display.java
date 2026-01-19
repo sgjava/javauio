@@ -7238,7 +7238,7 @@ public class Display {
     /**
      * Initialize I2C hardware driven display and return pointer to u8g2_t structure.
      *
-     * @param setupType Setup type enum,
+     * @param setupType Setup type enum.
      * @param bus I2C bus number.
      * @param address I2C address.
      * @return Pointer to u8g2_t structure.
@@ -7249,8 +7249,9 @@ public class Display {
         U8g2.initI2cHw(u8g2, bus);
         U8g2.setI2CAddress(u8g2, address * 2);
         U8g2.initDisplay(u8g2);
-        log.atDebug().log(String.format("Size %d x %d, draw color %d", U8g2.getDisplayWidth(u8g2), U8g2.getDisplayHeight(u8g2), U8g2.
-                getDrawColor(u8g2)));
+        log.atDebug().log(String.format("Size %d x %d, draw color %d", U8g2.getDisplayWidth(u8g2), U8g2.getDisplayHeight(u8g2),
+                U8g2.
+                        getDrawColor(u8g2)));
         log.atDebug().log(String.format("Bus 0x%02x, Address %02x", bus, address));
         return u8g2;
     }
@@ -7258,7 +7259,7 @@ public class Display {
     /**
      * Initialize I2C software driven display and return pointer to u8g2_t structure.
      *
-     * @param setupType Setup type enum,
+     * @param setupType Setup type enum.
      * @param gpio GPIO chip number.
      * @param scl SCL.
      * @param sda SDA.
@@ -7271,8 +7272,9 @@ public class Display {
         setupI2c(setupType, u8g2, U8G2_R0, u8x8_byte_sw_i2c, u8x8_arm_linux_gpio_and_delay);
         U8g2.initI2cSw(u8g2, gpio, scl, sda, res, delay);
         U8g2.initDisplay(u8g2);
-        log.atDebug().log(String.format("Size %d x %d, draw color %d", U8g2.getDisplayWidth(u8g2), U8g2.getDisplayHeight(u8g2), U8g2.
-                getDrawColor(u8g2)));
+        log.atDebug().log(String.format("Size %d x %d, draw color %d", U8g2.getDisplayWidth(u8g2), U8g2.getDisplayHeight(u8g2),
+                U8g2.
+                        getDrawColor(u8g2)));
         log.atDebug().log(String.format("GPIO chip %d, SCL %d, SDA %d, RES %d, Delay %d", gpio, scl, sda, res, delay));
         return u8g2;
     }
@@ -7280,7 +7282,7 @@ public class Display {
     /**
      * Initialize SPI display and return pointer to u8g2_t structure.
      *
-     * @param setupType Setup type enum,
+     * @param setupType Setup type enum.
      * @param gpio GPIO chip number.
      * @param bus SPI bus number.
      * @param dc DC pin.
@@ -7296,8 +7298,9 @@ public class Display {
         setupSpi(setupType, u8g2, U8G2_R0, u8x8_byte_arm_linux_hw_spi, u8x8_arm_linux_gpio_and_delay);
         U8g2.initSpiHwAdvanced(u8g2, gpio, bus, dc, res, cs, spiMode, maxSpeed);
         U8g2.initDisplay(u8g2);
-        log.atDebug().log(String.format("Size %d x %d, draw color %d", U8g2.getDisplayWidth(u8g2), U8g2.getDisplayHeight(u8g2), U8g2.
-                getDrawColor(u8g2)));
+        log.atDebug().log(String.format("Size %d x %d, draw color %d", U8g2.getDisplayWidth(u8g2), U8g2.getDisplayHeight(u8g2),
+                U8g2.
+                        getDrawColor(u8g2)));
         log.atDebug().log(String.format("GPIO chip %d, bus 0x%02x, DC %d, RES %d, CS %d", gpio, bus, dc, res, cs));
         return u8g2;
     }
@@ -7305,7 +7308,7 @@ public class Display {
     /**
      * Initialize SPI display and return pointer to u8g2_t structure.
      *
-     * @param setupType Setup type enum,
+     * @param setupType Setup type enum.
      * @param gpio GPIO chip number.
      * @param dc DC pin.
      * @param res RESET pin.
@@ -7322,9 +7325,11 @@ public class Display {
         setupSpi(setupType, u8g2, U8G2_R0, u8x8_byte_4wire_sw_spi, u8x8_arm_linux_gpio_and_delay);
         U8g2.initSpiSw(u8g2, gpio, dc, res, mosi, sck, cs, delay);
         U8g2.initDisplay(u8g2);
-        log.atDebug().log(String.format("Size %d x %d, draw color %d", U8g2.getDisplayWidth(u8g2), U8g2.getDisplayHeight(u8g2), U8g2.
-                getDrawColor(u8g2)));
-        log.atDebug().log(String.format("GPIO chip %d, DC %d, RES %d, MOSI %d, SCK %d, CS %d, Delay %d", gpio, dc, res, mosi, sck, cs,
+        log.atDebug().log(String.format("Size %d x %d, draw color %d", U8g2.getDisplayWidth(u8g2), U8g2.getDisplayHeight(u8g2),
+                U8g2.
+                        getDrawColor(u8g2)));
+        log.atDebug().log(String.format("GPIO chip %d, DC %d, RES %d, MOSI %d, SCK %d, CS %d, Delay %d", gpio, dc, res, mosi, sck,
+                cs,
                 delay));
         return u8g2;
     }
@@ -7332,14 +7337,22 @@ public class Display {
     /**
      * Initialize SDL display and return pointer to u8g2_t structure.
      *
+     * @param setupType Setup type enum.
      * @return Pointer to u8g2_t structure.
      */
-    public long initSdl() {
+    public long initSdl(final SetupType setupType) {
         final var u8g2 = U8g2.initU8g2();
-        U8g2.setupbufferSdl128x64(u8g2, U8G2_R0);
+        switch (setupType) {
+            case SSD1306_I2C_128X64_NONAME ->
+                U8g2.setupbufferSdl128x64(u8g2, U8G2_R0);
+            case SSD1363_256X128 ->
+                U8g2.setupbufferSdl256x128(u8g2, U8G2_R0);
+            default ->
+                throw new RuntimeException(String.format("%s is not a valid setup type", setupType));
+        }
         U8g2.initDisplay(u8g2);
-        log.atDebug().log(String.format("Size %d x %d, draw color %d", U8g2.getDisplayWidth(u8g2), U8g2.getDisplayHeight(u8g2), U8g2.
-                getDrawColor(u8g2)));
+        log.atDebug().log(String.format("Size %d x %d, draw color %d", U8g2.getDisplayWidth(u8g2), U8g2.getDisplayHeight(u8g2),
+                U8g2.getDrawColor(u8g2)));
         return u8g2;
     }
 
