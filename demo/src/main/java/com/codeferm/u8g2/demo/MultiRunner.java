@@ -79,23 +79,14 @@ public class MultiRunner implements Callable<Integer> {
         typeMap.put(displayNum, DisplayType.valueOf(strMap.get("type")));
         long u8g2 = 0;
         final var setupType = SetupType.valueOf(strMap.get("setup"));
-
+        
         switch (typeMap.get(displayNum)) {
-            case I2CHW ->
-                u8g2 = display.initHwI2c(setupType, intMap.get("bus"), intMap.get("address"));
-            case I2CSW ->
-                u8g2 = display.initSwI2c(setupType, intMap.get("gpio"), intMap.get("scl"), intMap.get("sda"), U8X8_PIN_NONE, intMap.
-                        get("delay"));
-            case SPIHW ->
-                u8g2 = display.initHwSpi(setupType, intMap.get("gpio"), intMap.get("bus"), intMap.get("dc"), intMap.get("reset"),
-                        U8X8_PIN_NONE, intMap.get("mode").shortValue(), intMap.get("speed").longValue());
-            case SPISW ->
-                u8g2 = display.initSwSpi(setupType, intMap.get("gpio"), intMap.get("dc"), intMap.get("reset"), intMap.get("mosi"),
-                        intMap.get("sck"), intMap.get("cs"), intMap.get("delay"));
-            case SDL ->
-                u8g2 = display.initSdl(setupType);
-            default ->
-                throw new RuntimeException(String.format("%s is not a valid type", strMap.get("setup")));
+            case I2CHW -> u8g2 = display.initHwI2c(setupType, intMap.get("bus"), intMap.get("address"));
+            case I2CSW -> u8g2 = display.initSwI2c(setupType, intMap.get("gpio"), intMap.get("scl"), intMap.get("sda"), U8X8_PIN_NONE, intMap.get("delay"));
+            case SPIHW -> u8g2 = display.initHwSpi(setupType, intMap.get("gpio"), intMap.get("bus"), intMap.get("dc"), intMap.get("reset"), U8X8_PIN_NONE, intMap.get("mode").shortValue(), intMap.get("speed").longValue());
+            case SPISW -> u8g2 = display.initSwSpi(setupType, intMap.get("gpio"), intMap.get("dc"), intMap.get("reset"), intMap.get("mosi"), intMap.get("sck"), intMap.get("cs"), intMap.get("delay"));
+            case SDL -> u8g2 = display.initSdl(setupType);
+            default -> throw new RuntimeException(String.format("%s is not a valid type", strMap.get("setup")));
         }
 
         U8g2.setFont(u8g2, display.getFontPtr(FontType.valueOf(strMap.get("font"))));
@@ -115,16 +106,22 @@ public class MultiRunner implements Callable<Integer> {
         });
 
         final var executor = Executors.newFixedThreadPool(set.size());
-
+        
         int displayIdx = 0;
         for (Map.Entry<Integer, Long> entry : map.entrySet()) {
+            final var id = entry.getKey();
             final var u8 = entry.getValue();
-
-            // Assign Raycast to first display, Plasma to the rest
+            final var w = U8g2.getDisplayWidth(u8);
+            final var h = U8g2.getDisplayHeight(u8);
+            
+            // First display runs Raycast, subsequent runs Plasma
             final DemoPlugin plugin = (displayIdx == 0) ? new RaycastPlugin() : new PlasmaPlugin();
-
+            
+            // Load custom FPS from property file, defaulting to 30
+            final int displayFps = Integer.parseInt(properties.getProperty("fps." + id, "30"));
+            
             executor.execute(() -> {
-                plugin.run(u8, U8g2.getDisplayWidth(u8), U8g2.getDisplayHeight(u8), display);
+                plugin.run(u8, w, h, display, displayFps);
             });
             displayIdx++;
         }

@@ -1,6 +1,3 @@
-/*
- * Copyright (c) Steven P. Goldsmith. All rights reserved.
- */
 package com.codeferm.u8g2.demo;
 
 import com.codeferm.u8g2.Display;
@@ -8,9 +5,10 @@ import com.codeferm.u8g2.U8g2;
 
 public class RaycastPlugin implements DemoPlugin {
     @Override
-    public void run(final long u8g2, final int width, final int height, final Display display) {
+    public void run(final long u8g2, final int width, final int height, final Display display, final int fps) {
         var angle = 0.0f;
         while (true) {
+            long start = System.currentTimeMillis();
             U8g2.clearBuffer(u8g2);
             for (var x = 0; x < width; x += 4) {
                 final var rayAngle = (angle - 0.5f) + (x / (float) width);
@@ -20,7 +18,12 @@ public class RaycastPlugin implements DemoPlugin {
             }
             U8g2.sendBuffer(u8g2);
             angle += 0.05f;
-            display.sleep(20);
+
+            if (fps > 0) {
+                long elapsed = System.currentTimeMillis() - start;
+                long sleepTime = (1000 / fps) - elapsed;
+                if (sleepTime > 0) display.sleep((int) sleepTime);
+            }
         }
     }
 }
