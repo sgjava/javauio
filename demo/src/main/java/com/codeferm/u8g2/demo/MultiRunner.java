@@ -9,6 +9,7 @@ import com.codeferm.u8g2.SetupType;
 import com.codeferm.u8g2.U8g2;
 import static com.codeferm.u8g2.U8x8.U8X8_PIN_NONE;
 import com.codeferm.u8g2.demo.Base.DisplayType;
+import static com.codeferm.u8g2.demo.Base.DisplayType.SDL;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.HashMap;
@@ -36,7 +37,7 @@ public class MultiRunner implements Callable<Integer> {
     private String fileName;
 
     private final Display display = new Display();
-    private final Map<Integer, DisplayType> typeMap = new HashMap<>();
+    private final HashMap<Integer, DisplayType> typeMap = new HashMap<>();
 
     public Properties loadProperties(final String propertyFile) {
         Properties props = new Properties();
@@ -54,37 +55,39 @@ public class MultiRunner implements Callable<Integer> {
 
     public Set<Integer> getDisplays(final Properties properties) {
         final var set = new HashSet<Integer>();
-        properties.stringPropertyNames().forEach(key -> {
-            final var split = key.split("\\.");
+        properties.stringPropertyNames().stream().map(key -> key.split("\\.")).forEachOrdered(split -> {
             set.add(Integer.valueOf(split[split.length - 1]));
         });
         return set;
     }
 
     public long setup(final int displayNum, final Properties properties) {
+        final var keys = properties.stringPropertyNames();
         final var intMap = new HashMap<String, Integer>();
         final var strMap = new HashMap<String, String>();
-        properties.stringPropertyNames().forEach(key -> {
+        keys.forEach(key -> {
             final var split = key.split("\\.");
             if (Integer.parseInt(split[split.length - 1]) == displayNum) {
-                final var val = properties.getProperty(key);
-                if (pattern.matcher(val).matches()) {
-                    intMap.put(split[0], Integer.parseInt(val));
+                if (pattern.matcher(properties.getProperty(key)).matches()) {
+                    intMap.put(split[0], Integer.parseInt(properties.getProperty(key)));
                 } else {
-                    strMap.put(split[0], val);
+                    strMap.put(split[0], properties.getProperty(key));
                 }
             }
         });
 
-        final var dType = DisplayType.valueOf(strMap.get("type"));
-        typeMap.put(displayNum, dType);
+        typeMap.put(displayNum, DisplayType.valueOf(strMap.get("type")));
+        long u8g2 = 0;
         final var setupType = SetupType.valueOf(strMap.get("setup"));
-
-        long u8g2 = switch (dType) {
-            case I2CHW -> display.initHwI2c(setupType, (short) intMap.get("bus").intValue(), (short) intMap.get("address").intValue());
-            case SPIHW -> display.initHwSpi(setupType, (short) 1, (short) intMap.get("bus").intValue(), (short) intMap.get("dc").intValue(), (short) intMap.get("reset").intValue(), (short) U8X8_PIN_NONE, (short) 0, 1000000L);
-            default -> throw new RuntimeException("Hardware only supported");
-        };
+        
+        switch (typeMap.get(displayNum)) {
+            case I2CHW -> u8g2 = display.initHwI2c(setupType, intMap.get("bus"), intMap.get("address"));
+            case I2CSW -> u8g2 = display.initSwI2c(setupType, intMap.get("gpio"), intMap.get("scl"), intMap.get("sda"), U8X8_PIN_NONE, intMap.get("delay"));
+            case SPIHW -> u8g2 = display.initHwSpi(setupType, intMap.get("gpio"), intMap.get("bus"), intMap.get("dc"), intMap.get("reset"), U8X8_PIN_NONE, intMap.get("mode").shortValue(), intMap.get("speed").longValue());
+            case SPISW -> u8g2 = display.initSwSpi(setupType, intMap.get("gpio"), intMap.get("dc"), intMap.get("reset"), intMap.get("mosi"), intMap.get("sck"), intMap.get("cs"), intMap.get("delay"));
+            case SDL -> u8g2 = display.initSdl(setupType);
+            default -> throw new RuntimeException(String.format("%s is not a valid type", strMap.get("setup")));
+        }
 
         U8g2.setFont(u8g2, display.getFontPtr(FontType.valueOf(strMap.get("font"))));
         U8g2.setPowerSave(u8g2, 0);
@@ -98,11 +101,12 @@ public class MultiRunner implements Callable<Integer> {
         final var map = new TreeMap<Integer, Long>();
         final var pluginNameMap = new HashMap<Integer, String>();
 
-        for (Integer id : set) {
-            map.put(id, setup(id, properties));
-            pluginNameMap.put(id, properties.getProperty("plugin." + id, "Plasma"));
-            display.sleep(1000);
-        }
+        set.forEach(displayNum -> {
+            map.put(displayNum, setup(displayNum, properties));
+            // Fixed the property lookup key for the plugin name
+            pluginNameMap.put(displayNum, properties.getProperty("plugin." + displayNum, "Plasma"));
+            display.sleep(2000);
+        });
 
         final var executor = Executors.newFixedThreadPool(set.size());
         for (Map.Entry<Integer, Long> entry : map.entrySet()) {
@@ -120,9 +124,13 @@ public class MultiRunner implements Callable<Integer> {
             executor.awaitTermination(Long.MAX_VALUE, NANOSECONDS);
         } finally {
             executor.shutdownNow();
-            map.values().forEach(u8 -> {
-                U8g2.setPowerSave(u8, 1);
-                display.done(u8);
+            map.forEach((displayNum, u8g2) -> {
+                U8g2.setPowerSave(u8g2, 1);
+                if (typeMap.get(displayNum) == SDL) {
+                    U8g2.done(u8g2);
+                } else {
+                    display.done(u8g2);
+                }
             });
             U8g2.doneI2c();
             U8g2.doneSpi();
@@ -132,8 +140,9 @@ public class MultiRunner implements Callable<Integer> {
 
     public static void main(String... args) {
         System.exit(new CommandLine(new MultiRunner())
-                .registerConverter(Integer.class, Integer::decode)
-                .registerConverter(Integer.TYPE, Integer::decode)
+                .registerConverter(Short.class, Short::decode).registerConverter(Short.TYPE, Short::decode)
+                .registerConverter(Integer.class, Integer::decode).registerConverter(Integer.TYPE, Integer::decode)
+                .registerConverter(Long.class, Long::decode).registerConverter(Long.TYPE, Long::decode)
                 .execute(args));
     }
 }
