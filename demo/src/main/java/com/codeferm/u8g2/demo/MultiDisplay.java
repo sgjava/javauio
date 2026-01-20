@@ -159,7 +159,7 @@ public class MultiDisplay implements Callable<Integer> {
         final var set = new HashSet<Integer>();
         final var keys = properties.stringPropertyNames();
         keys.stream().map(key -> key.split("\\.")).forEachOrdered(split -> {
-            set.add(Integer.parseInt(split[split.length - 1]));
+            set.add(Integer.valueOf(split[split.length - 1]));
         });
         return set;
     }
@@ -184,34 +184,32 @@ public class MultiDisplay implements Callable<Integer> {
         });
         // Set thread pool to number of displays
         final var executor = Executors.newFixedThreadPool(set.size());
-        // Write string to each display
+        // Draw disc to each display
         for (Map.Entry<Integer, Long> entry : map.entrySet()) {
-            executor.execute(new Runnable() {
-                public void run() {
-                    final var u8g2 = entry.getValue();
-                    final var height = U8g2.getDisplayHeight(u8g2);
-                    final var width = U8g2.getDisplayWidth(u8g2);
-                    // Draw discs in a loop switching drawing colors
-                    for (int i = 0; i < 10; i++) {
-                        U8g2.setDrawColor(u8g2, 1);
-                        for (int r = 4; r < height; r += 4) {
-                            U8g2.drawDisc(u8g2, width / 2, height / 2, r / 2, U8g2.U8G2_DRAW_ALL);
-                            U8g2.sendBuffer(u8g2);
-                            if (typeMap.get(entry.getKey()) == SDL) {
-                                display.sleep(50);
-                            }
-                        }
-                        U8g2.setDrawColor(u8g2, 0);
-                        for (int r = 4; r < height; r += 4) {
-                            U8g2.drawDisc(u8g2, width / 2, height / 2, r / 2, U8g2.U8G2_DRAW_ALL);
-                            U8g2.sendBuffer(u8g2);
-                            if (typeMap.get(entry.getKey()) == SDL) {
-                                display.sleep(50);
-                            }
+            executor.execute(() -> {
+                final var u8g2 = entry.getValue();
+                final var height = U8g2.getDisplayHeight(u8g2);
+                final var width = U8g2.getDisplayWidth(u8g2);
+                // Draw discs in a loop switching drawing colors
+                for (int i = 0; i < 10; i++) {
+                    U8g2.setDrawColor(u8g2, 1);
+                    for (int r = 4; r < height; r += 4) {
+                        U8g2.drawDisc(u8g2, width / 2, height / 2, r / 2, U8g2.U8G2_DRAW_ALL);
+                        U8g2.sendBuffer(u8g2);
+                        if (typeMap.get(entry.getKey()) == SDL) {
+                            display.sleep(50);
                         }
                     }
-                    log.atDebug().log(Long.toString(u8g2));
+                    U8g2.setDrawColor(u8g2, 0);
+                    for (int r = 4; r < height; r += 4) {
+                        U8g2.drawDisc(u8g2, width / 2, height / 2, r / 2, U8g2.U8G2_DRAW_ALL);
+                        U8g2.sendBuffer(u8g2);
+                        if (typeMap.get(entry.getKey()) == SDL) {
+                            display.sleep(50);
+                        }
+                    }
                 }
+                log.atDebug().log(Long.toString(u8g2));
             });
         }
         try {
