@@ -5,13 +5,9 @@ package com.codeferm.periphery.device;
 
 import com.codeferm.periphery.Gpio;
 import com.codeferm.periphery.Spi;
-import java.util.Objects;
 
 /**
- * SSD1331 96x64 RGB OLED display driver.
- *
- * This driver utilizes a hardware SPI bus for data transfer and a GPIO line for the Data/Command (D/C) signal. It is
- * designed to work with 16-bit RGB565 buffers, making it compatible with Java 2D BufferedImage outputs.
+ * SSD1331 96x64 RGB OLED driver using static JNI wrapper calls.
  *
  * @author Steven P. Goldsmith
  * @version 1.0.0
@@ -20,7 +16,7 @@ import java.util.Objects;
 public class Ssd1331 implements AutoCloseable {
 
     /**
-     * SSD1331 Command set constants.
+     * SSD1331 Command set.
      */
     public static final byte SET_COLUMN_ADDRESS = (byte) 0x15;
     public static final byte SET_ROW_ADDRESS = (byte) 0x75;
@@ -35,56 +31,56 @@ public class Ssd1331 implements AutoCloseable {
     private final int height = 64;
 
     /**
-     * SPI handle for the display bus.
+     * SPI handle.
      */
-    private final Spi spi;
+    private final long spiHandle;
     /**
-     * GPIO handle for the Data/Command select line.
+     * GPIO handle for Data/Command selection.
      */
-    private final Gpio dcPin;
+    private final long dcHandle;
 
     /**
-     * Initialize the SSD1331 device.
+     * Initialize SSD1331 with existing native handles.
      *
-     * @param spi Device instance of the SPI bus.
-     * @param dcPin Device instance of the GPIO used for D/C.
+     * @param spiHandle Native SPI handle.
+     * @param dcHandle Native GPIO handle for D/C.
      */
-    public Ssd1331(final Spi spi, final Gpio dcPin) {
-        this.spi = Objects.requireNonNull(spi, "SPI handle cannot be null");
-        this.dcPin = Objects.requireNonNull(dcPin, "D/C GPIO handle cannot be null");
+    public Ssd1331(final long spiHandle, final long dcHandle) {
+        this.spiHandle = spiHandle;
+        this.dcHandle = dcHandle;
         init();
     }
 
     /**
-     * Send a command byte to the controller.
+     * Send command byte using static SPI and GPIO calls.
      *
-     * @param cmd The command byte.
+     * @param cmd Command byte.
      */
     public void writeCommand(final byte cmd) {
-        // Set D/C low for command mode
-        dcPin.gpioWrite(dcPin.getHandle(), false);
+        // D/C low for command
+        Gpio.gpioWrite(dcHandle, false);
         final var buf = new byte[]{cmd};
-        spi.spiTransfer(spi.getHandle(), buf, new byte[1], 1);
+        Spi.spiTransfer(spiHandle, buf, new byte[1], 1);
     }
 
     /**
-     * Send a data buffer to the controller.
+     * Send data array using static SPI and GPIO calls.
      *
-     * @param data The byte array of data/pixels.
+     * @param data Data array.
      */
     public void writeData(final byte[] data) {
-        // Set D/C high for data mode
-        dcPin.gpioWrite(dcPin.getHandle(), true);
-        spi.spiTransfer(spi.getHandle(), data, new byte[data.length], data.length);
+        // D/C high for data
+        Gpio.gpioWrite(dcHandle, true);
+        Spi.spiTransfer(spiHandle, data, new byte[data.length], data.length);
     }
 
     /**
-     * Standard initialization sequence for SSD1331.
+     * Hardware initialization sequence.
      */
     private void init() {
         writeCommand(DISPLAY_OFF);
         writeCommand(SET_REMAP);
-        writeCommand((byte) 0x72); // RGB565, horizontal address increment
+        writeCommand((byte) 0x72); // RGB565 format
         writeCommand((byte) 0xA1); // Start Line
         writeCommand((byte) 0x00);
         writeCommand((byte) 0xA2); // Offset
@@ -92,20 +88,14 @@ public class Ssd1331 implements AutoCloseable {
         writeCommand((byte) 0xA4); // Normal Display
         writeCommand((byte) 0xAD); // Master Config
         writeCommand((byte) 0x8E);
-        writeCommand((byte) 0x81); // Contrast A
-        writeCommand((byte) 0x91);
-        writeCommand((byte) 0x82); // Contrast B
-        writeCommand((byte) 0x50);
-        writeCommand((byte) 0x83); // Contrast C
-        writeCommand((byte) 0x7D);
         writeCommand(DISPLAY_ON);
     }
 
     /**
-     * Define the rectangular area in GDDRAM for subsequent data writes.
+     * Set the RAM window for drawing.
      *
-     * @param x1 Start column (0-95).
-     * @param y1 Start row (0-63).
+     * @param x1 Start column.
+     * @param y1 Start row.
      * @param x2 End column.
      * @param y2 End row.
      */
@@ -119,7 +109,7 @@ public class Ssd1331 implements AutoCloseable {
     }
 
     /**
-     * Clear the entire display by filling RAM with zeros.
+     * Clear the screen.
      */
     public void clear() {
         setWindow(0, 0, width - 1, height - 1);
@@ -128,20 +118,17 @@ public class Ssd1331 implements AutoCloseable {
     }
 
     /**
-     * Transmit a full frame buffer to the display.
+     * Transmit buffer to display.
      *
-     * @param buffer The 16-bit RGB565 byte array.
+     * @param buffer Byte array of pixel data.
      */
     public void drawBuffer(final byte[] buffer) {
         setWindow(0, 0, width - 1, height - 1);
         writeData(buffer);
     }
 
-    /**
-     * Close resources. Note: This does not close the SPI/GPIO handles as they are passed in.
-     */
     @Override
     public void close() {
-        // Implementation can be expanded if device-specific cleanup is needed
+        // Handle closing is managed by the Demo/Caller
     }
 }
