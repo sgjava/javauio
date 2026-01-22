@@ -4,7 +4,6 @@
 package com.codeferm.periphery.demo;
 
 import com.codeferm.periphery.Gpio;
-import com.codeferm.periphery.Spi;
 import com.codeferm.periphery.device.Ssd1331;
 import java.awt.Color;
 import java.awt.Font;
@@ -20,51 +19,40 @@ import picocli.CommandLine;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 
-/**
- * SSD1331 Hello World demo.
- *
- * @author Steven P. Goldsmith
- * @version 1.0.0
- * @since 1.0.0
- */
 @Slf4j
-@Command(name = "Ssd1331Demo", mixinStandardHelpOptions = true, version = "1.0.0-SNAPSHOT",
-        description = "Display Hello World on SSD1331 using Java 2D.")
+@Command(name = "Ssd1331Demo", mixinStandardHelpOptions = true, version = "1.0.0-SNAPSHOT")
 public class Ssd1331Demo implements Callable<Integer> {
 
-    @Option(names = {"-s", "--spi"}, description = "SPI device, ${DEFAULT-VALUE} by default.")
+    @Option(names = {"-s", "--spi"}, description = "SPI device, ${DEFAULT-VALUE}")
     private String spiDevice = "/dev/spidev1.0";
 
-    @Option(names = {"-g", "--gpio"}, description = "GPIO device, ${DEFAULT-VALUE} by default.")
+    @Option(names = {"-g", "--gpio"}, description = "GPIO chip, ${DEFAULT-VALUE}")
     private String gpioDevice = "/dev/gpiochip0";
 
-    @Option(names = {"-dc"}, description = "DC pin, ${DEFAULT-VALUE} by default.")
+    @Option(names = {"-dc"}, description = "DC pin, ${DEFAULT-VALUE}")
     private int dcPin = 199;
 
-    @Option(names = {"-rst"}, description = "Reset pin, ${DEFAULT-VALUE} by default.")
+    @Option(names = {"-rst"}, description = "RST pin, ${DEFAULT-VALUE}")
     private int rstPin = 198;
 
     @Override
     public Integer call() {
-        var exitCode = 0;
         log.info("Starting SSD1331 Demo (DC: {}, RST: {})", dcPin, rstPin);
 
-        try (final var spi = new Spi(spiDevice, 3, 10000000);
-             final var dc = new Gpio(gpioDevice, dcPin, Gpio.GPIO_DIR_OUT);
-             final var rst = new Gpio(gpioDevice, rstPin, Gpio.GPIO_DIR_OUT);
-             final var oled = new Ssd1331(spi, dc)) {
+        // Manage RST separately. Ssd1331 manages DC and SPI internally.
+        try (final var rst = new Gpio(gpioDevice, rstPin, Gpio.GPIO_DIR_OUT);
+             final var oled = new Ssd1331(spiDevice, gpioDevice, dcPin)) {
 
-            // Hardware reset
+            // Hardware reset pulse
             Gpio.gpioWrite(rst.getHandle(), false);
             TimeUnit.MILLISECONDS.sleep(100);
             Gpio.gpioWrite(rst.getHandle(), true);
             TimeUnit.MILLISECONDS.sleep(100);
 
-            // AWT Drawing
+            // Java 2D Buffer
             final var image = new BufferedImage(96, 64, BufferedImage.TYPE_USHORT_565_RGB);
             final var g2d = image.createGraphics();
             g2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
-            
             g2d.setColor(Color.BLACK);
             g2d.fillRect(0, 0, 96, 64);
             g2d.setColor(Color.WHITE);
@@ -72,7 +60,7 @@ public class Ssd1331Demo implements Callable<Integer> {
             g2d.drawString("Hello World!", 10, 35);
             g2d.dispose();
 
-            // Format buffer
+            // Convert and swap to Big Endian for SSD1331
             final var data = ((DataBufferUShort) image.getRaster().getDataBuffer()).getData();
             final var byteBuf = ByteBuffer.allocate(data.length * 2).order(ByteOrder.BIG_ENDIAN);
             for (final var val : data) {
@@ -84,9 +72,9 @@ public class Ssd1331Demo implements Callable<Integer> {
 
         } catch (Exception e) {
             log.error("Demo failed: {}", e.getMessage());
-            exitCode = 1;
+            return 1;
         }
-        return exitCode;
+        return 0;
     }
 
     public static void main(final String[] args) {

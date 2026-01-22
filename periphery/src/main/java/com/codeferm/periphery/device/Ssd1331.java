@@ -15,136 +15,105 @@ import com.codeferm.periphery.Spi;
  */
 public class Ssd1331 implements AutoCloseable {
 
-    /**
-     * SSD1331 Command set.
-     */
-    public static final byte SET_COLUMN_ADDRESS = (byte) 0x15;
-    public static final byte SET_ROW_ADDRESS = (byte) 0x75;
-    public static final byte SET_REMAP = (byte) 0xA0;
-    public static final byte DISPLAY_OFF = (byte) 0xAE;
-    public static final byte DISPLAY_ON = (byte) 0xAF;
+    public static final byte CMD_SET_COLUMN_ADDRESS = (byte) 0x15;
+    public static final byte CMD_SET_ROW_ADDRESS = (byte) 0x75;
+    public static final byte CMD_SET_REMAP = (byte) 0xA0;
+    public static final byte CMD_DISPLAY_OFF = (byte) 0xAE;
+    public static final byte CMD_DISPLAY_ON = (byte) 0xAF;
 
-    /**
-     * Display dimensions.
-     */
     private final int width = 96;
     private final int height = 64;
 
-    /**
-     * SPI device.
-     */
     private final Spi spi;
-    /**
-     * GPIO device for Data/Command selection.
-     */
     private final Gpio dc;
 
     /**
      * Initialize SSD1331.
      *
-     * @param spi Native SPI device.
-     * @param dc Native GPIO device for D/C.
+     * @param spiPath SPI device path.
+     * @param gpioPath GPIO chip path.
+     * @param dcPin Data/Command pin.
      */
-    public Ssd1331(final Spi spi, final Gpio dc) {
-        this.spi = spi;
-        this.dc = dc;
+    public Ssd1331(final String spiPath, final String gpioPath, final int dcPin) {
+        // Create internal instances - Ssd1331 now "owns" these
+        this.spi = new Spi(spiPath, 3, 10000000);
+        this.dc = new Gpio(gpioPath, dcPin, Gpio.GPIO_DIR_OUT);
         init();
     }
 
-    /**
-     * Send command byte using static SPI and GPIO calls.
-     *
-     * @param cmd Command byte.
-     */
-    public void writeCommand(final byte cmd) {
+    private void sendCmd(final byte c) {
         Gpio.gpioWrite(dc.getHandle(), false);
-        final var buf = new byte[]{cmd};
+        final var buf = new byte[]{c};
         Spi.spiTransfer(spi.getHandle(), buf, new byte[1], 1);
     }
 
-    /**
-     * Send data array using static SPI and GPIO calls.
-     *
-     * @param data Data array.
-     */
-    public void writeData(final byte[] data) {
+    private void sendData(final byte[] data) {
         Gpio.gpioWrite(dc.getHandle(), true);
         Spi.spiTransfer(spi.getHandle(), data, new byte[data.length], data.length);
     }
 
-    /**
-     * Hardware initialization sequence based on SSD1331 datasheet and diozero implementation.
-     */
     private void init() {
-        writeCommand((byte) 0xFD); // Command Lock
-        writeCommand((byte) 0x12); // Unlock
-        writeCommand(DISPLAY_OFF);
-        writeCommand(SET_REMAP);
-        writeCommand((byte) 0x72); // RGB565, Horizontal address increment
-        writeCommand((byte) 0xA1); // Start Line
-        writeCommand((byte) 0x00);
-        writeCommand((byte) 0xA2); // Offset
-        writeCommand((byte) 0x00);
-        writeCommand((byte) 0xA4); // Normal Display
-        writeCommand((byte) 0xA8); // Multiplex Ratio
-        writeCommand((byte) 0x3F);
-        writeCommand((byte) 0xAD); // Master Config
-        writeCommand((byte) 0x8E); // External VCC
-        writeCommand((byte) 0x81); // Contrast A
-        writeCommand((byte) 0x91);
-        writeCommand((byte) 0x82); // Contrast B
-        writeCommand((byte) 0x50);
-        writeCommand((byte) 0x83); // Contrast C
-        writeCommand((byte) 0x7D);
-        writeCommand((byte) 0x87); // Master Current Control
-        writeCommand((byte) 0x0F); // Maximum
+        sendCmd(CMD_DISPLAY_OFF);          
+        sendCmd((byte) 0x81);              // Set contrast A
+        sendCmd((byte) 0x91);
+        sendCmd((byte) 0x82);              // Set contrast B
+        sendCmd((byte) 0x50);
+        sendCmd((byte) 0x83);              // Set contrast C
+        sendCmd((byte) 0x7D);
+        sendCmd((byte) 0x87);              // Master current control
+        sendCmd((byte) 0x06);
+        sendCmd((byte) 0x8A);              // Precharge speed A
+        sendCmd((byte) 0x64);
+        sendCmd((byte) 0x8B);              // Precharge speed B
+        sendCmd((byte) 0x78);
+        sendCmd((byte) 0x8C);              // Precharge speed C
+        sendCmd((byte) 0x64);
+        sendCmd(CMD_SET_REMAP);            
+        sendCmd((byte) 0x72);              // RGB565 mode
+        sendCmd((byte) 0xA1);              // Start line
+        sendCmd((byte) 0x00);
+        sendCmd((byte) 0xA2);              // Display offset
+        sendCmd((byte) 0x00);
+        sendCmd((byte) 0xA4);              // Normal display
+        sendCmd((byte) 0xA8);              // Multiplex ratio
+        sendCmd((byte) 0x3F);
+        sendCmd((byte) 0xAD);              // Master configure
+        sendCmd((byte) 0x8E);
+        sendCmd((byte) 0xB0);              // Power save mode
+        sendCmd((byte) 0x00);
+        sendCmd((byte) 0xB1);              // Phase period adjustment
+        sendCmd((byte) 0x31);
+        sendCmd((byte) 0xB3);              // Display clock div
+        sendCmd((byte) 0xF0);
+        sendCmd((byte) 0xBB);              // Precharge voltage
+        sendCmd((byte) 0x3A);
+        sendCmd((byte) 0xBE);              // VcomH voltage
+        sendCmd((byte) 0x3E);
+        sendCmd((byte) 0x2E);              // Deactivate scrolling
+        
         clear();
-        writeCommand(DISPLAY_ON);
+        sendCmd(CMD_DISPLAY_ON);           
     }
 
-    /**
-     * Set the RAM window for drawing.
-     *
-     * @param x1 Start column.
-     * @param y1 Start row.
-     * @param x2 End column.
-     * @param y2 End row.
-     */
-    public void setWindow(final int x1, final int y1, final int x2, final int y2) {
-        writeCommand(SET_COLUMN_ADDRESS);
-        writeCommand((byte) x1);
-        writeCommand((byte) x2);
-        writeCommand(SET_ROW_ADDRESS);
-        writeCommand((byte) y1);
-        writeCommand((byte) y2);
-    }
-
-    /**
-     * Clear screen.
-     */
-    public void clear() {
-        setWindow(0, 0, width - 1, height - 1);
-        final var black = new byte[width * height * 2];
-        writeData(black);
-    }
-
-    /**
-     * Transmit buffer to display.
-     *
-     * @param buffer Byte array of pixel data.
-     */
     public void drawBuffer(final byte[] buffer) {
-        setWindow(0, 0, width - 1, height - 1);
-        writeData(buffer);
+        sendCmd(CMD_SET_COLUMN_ADDRESS);
+        sendCmd((byte) 0);
+        sendCmd((byte) (width - 1));
+        sendCmd(CMD_SET_ROW_ADDRESS);
+        sendCmd((byte) 0);
+        sendCmd((byte) (height - 1));
+        sendData(buffer);
     }
 
-    /**
-     * Clear screen and close periphery resources.
-     */
+    public void clear() {
+        drawBuffer(new byte[width * height * 2]);
+    }
+
     @Override
     public void close() {
         clear();
-        writeCommand(DISPLAY_OFF);
+        sendCmd(CMD_DISPLAY_OFF);
+        // Closing the wrappers will trigger the native close/free logic
         spi.close();
         dc.close();
     }
