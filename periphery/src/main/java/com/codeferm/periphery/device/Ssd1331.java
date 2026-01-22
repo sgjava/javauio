@@ -31,23 +31,23 @@ public class Ssd1331 implements AutoCloseable {
     private final int height = 64;
 
     /**
-     * SPI handle.
+     * SPI device.
      */
-    private final long spiHandle;
+    private final Spi spi;
     /**
-     * GPIO handle for Data/Command selection.
+     * GPIO device for Data/Command selection.
      */
-    private final long dcHandle;
+    private final Gpio dc;
 
     /**
-     * Initialize SSD1331 with existing native handles.
+     * Initialize SSD1331.
      *
-     * @param spiHandle Native SPI handle.
-     * @param dcHandle Native GPIO handle for D/C.
+     * @param spi Native SPI device.
+     * @param dc Native GPIO device for D/C.
      */
-    public Ssd1331(final long spiHandle, final long dcHandle) {
-        this.spiHandle = spiHandle;
-        this.dcHandle = dcHandle;
+    public Ssd1331(final Spi spi, final Gpio dc) {
+        this.spi = spi;
+        this.dc = dc;
         init();
     }
 
@@ -57,9 +57,9 @@ public class Ssd1331 implements AutoCloseable {
      * @param cmd Command byte.
      */
     public void writeCommand(final byte cmd) {
-        Gpio.gpioWrite(dcHandle, false);
+        Gpio.gpioWrite(dc.getHandle(), false);
         final var buf = new byte[]{cmd};
-        Spi.spiTransfer(spiHandle, buf, new byte[1], 1);
+        Spi.spiTransfer(spi.getHandle(), buf, new byte[1], 1);
     }
 
     /**
@@ -68,24 +68,37 @@ public class Ssd1331 implements AutoCloseable {
      * @param data Data array.
      */
     public void writeData(final byte[] data) {
-        Gpio.gpioWrite(dcHandle, true);
-        Spi.spiTransfer(spiHandle, data, new byte[data.length], data.length);
+        Gpio.gpioWrite(dc.getHandle(), true);
+        Spi.spiTransfer(spi.getHandle(), data, new byte[data.length], data.length);
     }
 
     /**
-     * Hardware initialization sequence.
+     * Hardware initialization sequence based on SSD1331 datasheet and diozero implementation.
      */
     private void init() {
+        writeCommand((byte) 0xFD); // Command Lock
+        writeCommand((byte) 0x12); // Unlock
         writeCommand(DISPLAY_OFF);
         writeCommand(SET_REMAP);
-        writeCommand((byte) 0x72); // RGB565 format
+        writeCommand((byte) 0x72); // RGB565, Horizontal address increment
         writeCommand((byte) 0xA1); // Start Line
         writeCommand((byte) 0x00);
         writeCommand((byte) 0xA2); // Offset
         writeCommand((byte) 0x00);
         writeCommand((byte) 0xA4); // Normal Display
+        writeCommand((byte) 0xA8); // Multiplex Ratio
+        writeCommand((byte) 0x3F);
         writeCommand((byte) 0xAD); // Master Config
-        writeCommand((byte) 0x8E);
+        writeCommand((byte) 0x8E); // External VCC
+        writeCommand((byte) 0x81); // Contrast A
+        writeCommand((byte) 0x91);
+        writeCommand((byte) 0x82); // Contrast B
+        writeCommand((byte) 0x50);
+        writeCommand((byte) 0x83); // Contrast C
+        writeCommand((byte) 0x7D);
+        writeCommand((byte) 0x87); // Master Current Control
+        writeCommand((byte) 0x0F); // Maximum
+        clear();
         writeCommand(DISPLAY_ON);
     }
 
@@ -107,7 +120,7 @@ public class Ssd1331 implements AutoCloseable {
     }
 
     /**
-     * Clear the screen by writing zeros to the entire GDDRAM.
+     * Clear screen.
      */
     public void clear() {
         setWindow(0, 0, width - 1, height - 1);
@@ -126,15 +139,13 @@ public class Ssd1331 implements AutoCloseable {
     }
 
     /**
-     * Clear screen and close native handles.
+     * Clear screen and close periphery resources.
      */
     @Override
     public void close() {
-        // Clear screen before exiting to prevent "ghost" blocks
         clear();
         writeCommand(DISPLAY_OFF);
-        // Close native handles using static methods
-        Spi.spiClose(spiHandle);
-        Gpio.gpioClose(dcHandle);
+        spi.close();
+        dc.close();
     }
 }
