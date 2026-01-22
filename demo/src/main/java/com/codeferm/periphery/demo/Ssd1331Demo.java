@@ -26,6 +26,12 @@ public class Ssd1331Demo implements Callable<Integer> {
     @Option(names = {"-s", "--spi"}, description = "SPI device, ${DEFAULT-VALUE}")
     private String spiDevice = "/dev/spidev1.0";
 
+    @Option(names = {"-m", "--mode"}, description = "SPI mode, ${DEFAULT-VALUE}")
+    private int mode = 3; // SSD1331 typically uses Mode 3
+
+    @Option(names = {"-speed"}, description = "SPI speed, ${DEFAULT-VALUE}")
+    private int speed = 10000000;
+
     @Option(names = {"-g", "--gpio"}, description = "GPIO chip, ${DEFAULT-VALUE}")
     private String gpioDevice = "/dev/gpiochip0";
 
@@ -39,28 +45,27 @@ public class Ssd1331Demo implements Callable<Integer> {
     public Integer call() {
         log.info("Starting SSD1331 Demo (DC: {}, RST: {})", dcPin, rstPin);
 
-        // Manage RST separately. Ssd1331 manages DC and SPI internally.
         try (final var rst = new Gpio(gpioDevice, rstPin, Gpio.GPIO_DIR_OUT);
-             final var oled = new Ssd1331(spiDevice, gpioDevice, dcPin)) {
+             final var oled = new Ssd1331(spiDevice, mode, speed, gpioDevice, dcPin)) {
 
-            // Hardware reset pulse
+            // Hardware Reset
             Gpio.gpioWrite(rst.getHandle(), false);
             TimeUnit.MILLISECONDS.sleep(100);
             Gpio.gpioWrite(rst.getHandle(), true);
             TimeUnit.MILLISECONDS.sleep(100);
 
-            // Java 2D Buffer
+            // Create image
             final var image = new BufferedImage(96, 64, BufferedImage.TYPE_USHORT_565_RGB);
             final var g2d = image.createGraphics();
             g2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
             g2d.setColor(Color.BLACK);
             g2d.fillRect(0, 0, 96, 64);
-            g2d.setColor(Color.WHITE);
+            g2d.setColor(Color.ORANGE);
             g2d.setFont(new Font("SansSerif", Font.BOLD, 12));
-            g2d.drawString("Hello World!", 10, 35);
+            g2d.drawString("Java UIO!", 15, 35);
             g2d.dispose();
 
-            // Convert and swap to Big Endian for SSD1331
+            // Prepare pixel data
             final var data = ((DataBufferUShort) image.getRaster().getDataBuffer()).getData();
             final var byteBuf = ByteBuffer.allocate(data.length * 2).order(ByteOrder.BIG_ENDIAN);
             for (final var val : data) {
@@ -77,7 +82,7 @@ public class Ssd1331Demo implements Callable<Integer> {
         return 0;
     }
 
-    public static void main(final String[] args) {
+    public static void main(final String... args) {
         System.exit(new CommandLine(new Ssd1331Demo()).execute(args));
     }
 }
