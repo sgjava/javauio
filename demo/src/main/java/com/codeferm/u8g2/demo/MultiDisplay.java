@@ -146,7 +146,6 @@ public class MultiDisplay implements Callable<Integer> {
         U8g2.clearBuffer(u8g2);
         U8g2.sendBuffer(u8g2);
         U8g2.setPowerSave(u8g2, 0);
-        U8g2.setContrast(u8g2, 255);
         return u8g2;
     }
 
