@@ -20,7 +20,7 @@ import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 
 /**
- * SSD1331 Hello World demo using Java 2D AWT.
+ * SSD1331 Hello World demo using Java 2D AWT and static classes.
  *
  * @author Steven P. Goldsmith
  * @version 1.0.0
@@ -28,7 +28,7 @@ import picocli.CommandLine.Option;
  */
 @Slf4j
 @Command(name = "Ssd1331Demo", mixinStandardHelpOptions = true, version = "1.0.0-SNAPSHOT",
-        description = "Display Hello World on SSD1331 using Java 2D and static UIO calls.")
+        description = "Display Hello World on SSD1331.")
 public class Ssd1331Demo implements Callable<Integer> {
 
     @Option(names = {"-s", "--spi"}, description = "SPI device, ${DEFAULT-VALUE} by default.")
@@ -46,19 +46,20 @@ public class Ssd1331Demo implements Callable<Integer> {
     @Override
     public Integer call() {
         var exitCode = 0;
-        log.info("Starting SSD1331 Demo on {} (DC: {}, RST: {})", spiDevice, dcPin, rstPin);
+        log.info("Starting SSD1331 Demo (DC: {}, RST: {})", dcPin, rstPin);
 
-        try (final var spi = new Spi(spiDevice, 3, 10000000);
-             final var dc = new Gpio(gpioDevice, dcPin, Gpio.GPIO_DIR_OUT);
-             final var rst = new Gpio(gpioDevice, rstPin, Gpio.GPIO_DIR_OUT)) {
+        // Open handles
+        final var spi = new Spi(spiDevice, 3, 10000000);
+        final var dc = new Gpio(gpioDevice, dcPin, Gpio.GPIO_DIR_OUT);
+        final var rst = new Gpio(gpioDevice, rstPin, Gpio.GPIO_DIR_OUT);
 
-            // Hardware reset pulse using static calls
+        try (final var oled = new Ssd1331(spi.getHandle(), dc.getHandle())) {
+            
+            // Hardware reset pulse
             Gpio.gpioWrite(rst.getHandle(), false);
             TimeUnit.MILLISECONDS.sleep(100);
             Gpio.gpioWrite(rst.getHandle(), true);
             TimeUnit.MILLISECONDS.sleep(100);
-
-            final var oled = new Ssd1331(spi.getHandle(), dc.getHandle());
 
             // Java 2D Drawing
             final var image = new BufferedImage(96, 64, BufferedImage.TYPE_USHORT_565_RGB);
@@ -66,11 +67,11 @@ public class Ssd1331Demo implements Callable<Integer> {
             g2d.setColor(Color.BLACK);
             g2d.fillRect(0, 0, 96, 64);
             g2d.setColor(Color.WHITE);
-            g2d.setFont(new Font("SansSerif", Font.PLAIN, 12));
+            g2d.setFont(new Font("SansSerif", Font.BOLD, 12));
             g2d.drawString("Hello World!", 10, 35);
             g2d.dispose();
 
-            // Convert to byte buffer for SPI transfer
+            // Prepare buffer
             final var data = ((DataBufferUShort) image.getRaster().getDataBuffer()).getData();
             final var byteBuf = ByteBuffer.allocate(data.length * 2);
             byteBuf.order(ByteOrder.BIG_ENDIAN);
@@ -80,11 +81,16 @@ public class Ssd1331Demo implements Callable<Integer> {
 
             oled.clear();
             oled.drawBuffer(byteBuf.array());
-            log.info("Buffer transmitted.");
+            
+            log.info("Displaying for 5 seconds...");
+            TimeUnit.SECONDS.sleep(5);
 
         } catch (Exception e) {
             log.error("Demo failed: {}", e.getMessage());
             exitCode = 1;
+        } finally {
+            // RST pin isn't part of Ssd1331 class, so close it here
+            rst.close();
         }
         return exitCode;
     }

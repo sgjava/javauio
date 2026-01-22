@@ -57,7 +57,6 @@ public class Ssd1331 implements AutoCloseable {
      * @param cmd Command byte.
      */
     public void writeCommand(final byte cmd) {
-        // D/C low for command
         Gpio.gpioWrite(dcHandle, false);
         final var buf = new byte[]{cmd};
         Spi.spiTransfer(spiHandle, buf, new byte[1], 1);
@@ -69,7 +68,6 @@ public class Ssd1331 implements AutoCloseable {
      * @param data Data array.
      */
     public void writeData(final byte[] data) {
-        // D/C high for data
         Gpio.gpioWrite(dcHandle, true);
         Spi.spiTransfer(spiHandle, data, new byte[data.length], data.length);
     }
@@ -109,7 +107,7 @@ public class Ssd1331 implements AutoCloseable {
     }
 
     /**
-     * Clear the screen.
+     * Clear the screen by writing zeros to the entire GDDRAM.
      */
     public void clear() {
         setWindow(0, 0, width - 1, height - 1);
@@ -127,8 +125,16 @@ public class Ssd1331 implements AutoCloseable {
         writeData(buffer);
     }
 
+    /**
+     * Clear screen and close native handles.
+     */
     @Override
     public void close() {
-        // Handle closing is managed by the Demo/Caller
+        // Clear screen before exiting to prevent "ghost" blocks
+        clear();
+        writeCommand(DISPLAY_OFF);
+        // Close native handles using static methods
+        Spi.spiClose(spiHandle);
+        Gpio.gpioClose(dcHandle);
     }
 }
