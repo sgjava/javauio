@@ -84,7 +84,7 @@ public class Ssd1331Demo implements Callable<Integer> {
             // Text
             g2d.setColor(Color.YELLOW);
             g2d.setFont(new Font("Monospaced", Font.BOLD, 12));
-            g2d.drawString("CLEAN UP", 20, 35);
+            g2d.drawString("Java 2D", 20, 35);
             g2d.dispose();
             log.info("Rendering {}x{} frame...", width, height);
             oled.drawImage(image);
