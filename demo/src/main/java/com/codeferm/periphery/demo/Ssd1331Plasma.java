@@ -63,7 +63,7 @@ public class Ssd1331Plasma implements Callable<Integer> {
     /**
      * Executes the plasma animation logic.
      *
-     * * @param oled SSD1331 driver instance.
+     * @param oled SSD1331 driver instance.
      * @throws Exception On SPI or timing errors.
      */
     public void demo(final Ssd1331 oled) throws Exception {
