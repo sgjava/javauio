@@ -62,6 +62,11 @@ is supported by kernel. Here we do it on the NanoPi Duo.
 * `sudo dtc -@ -I dts -O dtb -o sun8i-h2-plus-nanopi-duo.dtb sun8i-h2-plus-nanopi-duo.dts`
 * `reboot`
 
+## Armbian SPI
+Make the following changes to /boot/armbianEnv.txt as needed.
+* `param_spidev_spi_bus=1` to change to /dev/spidev1.0 for Duo
+* `extraargs=spidev.bufsiz=65536` increase buffer size from 4K. Verify with `cat /sys/module/spidev/parameters/bufsiz`
+
 ## Modify POM as needed
 The Periphery POM uses download-maven-plugin to download c-periphery source
 to `src/main/native-package/src`. The files are cached in
