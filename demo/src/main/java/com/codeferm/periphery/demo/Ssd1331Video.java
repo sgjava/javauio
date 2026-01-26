@@ -17,7 +17,9 @@ import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 
 /**
- * Color video demo for SSD1331 using raw RGB565BE data.
+ * Color video demo for SSD1331 using raw RGB565BE data. Ro make video use:
+ *
+ * ffmpeg -i input.mp4 -f rawvideo -pix_fmt rgb565be -s 96x64 video.raw
  *
  * @author Steven P. Goldsmith
  * @version 1.0.0
@@ -78,30 +80,23 @@ public class Ssd1331Video implements Callable<Integer> {
         // Use Lombok getters from your driver
         final int width = oled.getWidth();
         final int height = oled.getHeight();
-        
         // RGB565 is 2 bytes per pixel
         final int frameSize = width * height * 2;
         final long frameDurationNs = TimeUnit.SECONDS.toNanos(1) / fps;
         final var buffer = ByteBuffer.allocateDirect(frameSize);
         final var frameArray = new byte[frameSize];
-
         log.info("Playing {}x{} color video from {} at {} FPS", width, height, fileName, fps);
-
         try (var channel = FileChannel.open(Path.of(fileName), StandardOpenOption.READ)) {
             // Set display address once to fill the screen
             oled.writeCommand(new byte[]{Ssd1331.SET_COLUMN_ADDRESS, (byte) 0, (byte) (width - 1)});
             oled.writeCommand(new byte[]{Ssd1331.SET_ROW_ADDRESS, (byte) 0, (byte) (height - 1)});
-
             while (channel.read(buffer) != -1) {
                 final long startTime = System.nanoTime();
                 buffer.flip();
-
                 if (buffer.remaining() == frameSize) {
                     buffer.get(frameArray);
-                    
                     // Direct push of raw bytes to SPI
                     oled.writeData(frameArray);
-
                     // Maintain target FPS timing
                     final long elapsedTime = System.nanoTime() - startTime;
                     final long sleepTimeNs = frameDurationNs - elapsedTime;
@@ -119,6 +114,12 @@ public class Ssd1331Video implements Callable<Integer> {
         }
     }
 
+    /**
+     * Play video.
+     *
+     * @return Exit code.
+     * @throws Exception Possible hardware exception.
+     */
     @Override
     public Integer call() throws Exception {
         try (final var oled = new Ssd1331(device, mode, speed, gpioDevice, dc, res)) {
@@ -129,6 +130,11 @@ public class Ssd1331Video implements Callable<Integer> {
         return 0;
     }
 
+    /**
+     * Main entry point.
+     *
+     * @param args Argument list.
+     */
     public static void main(final String... args) {
         System.exit(new CommandLine(new Ssd1331Video()).execute(args));
     }
