@@ -48,10 +48,10 @@ public class Ssd1331SpaceInvaders implements Callable<Integer> {
     private int mode = 3;
 
     /**
-     * Max SPI speed in Hz.
+     * Max SPI speed in Hz. 7 MHz gets you 64 FPS.
      */
     @Option(names = {"-s", "--speed"}, description = "Max speed in Hz, ${DEFAULT-VALUE} by default.")
-    private int speed = 10000000;
+    private int speed = 7000000;
 
     /**
      * GPIO device path.

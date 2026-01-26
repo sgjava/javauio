@@ -17,7 +17,7 @@ import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 
 /**
- * Color video demo for SSD1331 using raw RGB565BE data. Ro make video use:
+ * Color video demo for SSD1331 using raw RGB565BE data. To make video use:
  *
  * ffmpeg -i input.mp4 -f rawvideo -pix_fmt rgb565be -s 96x64 video.raw
  *
@@ -41,10 +41,10 @@ public class Ssd1331Video implements Callable<Integer> {
     @Option(names = {"-m", "--mode"}, description = "SPI mode, ${DEFAULT-VALUE} by default.")
     private int mode = 3;
     /**
-     * SPI Hz speed option.
+     * SPI Hz speed option. 3 MHz gets you around 30 FPS.
      */
     @Option(names = {"-s", "--speed"}, description = "Max speed in Hz, ${DEFAULT-VALUE} by default.")
-    private int speed = 8000000;
+    private int speed = 3000000;
     /**
      * GPIO device option.
      */

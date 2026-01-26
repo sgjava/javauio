@@ -38,7 +38,7 @@ public class Ssd1331Plasma implements Callable<Integer> {
      * SPI Hz speed option.
      */
     @Option(names = {"-s", "--speed"}, description = "Max speed in Hz, ${DEFAULT-VALUE} by default.")
-    private int speed = 8000000;
+    private int speed = 3000000;
     /**
      * GPIO device option.
      */

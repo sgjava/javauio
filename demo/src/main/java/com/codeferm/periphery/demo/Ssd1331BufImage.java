@@ -22,8 +22,8 @@ import picocli.CommandLine.Option;
  * @since 1.0.0
  */
 @Slf4j
-@Command(name = "Ssd1331Demo", mixinStandardHelpOptions = true)
-public class Ssd1331Demo implements Callable<Integer> {
+@Command(name = "Ssd1331BufImage", mixinStandardHelpOptions = true)
+public class Ssd1331BufImage implements Callable<Integer> {
 
     /**
      * SPI device option.
@@ -99,6 +99,6 @@ public class Ssd1331Demo implements Callable<Integer> {
      * @param args Argument list.
      */
     public static void main(final String[] args) {
-        System.exit(new CommandLine(new Ssd1331Demo()).execute(args));
+        System.exit(new CommandLine(new Ssd1331BufImage()).execute(args));
     }
 }

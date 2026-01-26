@@ -13,7 +13,8 @@ import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
 /**
- * SSD1331 96x64 RGB OLED driver using optimized memory access.
+ * SSD1331 96x64 RGB OLED driver using optimized memory access. The kernel may limit the SPI buffer to 4K. Check with cat
+ * /sys/module/spidev/parameters/bufsiz and adjust greater than 12,288 bytes. I just set it to 64K.
  *
  * @author Steven P. Goldsmith
  * @version 1.0.0
@@ -368,6 +369,8 @@ public class Ssd1331 implements AutoCloseable {
         try (resGpio; dcGpio; spi) {
             // Power down sequence
             writeCommand(new byte[]{DISPLAY_OFF});
+            // Hardware screen clear
+            clear();
             try {
                 TimeUnit.MILLISECONDS.sleep(100);
                 // Hardware reset pull-down
