@@ -5,7 +5,6 @@ package com.codeferm.periphery.demo;
 
 import com.codeferm.periphery.device.Ssd1331;
 import java.awt.Color;
-import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
@@ -19,16 +18,14 @@ import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 
 /**
- * Full Professional Port of Space Invaders for SSD1331.
- * * Features: 3 Lives, Bunkers, UFO, Progressive Difficulty, AI Player, 
- * and Landing detection. Optimized for Java 25.
- *
+ * Full Space Invaders for SSD1331 - Optimized for 96x64.
+ * 
  * @author Steven P. Goldsmith
- * @version 1.1.1
+ * @version 1.0.0
  * @since 1.0.0
  */
 @Slf4j
-@Command(name = "Invaders", mixinStandardHelpOptions = true, version = "1.1.1-SNAPSHOT")
+@Command(name = "Invaders", mixinStandardHelpOptions = true, version = "1.0.0-SNAPSHOT")
 public class Ssd1331SpaceInvaders implements Callable<Integer> {
 
     @Option(names = {"-d", "--device"}, description = "SPI device, ${DEFAULT-VALUE} by default.")
@@ -95,70 +92,62 @@ public class Ssd1331SpaceInvaders implements Callable<Integer> {
         ufo = null;
         playerShot = null;
         rackX = 10;
-        rackY = 15;
+        rackY = 5; // Start higher now that HUD is gone
         rackDir = 1 + (level / 2);
         
-        // 6 columns, 3 rows
         for (int r = 0; r < 3; r++) {
             for (int c = 0; c < 6; c++) {
-                invaders.add(new Invader(c * 12, r * 10, r));
+                invaders.add(new Invader(c * 12, r * 9, r));
             }
         }
         
-        // 3 Bunkers
         for (int i = 0; i < 3; i++) {
-            bunkers.add(new Bunker(15 + (i * 30), h - 22));
+            bunkers.add(new Bunker(15 + (i * 30), h - 18));
         }
     }
 
     private void update(int w, int h) {
         if (gameState != State.PLAYING) return;
 
-        // AI Player Logic
+        // AI Dodge/Track
         if (random.nextInt(10) > 1) {
-            if (!alienMissiles.isEmpty()) {
-                aiTargetX = alienMissiles.get(0).x - 6; // Dodge
-            } else {
-                invaders.stream().filter(i -> i.active).findFirst().ifPresent(i -> aiTargetX = i.x + rackX);
-            }
+            if (!alienMissiles.isEmpty()) aiTargetX = alienMissiles.get(0).x - 6;
+            else invaders.stream().filter(i -> i.active).findFirst().ifPresent(i -> aiTargetX = i.x + rackX);
         }
         if (playerX < aiTargetX) playerX += 2; else if (playerX > aiTargetX) playerX -= 2;
         playerX = Math.max(2, Math.min(w - 11, playerX));
 
-        // Move Invader Rack
+        // Rack logic
         int maxX = invaders.stream().filter(i -> i.active).mapToInt(i -> i.x + rackX).max().orElse(0);
         int minX = invaders.stream().filter(i -> i.active).mapToInt(i -> i.x + rackX).min().orElse(w);
         int maxY = invaders.stream().filter(i -> i.active).mapToInt(i -> i.y + rackY).max().orElse(0);
 
-        if (rackDir > 0 && maxX > w - 10) { rackDir *= -1; rackY += 4; }
-        else if (rackDir < 0 && minX < 2) { rackDir *= -1; rackY += 4; }
+        if (rackDir > 0 && maxX > w - 10) { rackDir *= -1; rackY += 3; }
+        else if (rackDir < 0 && minX < 2) { rackDir *= -1; rackY += 3; }
         else { rackX += rackDir; }
 
-        if (maxY >= h - 24) gameState = State.GAME_OVER;
+        if (maxY >= h - 20) gameState = State.GAME_OVER;
 
-        // UFO Logic
-        if (ufo == null && random.nextInt(200) < 2) ufo = new Projectile(-8, 8);
+        // UFO
+        if (ufo == null && random.nextInt(250) < 2) ufo = new Projectile(-8, 2);
         if (ufo != null) {
             ufo = new Projectile(ufo.x + 2, ufo.y);
             if (ufo.x > w) ufo = null;
         }
 
-        // Projectiles & Collision
-        updateProjectiles(w, h);
+        handleCombat(w, h);
     }
 
-    private void updateProjectiles(int w, int h) {
-        // Player Shot
+    private void handleCombat(int w, int h) {
+        // Player Firing
         if (playerShot == null) playerShot = new Projectile(playerX + 4, h - 10);
         else {
             playerShot = new Projectile(playerShot.x, playerShot.y - 4);
             if (playerShot.y < 0) playerShot = null;
             else {
-                // Check UFO hit
                 if (ufo != null && playerShot.x >= ufo.x && playerShot.x <= ufo.x + 8 && playerShot.y <= ufo.y + 8) {
                     score += 100; ufo = null; playerShot = null;
                 }
-                // Check Invader hit
                 for (var inv : invaders) {
                     if (inv.active && playerShot != null && playerShot.x >= inv.x + rackX && playerShot.x <= inv.x + rackX + 8 
                         && playerShot.y >= inv.y + rackY && playerShot.y <= inv.y + rackY + 8) {
@@ -175,17 +164,15 @@ public class Ssd1331SpaceInvaders implements Callable<Integer> {
                     .ifPresent(i -> alienMissiles.add(new Projectile(i.x + rackX + 4, i.y + rackY + 8)));
         }
 
-        // Alien Missile Movement & Collision
+        // Missile movement & Collision
         for (int i = alienMissiles.size() - 1; i >= 0; i--) {
             var m = alienMissiles.get(i);
             alienMissiles.set(i, new Projectile(m.x, m.y + 2));
             if (m.y > h) alienMissiles.remove(i);
-            // Hit Player
-            else if (m.x >= playerX && m.x <= playerX + 9 && m.y >= h - 10 && m.y <= h - 4) {
+            else if (m.x >= playerX && m.x <= playerX + 9 && m.y >= h - 8 && m.y <= h - 4) {
                 alienMissiles.remove(i); lives--; 
                 gameState = (lives <= 0) ? State.GAME_OVER : State.LIFE_LOST;
             }
-            // Hit Bunker
             for (var b : bunkers) {
                 if (b.health > 0 && m.x >= b.x && m.x <= b.x + 8 && m.y >= b.y && m.y <= b.y + 6) {
                     b.health--; alienMissiles.remove(i); break;
@@ -215,29 +202,26 @@ public class Ssd1331SpaceInvaders implements Callable<Integer> {
         g.setBackground(Color.BLACK);
         g.clearRect(0, 0, oled.getWidth(), oled.getHeight());
 
-        // HUD
-        g.setColor(Color.WHITE);
-        g.setFont(new Font("Monospaced", Font.PLAIN, 7));
-        g.drawString("S:" + score, 2, 7);
-        g.drawString("L:" + level, 40, 7);
-        g.drawString("H:" + lives, oled.getWidth() - 15, 7);
+        // Lives Indicator (Pixels in bottom right)
+        g.setColor(Color.GREEN);
+        for (int i = 0; i < lives; i++) {
+            g.fillRect(oled.getWidth() - (i * 4) - 5, oled.getHeight() - 3, 2, 2);
+        }
 
-        // Bunkers (Cyan -> Red as they take damage)
+        // Bunkers
         for (var b : bunkers) {
             if (b.health <= 0) continue;
             g.setColor(b.health > 2 ? Color.CYAN : Color.RED);
-            g.fillRect(b.x, b.y, 8, 6);
+            g.fillRect(b.x, b.y, 8, 4);
         }
 
-        // Player (Yellow)
+        // Player
         g.setColor(Color.YELLOW);
         g.fillRect(playerX, oled.getHeight() - 6, 9, 4);
         g.fillRect(playerX + 3, oled.getHeight() - 8, 3, 2);
 
-        // UFO
+        // UFO & Invaders
         if (ufo != null) drawMask(g, ufo.x, ufo.y, SAUCER, Color.RED);
-
-        // Invaders
         for (var inv : invaders) {
             if (!inv.active) continue;
             int[] mask = (inv.type == 0) ? INV_TOP : (inv.type == 1 ? INV_MID : INV_BOT);
@@ -250,14 +234,12 @@ public class Ssd1331SpaceInvaders implements Callable<Integer> {
         if (playerShot != null) g.fillRect(playerShot.x, playerShot.y, 1, 3);
         g.setColor(Color.RED);
         for (var m : alienMissiles) g.fillRect(m.x, m.y, 1, 3);
-
         for (var e : explosions) drawMask(g, e.x, e.y, EXPLODE, Color.ORANGE);
 
         if (gameState == State.GAME_OVER) {
             g.setColor(Color.RED);
-            g.drawString("GAME OVER", 25, 35);
+            g.drawString("GAME OVER", 20, 32);
         }
-
         oled.drawImage(img);
     }
 
@@ -268,15 +250,12 @@ public class Ssd1331SpaceInvaders implements Callable<Integer> {
             final var image = new BufferedImage(oled.getWidth(), oled.getHeight(), BufferedImage.TYPE_INT_RGB);
             final var g2d = image.createGraphics();
             initLevel(oled.getWidth(), oled.getHeight(), true);
-
             while (running) {
                 update(oled.getWidth(), oled.getHeight());
                 render(oled, image, g2d);
-                
                 if (gameState == State.LIFE_LOST) {
-                    TimeUnit.SECONDS.sleep(1);
+                    TimeUnit.MILLISECONDS.sleep(800);
                     gameState = State.PLAYING;
-                    playerShot = null;
                     alienMissiles.clear();
                 } else if (gameState == State.GAME_OVER) {
                     TimeUnit.SECONDS.sleep(3);
