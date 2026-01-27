@@ -39,10 +39,10 @@ public class Ssd1331Base implements Callable<Integer> {
     private int mode = 3;
 
     /**
-     * SPI Hz speed option.
+     * SPI Hz speed option. 7 MHz gets you about 64 FPS.
      */
     @Option(names = {"-s", "--speed"}, description = "Max speed in Hz, ${DEFAULT-VALUE} by default.")
-    private int speed = 1000000;
+    private int speed = 7000000;
 
     /**
      * GPIO device option.
