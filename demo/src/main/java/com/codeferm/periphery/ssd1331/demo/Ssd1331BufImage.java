@@ -1,7 +1,7 @@
 /*
  * Copyright (c) Steven P. Goldsmith. All rights reserved.
  */
-package com.codeferm.periphery.demo;
+package com.codeferm.periphery.ssd1331.demo;
 
 import java.awt.Color;
 import java.awt.Font;
