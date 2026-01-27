@@ -13,7 +13,9 @@ import java.util.concurrent.TimeUnit;
 import lombok.extern.slf4j.Slf4j;
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
+import picocli.CommandLine.Model.CommandSpec;
 import picocli.CommandLine.Option;
+import picocli.CommandLine.Spec;
 
 /**
  * Color video demo for SSD1331 using raw RGB565BE data. To make video use:
@@ -29,6 +31,12 @@ import picocli.CommandLine.Option;
 @Command(name = "Video", mixinStandardHelpOptions = true, version = "1.0.0-SNAPSHOT",
         description = "Plays raw RGB565BE video on SSD1331")
 public class Ssd1331Video extends Ssd1331Base {
+
+    /**
+     * Picocli command spec for inspecting parse results.
+     */
+    @Spec
+    private CommandSpec spec;
 
     /**
      * Input file path for the raw video data.
@@ -91,6 +99,13 @@ public class Ssd1331Video extends Ssd1331Base {
      */
     @Override
     public Integer call() throws Exception {
+        // Did the user actually provide -f or --fps on the command line?
+        final var fpsMatched = spec.commandLine().getParseResult().hasMatchedOption("f");
+        // If they DID NOT pass the arg, override the base class default (60) to 30.
+        // If they DID pass --fps, fpsMatched is true and we leave it alone.
+        if (!fpsMatched) {
+            setFps(30);
+        }
         // super.call() initializes the hardware and caches dimensions in Base
         super.call();
         playVideo(getOled());
