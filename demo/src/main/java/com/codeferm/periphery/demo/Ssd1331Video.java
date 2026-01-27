@@ -31,6 +31,11 @@ import picocli.CommandLine.Option;
 public class Ssd1331Video extends Ssd1331Base {
 
     /**
+     * Overriding FPS default for video specifically. Base default is 60, but video is set to 30.
+     */
+    @Option(names = {"-f", "--fps"}, description = "Target frames per second", defaultValue = "30")
+    private int fps;
+    /**
      * Input file path for the raw video data.
      */
     @Option(names = {"--file"}, description = "Input RGB565BE file, ${DEFAULT-VALUE} by default.")
@@ -39,8 +44,7 @@ public class Ssd1331Video extends Ssd1331Base {
     /**
      * Reads raw RGB565 frames and sends them directly to the display via SPI.
      * <p>
-     * Uses var type inference and final modifiers. The buffer is cleared after each read to reset the position for the next
-     * frame.
+     * Uses var type inference and final modifiers. The buffer is cleared after each read to reset the position for the next frame.
      * </p>
      *
      * @param oled SSD1331 driver instance.
