@@ -29,9 +29,9 @@ import picocli.CommandLine.Command;
  * @since 1.0.0
  */
 @Slf4j
-@Command(name = "Ssd1331SpaceInvaders", mixinStandardHelpOptions = true, version = "1.0.0-SNAPSHOT",
+@Command(name = "SpaceInvaders", mixinStandardHelpOptions = true, version = "1.0.0-SNAPSHOT",
         description = "SSD1331 Space Invaders")
-public class Ssd1331SpaceInvaders extends Ssd1331Base {
+public class SpaceInvaders extends Base {
 
     /**
      * Internal game state.
@@ -591,7 +591,7 @@ public class Ssd1331SpaceInvaders extends Ssd1331Base {
     }
 
     /**
-     * Main game loop execution refactored for Ssd1331Base.
+     * Main game loop execution refactored for Base.
      *
      * @return Exit code.
      * @throws Exception Hardware or timing exception.
@@ -628,6 +628,6 @@ public class Ssd1331SpaceInvaders extends Ssd1331Base {
      * @param args Argument list.
      */
     public static void main(final String... args) {
-        System.exit(new CommandLine(new Ssd1331SpaceInvaders()).execute(args));
+        System.exit(new CommandLine(new SpaceInvaders()).execute(args));
     }
 }

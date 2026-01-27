@@ -14,12 +14,12 @@ import picocli.CommandLine.Command;
  * SSD1331 Demo using BufferedImage. Refactored to extend Ssd1331Base.
  *
  * @author Steven P. Goldsmith
- * @version 1.1.1
+ * @version 1.0.0
  * @since 1.0.0
  */
 @Slf4j
-@Command(name = "Ssd1331BufImage", mixinStandardHelpOptions = true)
-public class Ssd1331BufImage extends Ssd1331Base {
+@Command(name = "BufImage", mixinStandardHelpOptions = true)
+public class BufImage extends Base {
 
     /**
      * Demo execution logic.
@@ -62,6 +62,6 @@ public class Ssd1331BufImage extends Ssd1331Base {
      * @param args Argument list.
      */
     public static void main(final String[] args) {
-        System.exit(new CommandLine(new Ssd1331BufImage()).execute(args));
+        System.exit(new CommandLine(new BufImage()).execute(args));
     }
 }

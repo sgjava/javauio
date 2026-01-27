@@ -12,7 +12,7 @@ import picocli.CommandLine;
 import picocli.CommandLine.Command;
 
 /**
- * Procedural RGB Plasma Effect for SSD1331 refactored to use Ssd1331Base.
+ * Procedural RGB Plasma Effect for SSD1331 refactored to use Base.
  *
  * @author Steven P. Goldsmith
  * @version 1.0.0
@@ -20,7 +20,7 @@ import picocli.CommandLine.Command;
  */
 @Slf4j
 @Command(name = "Plasma", mixinStandardHelpOptions = true, version = "1.0.0-SNAPSHOT")
-public class Ssd1331Plasma extends Ssd1331Base {
+public class Plasma extends Base {
 
     /**
      * Executes the plasma animation logic using cached dimensions from Base.
@@ -102,6 +102,6 @@ public class Ssd1331Plasma extends Ssd1331Base {
      * @param args Argument list.
      */
     public static void main(final String[] args) {
-        System.exit(new CommandLine(new Ssd1331Plasma()).execute(args));
+        System.exit(new CommandLine(new Plasma()).execute(args));
     }
 }

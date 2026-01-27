@@ -28,9 +28,9 @@ import picocli.CommandLine.Spec;
  * @since 1.0.0
  */
 @Slf4j
-@Command(name = "Ssd1331WireframeCube", mixinStandardHelpOptions = true, version = "1.0.0-SNAPSHOT",
+@Command(name = "WireframeCube", mixinStandardHelpOptions = true, version = "1.0.0-SNAPSHOT",
         description = "Bouncing 3D cube with phasing colors for SSD1331")
-public class Ssd1331WireframeCube extends Ssd1331Base {
+public class WireframeCube extends Base {
 
     /**
      * Picocli command spec used to differentiate between default FPS and user-provided FPS.
@@ -227,6 +227,6 @@ public class Ssd1331WireframeCube extends Ssd1331Base {
      * @param args Command line arguments.
      */
     public static void main(final String... args) {
-        System.exit(new CommandLine(new Ssd1331WireframeCube()).execute(args));
+        System.exit(new CommandLine(new WireframeCube()).execute(args));
     }
 }

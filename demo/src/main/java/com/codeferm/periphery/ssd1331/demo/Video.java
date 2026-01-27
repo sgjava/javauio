@@ -30,7 +30,7 @@ import picocli.CommandLine.Spec;
 @Slf4j
 @Command(name = "Video", mixinStandardHelpOptions = true, version = "1.0.0-SNAPSHOT",
         description = "Plays raw RGB565BE video on SSD1331")
-public class Ssd1331Video extends Ssd1331Base {
+public class Video extends Base {
 
     /**
      * Picocli command spec for inspecting parse results.
@@ -119,6 +119,6 @@ public class Ssd1331Video extends Ssd1331Base {
      * @param args Argument list.
      */
     public static void main(final String... args) {
-        System.exit(new CommandLine(new Ssd1331Video()).execute(args));
+        System.exit(new CommandLine(new Video()).execute(args));
     }
 }

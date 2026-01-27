@@ -24,7 +24,7 @@ import picocli.CommandLine.Option;
  */
 @Data
 @Slf4j
-public class Ssd1331Base implements Callable<Integer> {
+public class Base implements Callable<Integer> {
 
     /**
      * SPI device option.

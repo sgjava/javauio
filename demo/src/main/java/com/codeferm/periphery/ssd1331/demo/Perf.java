@@ -26,7 +26,7 @@ import picocli.CommandLine.Option;
 @Slf4j
 @Command(name = "Perf", mixinStandardHelpOptions = true, version = "1.0.0-SNAPSHOT",
         description = "SSD1331 drawImage performance demo")
-public class Ssd1331Perf extends Ssd1331Base {
+public class Perf extends Base {
 
     /**
      * Samples option.
@@ -85,6 +85,6 @@ public class Ssd1331Perf extends Ssd1331Base {
      * @param args Argument list.
      */
     public static void main(final String[] args) {
-        System.exit(new CommandLine(new Ssd1331Perf()).execute(args));
+        System.exit(new CommandLine(new Perf()).execute(args));
     }
 }
