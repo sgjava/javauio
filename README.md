@@ -18,7 +18,7 @@ With Java 25, there is no more support for X86_32, and ARM32 has limited JDKs av
 | **X86_32** | ❌ Not Supported | ❌ Not Supported |
 | **X86_64** | ✅ Supported | ✅ Supported |
 ***
-<img src="periphery/images/periphery.png" width="100"/><img src="u8g2/images/u8g2.jpg" width="100"/><img src="u8g2/images/java.png" width="100"/><img src="u8g2/images/ssd1331.png" width="100"/><img src="u8g2/images/sdl.png" width="100"/>
+<img src="periphery/images/periphery.png" width="100"/><img src="u8g2/images/u8g2.jpg" width="100"/><img src="u8g2/images/ssd1331.png" width="100"/><img src="u8g2/images/java.png" width="100"/><img src="u8g2/images/sdl.png" width="100"/>
 ***
 ## 📦 Project Modules
 * [Periphery](https://github.com/sgjava/javauio/tree/main/periphery) API for
