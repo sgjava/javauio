@@ -35,8 +35,8 @@ physical display attached. You can choose display type and fonts at runtime.
 * [Tools](https://github.com/sgjava/javauio/tree/main/tools) provides tools
 for mapping MMIO GPIO register mapping, code generation, etc.
 * [Demo](https://github.com/sgjava/javauio/tree/main/demo) provides CLI based
-demos instead of using mocks or hard coded pins, busses, etc.The selection of
-OLED demos goes beyond simple drawing.
+demos instead of using mocks or hard coded pins, busses, etc. The selection of
+OLED demos goes beyond simple drawing routines.
 
 ## 🛠 Technical Foundation
 * An install script gives you a complete install of [JDK](https://www.azul.com/products/core),
