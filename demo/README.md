@@ -11,6 +11,14 @@ code. Just pass in --help to get list of command line arguments.
 
 * `java --enable-native-access=ALL-UNNAMED -cp $HOME/javauio/demo/target/demo-1.0.0-SNAPSHOT.jar:$HOME/javauio/periphery/target/periphery-1.0.0-SNAPSHOT-linux32.jar com.codeferm.periphery.demo.LedBlink --help`
 
+## Run SSD1331 demos
+ To see a list of demos 
+[browse](https://github.com/sgjava/javauio/tree/main/demo/src/main/java/com/codeferm/periphery/ssd1331/demo)
+code. Just pass in --help to get list of command line arguments.
+
+* `java --enable-native-access=ALL-UNNAMED -cp $HOME/javauio/demo/target/demo-1.0.0-SNAPSHOT.jar:$HOME/javauio/periphery/target/periphery-1.0.0-SNAPSHOT-linux32.jar com.codeferm.periphery.ssd1331.demo.BufImage --help`
+
+
 ## Run U8g2 demos
 To see a list of demos 
 [browse](https://github.com/sgjava/javauio/tree/main/demo/src/main/java/com/codeferm/u8g2/demo)
