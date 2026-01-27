@@ -36,15 +36,6 @@ public class Ssd1331Video extends Ssd1331Base {
     @Option(names = {"--file"}, description = "Input RGB565BE file, ${DEFAULT-VALUE} by default.")
     private String fileName = "src/main/resources/color.raw";
 
-/**
-     * Default constructor to override the FPS value inherited from Base.
-     * This avoids the picocli DuplicateOptionAnnotationsException.
-     */
-    public Ssd1331Video() {
-        // Overrides the default of 60 from Ssd1331Base to 30 for this class
-        setFps(30);
-    }    
-    
     /**
      * Reads raw RGB565 frames and sends them directly to the display via SPI.
      * <p>
