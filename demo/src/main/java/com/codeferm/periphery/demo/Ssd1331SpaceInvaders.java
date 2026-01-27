@@ -12,12 +12,10 @@ import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 import lombok.extern.slf4j.Slf4j;
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
-import picocli.CommandLine.Option;
 
 /**
  * Space Invaders for SSD1331 with AI-driven player and resolution-aware scaling.
@@ -33,49 +31,7 @@ import picocli.CommandLine.Option;
 @Slf4j
 @Command(name = "Ssd1331SpaceInvaders", mixinStandardHelpOptions = true, version = "1.0.0-SNAPSHOT",
         description = "SSD1331 Space Invaders")
-public class Ssd1331SpaceInvaders implements Callable<Integer> {
-
-    /**
-     * SPI device path.
-     */
-    @Option(names = {"-d", "--device"}, description = "SPI device, ${DEFAULT-VALUE} by default.")
-    private String device = "/dev/spidev1.0";
-
-    /**
-     * SPI mode.
-     */
-    @Option(names = {"-m", "--mode"}, description = "SPI mode, ${DEFAULT-VALUE} by default.")
-    private int mode = 3;
-
-    /**
-     * Max SPI speed in Hz. 7 MHz gets you 64 FPS.
-     */
-    @Option(names = {"-s", "--speed"}, description = "Max speed in Hz, ${DEFAULT-VALUE} by default.")
-    private int speed = 7000000;
-
-    /**
-     * GPIO device path.
-     */
-    @Option(names = {"-g", "--gpio-device"}, description = "GPIO device, ${DEFAULT-VALUE} by default.")
-    private String gpioDevice = "/dev/gpiochip0";
-
-    /**
-     * Data/Command GPIO line.
-     */
-    @Option(names = {"-dc", "--dc-line"}, description = "DC line, ${DEFAULT-VALUE} by default.")
-    private int dc = 199;
-
-    /**
-     * Reset GPIO line.
-     */
-    @Option(names = {"-res", "--res-line"}, description = "RES line, ${DEFAULT-VALUE} by default.")
-    private int res = 198;
-
-    /**
-     * Target frames per second.
-     */
-    @Option(names = {"-f", "--fps"}, description = "Target frames per second", defaultValue = "60")
-    private int fps;
+public class Ssd1331SpaceInvaders extends Ssd1331Base {
 
     /**
      * Internal game state.
@@ -224,7 +180,7 @@ public class Ssd1331SpaceInvaders implements Callable<Integer> {
         public int x, y, type;
         public boolean active;
 
-        public Invader(int x, int y, int type, boolean active) {
+        public Invader(final int x, final int y, final int type, final boolean active) {
             this.x = x;
             this.y = y;
             this.type = type;
@@ -239,7 +195,7 @@ public class Ssd1331SpaceInvaders implements Callable<Integer> {
 
         public int x, y, timer = 6;
 
-        public Explosion(int x, int y) {
+        public Explosion(final int x, final int y) {
             this.x = x;
             this.y = y;
         }
@@ -252,7 +208,7 @@ public class Ssd1331SpaceInvaders implements Callable<Integer> {
      * @param h Display height.
      * @param fullReset True if lives/score should be reset.
      */
-    public void initLevel(int w, int h, boolean fullReset) {
+    public void initLevel(final int w, final int h, final boolean fullReset) {
         if (fullReset) {
             score = 0;
             lives = 3;
@@ -273,7 +229,7 @@ public class Ssd1331SpaceInvaders implements Callable<Integer> {
         rackY = h / 6;
         for (var row = 0; row < rows; row++) {
             for (var col = 0; col < cols; col++) {
-                var type = (row == 0) ? 0 : (row < rows / 2 ? 1 : 2);
+                final var type = (row == 0) ? 0 : (row < rows / 2 ? 1 : 2);
                 invaders.add(new Invader(col * 9, row * 7, type, true));
             }
         }
@@ -287,9 +243,9 @@ public class Ssd1331SpaceInvaders implements Callable<Integer> {
     /**
      * Triggers player hit state.
      *
-     * * @param isLanding True if invaders have reached the bottom (Instant Game Over).
+     * @param isLanding True if invaders have reached the bottom.
      */
-    private void registerHit(boolean isLanding) {
+    private void registerHit(final boolean isLanding) {
         if (!hitLock) {
             hitLock = true;
             lives = isLanding ? 0 : lives - 1;
@@ -302,8 +258,11 @@ public class Ssd1331SpaceInvaders implements Callable<Integer> {
 
     /**
      * Main update logic for AI, movement, and combat.
+     *
+     * @param w Display width.
+     * @param h Display height.
      */
-    private void update(int w, int h) {
+    private void updateLogic(final int w, final int h) {
         if (gameState == State.EXPLODING) {
             if (--playerExplosionTimer <= 0) {
                 if (lives > 0) {
@@ -326,14 +285,17 @@ public class Ssd1331SpaceInvaders implements Callable<Integer> {
 
     /**
      * AI logic for dodging missiles and targeting invaders.
+     *
+     * @param w Display width.
+     * @param h Display height.
      */
-    private void updateAI(int w, int h) {
+    private void updateAI(final int w, final int h) {
         if (--aiDecisionTimer <= 0) {
             aiDecisionTimer = 8;
             final var currentX = playerXScaled / 100;
             var newTargetX = currentX;
             Projectile threat = null;
-            for (var m : alienMissiles) {
+            for (final var m : alienMissiles) {
                 if (Math.abs(m.x - currentX) < 12 && m.y > h - 35) {
                     if (threat == null || m.y > threat.y) {
                         threat = m;
@@ -345,7 +307,7 @@ public class Ssd1331SpaceInvaders implements Callable<Integer> {
                 newTargetX = (threat.x < currentX) ? currentX + dodgeDist : currentX - dodgeDist;
             } else {
                 Invader target = null;
-                for (var inv : invaders) {
+                for (final var inv : invaders) {
                     if (inv.active && (target == null || inv.y > target.y)) {
                         target = inv;
                     }
@@ -367,10 +329,15 @@ public class Ssd1331SpaceInvaders implements Callable<Integer> {
 
     /**
      * Updates invader rack movement.
+     *
+     * @param w Display width.
+     * @param h Display height.
      */
-    private void updateInvaders(int w, int h) {
-        int activeCount = 0, minX = 1000, maxX = -1000;
-        for (var inv : invaders) {
+    private void updateInvaders(final int w, final int h) {
+        var activeCount = 0;
+        var minX = 1000;
+        var maxX = -1000;
+        for (final var inv : invaders) {
             if (inv.active) {
                 activeCount++;
                 final var curX = inv.x + rackX;
@@ -406,8 +373,11 @@ public class Ssd1331SpaceInvaders implements Callable<Integer> {
 
     /**
      * Handles projectile movement and collision detection.
+     *
+     * @param w Display width.
+     * @param h Display height.
      */
-    private void updateCombat(int w, int h) {
+    private void updateCombat(final int w, final int h) {
         final var px = playerXScaled / 100;
         final var saucerY = h / 6;
         if (playerShot == null) {
@@ -424,7 +394,7 @@ public class Ssd1331SpaceInvaders implements Callable<Integer> {
                 playerShot = null;
             } else {
                 playerShot = new Projectile(nx, ny);
-                for (var inv : invaders) {
+                for (final var inv : invaders) {
                     if (inv.active && nx >= inv.x + rackX && nx <= inv.x + rackX + 7 && ny >= inv.y + rackY && ny <= inv.y + rackY
                             + 5) {
                         inv.active = false;
@@ -463,8 +433,14 @@ public class Ssd1331SpaceInvaders implements Callable<Integer> {
 
     /**
      * Checks for collision with bunkers and updates bitmasks upon impact.
+     *
+     * @param w Display width.
+     * @param h Display height.
+     * @param x Projectile X.
+     * @param y Projectile Y.
+     * @return True if hit.
      */
-    private boolean checkBunkerCollision(int w, int h, int x, int y) {
+    private boolean checkBunkerCollision(final int w, final int h, final int x, final int y) {
         final var bunkerYStart = h - 24;
         if (y < bunkerYStart || y > bunkerYStart + 5) {
             return false;
@@ -485,8 +461,10 @@ public class Ssd1331SpaceInvaders implements Callable<Integer> {
 
     /**
      * Updates mystery saucer position and spawn timer.
+     *
+     * @param w Display width.
      */
-    private void updateSaucer(int w) {
+    private void updateSaucer(final int w) {
         if (!saucerActive) {
             if (++saucerTimer > (400 + random.nextInt(800))) {
                 saucerActive = true;
@@ -503,10 +481,16 @@ public class Ssd1331SpaceInvaders implements Callable<Integer> {
 
     /**
      * Renders centered text with a cleared background rectangle.
+     *
+     * @param g Graphics context.
+     * @param text String to draw.
+     * @param w Display width.
+     * @param y Y position.
+     * @param color Text color.
      */
-    private void drawCenteredText(Graphics2D g, String text, int w, int y, Color color) {
-        FontMetrics fm = g.getFontMetrics();
-        int x = (w - fm.stringWidth(text)) / 2;
+    private void drawCenteredText(final Graphics2D g, final String text, final int w, final int y, final Color color) {
+        final var fm = g.getFontMetrics();
+        final var x = (w - fm.stringWidth(text)) / 2;
         g.setColor(Color.BLACK);
         g.fillRect(x - 2, y - fm.getAscent(), fm.stringWidth(text) + 4, fm.getHeight());
         g.setColor(color);
@@ -516,23 +500,27 @@ public class Ssd1331SpaceInvaders implements Callable<Integer> {
     /**
      * Main rendering loop.
      */
-    private void render(Ssd1331 oled, BufferedImage img, Graphics2D g) {
+    private void render() {
+        final var w = getWidth();
+        final var h = getHeight();
+        final var px = playerXScaled / 100;
+        final var g = getG2d();
+
         g.setBackground(Color.BLACK);
-        g.clearRect(0, 0, oled.getWidth(), oled.getHeight());
-        int w = oled.getWidth(), h = oled.getHeight(), px = playerXScaled / 100;
+        g.clearRect(0, 0, w, h);
 
         g.setFont(new Font("Monospaced", Font.PLAIN, 10));
         g.setColor(Color.WHITE);
         g.drawString(String.format("%04d", score), 2, 10);
         g.setColor(Color.GREEN);
-        for (int i = 0; i < lives; i++) {
+        for (var i = 0; i < lives; i++) {
             g.fillRect(w - (i * 4) - 5, h - 3, 2, 2);
         }
 
         if (saucerActive) {
             g.setColor(Color.RED);
-            for (int i = 0; i < 5; i++) {
-                for (int b = 0; b < 12; b++) {
+            for (var i = 0; i < 5; i++) {
+                for (var b = 0; b < 12; b++) {
                     if (((SAUCER_BITS[i] >> (11 - b)) & 1) == 1) {
                         g.fillRect(saucerX + b, (h / 6) + i, 1, 1);
                     }
@@ -540,9 +528,9 @@ public class Ssd1331SpaceInvaders implements Callable<Integer> {
             }
         }
         g.setColor(Color.CYAN);
-        int spacing = w / 3;
+        final var spacing = w / 3;
         for (var i = 0; i < 3; i++) {
-            int bx = (spacing / 2) + (i * spacing) - 4;
+            final var bx = (spacing / 2) + (i * spacing) - 4;
             for (var r = 0; r < 3; r++) {
                 for (var c = 0; c < 7; c++) {
                     if (((bunkers[i][r] >> (6 - c)) & 1) == 1) {
@@ -551,25 +539,25 @@ public class Ssd1331SpaceInvaders implements Callable<Integer> {
                 }
             }
         }
-        for (var inv : invaders) {
+        for (final var inv : invaders) {
             if (!inv.active) {
                 continue;
             }
             g.setColor(inv.type == 0 ? Color.MAGENTA : (inv.type == 1 ? Color.CYAN : Color.GREEN));
-            int[] bts = (inv.type == 0) ? new int[]{0x10, 0x38, 0x7C, 0x28} : (inv.type == 1)
+            final int[] bts = (inv.type == 0) ? new int[]{0x10, 0x38, 0x7C, 0x28} : (inv.type == 1)
                     ? new int[]{0x44, 0x38, 0x7C, 0x10} : new int[]{0x38, 0x7C, 0x7C, 0x44};
-            for (int i = 0; i < 4; i++) {
-                for (int b = 0; b < 7; b++) {
+            for (var i = 0; i < 4; i++) {
+                for (var b = 0; b < 7; b++) {
                     if (((bts[i] >> (6 - b)) & 1) == 1) {
                         g.fillRect(inv.x + rackX + b, inv.y + rackY + i, 1, 1);
                     }
                 }
             }
         }
-        for (var exp : explosions) {
+        for (final var exp : explosions) {
             g.setColor(Color.ORANGE);
-            for (int i = 0; i < 5; i++) {
-                for (int b = 0; b < 8; b++) {
+            for (var i = 0; i < 5; i++) {
+                for (var b = 0; b < 8; b++) {
                     if (((EXPLOSION_BITS[i] >> (7 - b)) & 1) == 1) {
                         g.fillRect(exp.x + b, exp.y + i, 1, 1);
                     }
@@ -582,13 +570,13 @@ public class Ssd1331SpaceInvaders implements Callable<Integer> {
             g.fillRect(playerShot.x, playerShot.y, 1, 3);
         }
         g.setColor(Color.RED);
-        for (var m : alienMissiles) {
+        for (final var m : alienMissiles) {
             g.fillRect(m.x, m.y, 1, 3);
         }
 
         if (gameState == State.EXPLODING) {
             g.setColor(Color.WHITE);
-            for (int i = 0; i < 20; i++) {
+            for (var i = 0; i < 20; i++) {
                 g.fillRect(px + random.nextInt(15) - 7, h - 5 + random.nextInt(10) - 5, 1, 1);
             }
         } else if (gameState == State.GAME_OVER) {
@@ -599,36 +587,47 @@ public class Ssd1331SpaceInvaders implements Callable<Integer> {
             g.fillRect(px - 1, h - 7, 3, 2);
         }
 
-        oled.drawImage(img);
+        getOled().drawImage(getImage());
     }
 
+    /**
+     * Main game loop execution refactored for Ssd1331Base.
+     *
+     * @return Exit code.
+     * @throws Exception Hardware or timing exception.
+     */
     @Override
     public Integer call() throws Exception {
-        try (final var oled = new Ssd1331(device, mode, speed, gpioDevice, dc, res)) {
-            oled.setup();
-            final var image = new BufferedImage(oled.getWidth(), oled.getHeight(), BufferedImage.TYPE_INT_RGB);
-            final var g2d = image.createGraphics();
-            initLevel(oled.getWidth(), oled.getHeight(), true);
-            while (running) {
-                update(oled.getWidth(), oled.getHeight());
-                render(oled, image, g2d);
-                if (gameState == State.GAME_OVER) {
-                    TimeUnit.SECONDS.sleep(3);
-                    running = false;
-                }
-                TimeUnit.MILLISECONDS.sleep(1000 / fps);
+        // super.call() initializes hardware and caches dimensions in Base
+        super.call();
+        
+        final var w = getWidth();
+        final var h = getHeight();
+        final var targetFps = getFps();
+
+        initLevel(w, h, true);
+
+        while (running) {
+            updateLogic(w, h);
+            render();
+
+            if (gameState == State.GAME_OVER) {
+                TimeUnit.SECONDS.sleep(3);
+                running = false;
             }
-            g2d.dispose();
+            TimeUnit.MILLISECONDS.sleep(1000 / targetFps);
         }
+
+        done();
         return 0;
     }
 
     /**
-     * Main entry point.
+     * Main entry point using picocli.
      *
      * @param args Argument list.
      */
-    public static void main(String... args) {
+    public static void main(final String... args) {
         System.exit(new CommandLine(new Ssd1331SpaceInvaders()).execute(args));
     }
 }
