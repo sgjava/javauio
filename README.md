@@ -25,6 +25,7 @@ With Java 25, there is no more support for X86_32, and ARM32 has limited JDKs av
 GPIO, LED, PWM, SPI, I2C, MMIO and Serial peripheral I/O interface access. Based
 on [c-periphery](https://github.com/vsergeev/c-periphery) API which also covers
 C, C++, Python, Lua and Dart. Cross platform high speed MMIO based GPIO included.
+Recently added color OLED SSD1331.
 * [U8g2](https://github.com/sgjava/javauio/tree/main/u8g2) API for monochrome
 displays. Based on [U8g2](https://github.com/olikraus/u8g2): Library for
 monochrome displays, version 2. I added ability to use multiple displays in a
@@ -34,7 +35,8 @@ physical display attached. You can choose display type and fonts at runtime.
 * [Tools](https://github.com/sgjava/javauio/tree/main/tools) provides tools
 for mapping MMIO GPIO register mapping, code generation, etc.
 * [Demo](https://github.com/sgjava/javauio/tree/main/demo) provides CLI based
-demos instead of using mocks or hard coded pins, busses, etc.
+demos instead of using mocks or hard coded pins, busses, etc.The selection of
+OLED demos goes beyond simple drawing.
 
 ## 🛠 Technical Foundation
 * An install script gives you a complete install of [JDK](https://www.azul.com/products/core),
