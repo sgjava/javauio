@@ -14,81 +14,81 @@ import picocli.CommandLine.Model.CommandSpec;
 import picocli.CommandLine.Spec;
 
 /**
- * 3D Raycasting demo for SSD1331 featuring distance-compensated mortar logic.
+ * 3D Raycasting demo for SSD1331 featuring irregular "Castle Brick" textures.
  * <p>
- * This version prevents mortar lines from "breaking" on small displays by scaling the 
- * procedural hit-detection width based on the wall's distance from the camera. 
- * It follows Java 25 standards and includes a full autonomous random-walk system.
+ * This engine renders a weathered stone environment using randomized mortar offsets
+ * to break up straight lines, mimicking an old castle facade. It utilizes a 
+ * distance-compensated thickness model to ensure mortar remains visible on small screens.
  * </p>
  *
  * @author Steven P. Goldsmith
- * @version 1.3.0
+ * @version 1.4.0
  * @since 1.0.0
  */
 @Slf4j
-@Command(name = "Raytrace", mixinStandardHelpOptions = true, version = "1.3.0",
-        description = "Raycaster with distance-compensated mortar for low-res displays")
+@Command(name = "Raytrace", mixinStandardHelpOptions = true, version = "1.4.0",
+        description = "Castle-style raycaster with irregular stone facades")
 public class Raytrace extends Base {
 
     /**
-     * Picocli command spec for inspecting parse results.
+     * Picocli command specification for CLI option parsing.
      */
     @Spec
     private CommandSpec spec;
 
     /**
-     * Random generator for autonomous movement.
+     * Random generator for autonomous navigation states.
      */
     private final Random random = new Random();
 
     /**
-     * World map: 1 represents a brick wall, 0 represents empty space.
+     * World map: 1 represents a castle wall, 0 represents walkable space.
      */
     private final int[][] worldMap = {
         {1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
         {1, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-        {1, 0, 1, 1, 0, 0, 0, 0, 0, 1},
-        {1, 0, 1, 0, 0, 1, 1, 0, 0, 1},
+        {1, 0, 1, 1, 0, 0, 1, 1, 0, 1},
+        {1, 0, 1, 0, 0, 0, 0, 1, 0, 1},
+        {1, 0, 0, 0, 0, 1, 0, 0, 0, 1},
+        {1, 0, 1, 1, 0, 1, 1, 0, 0, 1},
+        {1, 0, 1, 0, 0, 0, 0, 0, 0, 1},
         {1, 0, 0, 0, 0, 1, 1, 0, 0, 1},
-        {1, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-        {1, 0, 1, 1, 1, 1, 0, 0, 0, 1},
-        {1, 0, 0, 0, 0, 0, 0, 1, 0, 1},
         {1, 0, 0, 0, 0, 0, 0, 0, 0, 1},
         {1, 1, 1, 1, 1, 1, 1, 1, 1, 1}
     };
 
     /**
-     * Main rendering and navigation loop.
+     * Renders the scene and manages the random-walk navigation.
      * <p>
-     * Applies a distance-based thickness multiplier to mortar detection to ensure 
-     * lines don't vanish due to sub-pixel aliasing on the 96x64 display.
+     * Implements a "Facade Jitter" algorithm where mortar lines are offset by a 
+     * coordinate-based hash, breaking up the standard grid into a stone-like pattern.
      * </p>
      *
-     * @param oled SSD1331 driver instance.
+     * @param oled SSD1331 hardware driver.
      */
     public void runDemo(final Ssd1331 oled) {
         final var width = getWidth();
         final var height = getHeight();
         final var g2d = getG2d();
 
-        // Player starting position and FOV
+        // Player starting position and orientation
         var posX = 4.5; var posY = 4.5;
         var dirX = -1.0; var dirY = 0.0;
         var planeX = 0.0; var planeY = 0.66;
 
-        // Navigation state
+        // Navigation state variables
         var moveState = 0;
         var stateTicks = 0;
 
         final var frameDelay = 1000 / getFps();
-        log.info("Starting Compensated Raytrace at {} FPS", getFps());
+        log.info("Starting Castle Raytrace at {} FPS", getFps());
 
         while (true) {
             final var startTime = System.currentTimeMillis();
 
-            // Render ceiling and floor
-            g2d.setColor(new Color(15, 15, 15)); g2d.fillRect(0, 0, width, height / 2);
-            g2d.setColor(new Color(30, 30, 30)); g2d.fillRect(0, height / 2, width, height / 2);
+            // Render dark ambient ceiling and floor
+            g2d.setColor(new Color(10, 10, 10)); g2d.fillRect(0, 0, width, height / 2);
+            g2d.setColor(new Color(25, 25, 25)); g2d.fillRect(0, height / 2, width, height / 2);
 
             for (var x = 0; x < width; x++) {
                 final var cameraX = 2.0 * x / (double) width - 1.0;
@@ -131,35 +131,44 @@ public class Raytrace extends Base {
                 var wallX = (side == 0) ? posY + perpWallDist * rayDirY : posX + perpWallDist * rayDirX;
                 wallX -= Math.floor(wallX);
 
-                final var texX = (int) (wallX * 64.0);
-                final var distIntensity = Math.clamp(1.5 / (1.0 + perpWallDist * 0.8), 0.1, 1.0);
+                final var texX = (int) (wallX * 128.0);
+                final var distIntensity = Math.clamp(1.4 / (1.0 + perpWallDist * 0.7), 0.1, 1.0);
 
-                // THICKNESS COMPENSATION: Increase the mortar "hit zone" as distance increases
-                // to prevent the line from falling between pixels.
-                final var thickComp = (int) Math.max(1, perpWallDist / 2.0);
+                // Anti-break mortar compensation
+                final var thickComp = (int) Math.max(1, perpWallDist / 2.5);
+
+                // Facade Jitter: use map coordinates to shift brick alignment
+                final var jitter = (mapX * 37 + mapY * 11) % 64;
 
                 for (var y = drawStart; y <= drawEnd; y++) {
-                    final var texY = (int) (64.0 * (y - (-lineHeight / 2.0 + height / 2.0)) / lineHeight);
+                    final var texY = (int) (128.0 * (y - (-lineHeight / 2.0 + height / 2.0)) / lineHeight);
                     
-                    final var brickRow = texY / 16;
-                    // Check horizontal mortar with thickness compensation
-                    final var isHorizontalMortar = (texY % 16 < thickComp);
-                    // Check vertical mortar with thickness compensation
-                    final var isVerticalMortar = ((texX + (brickRow % 2 * 16)) % 32 < thickComp);
+                    // Old-school stone logic: varying row heights and offset jitter
+                    final var stoneRow = texY / 24;
+                    final var isHorizontalMortar = (texY % 24 < thickComp);
+                    
+                    // Vertical mortar is shifted based on the specific wall block and stone row
+                    final var isVerticalMortar = ((texX + jitter + (stoneRow * 48)) % 64 < thickComp);
                     
                     final var isMortar = isHorizontalMortar || isVerticalMortar;
                     
                     final var verticalFactor = (double) (y - drawStart) / (drawEnd - drawStart + 1);
-                    final var shadeFactor = (1.0 - (verticalFactor * 0.5)) * distIntensity;
+                    final var shadeFactor = (1.0 - (verticalFactor * 0.4)) * distIntensity;
 
                     if (isMortar) {
-                        final var gray = (int) (140 * shadeFactor);
-                        g2d.setColor(new Color(gray, gray, gray));
+                        // Darker, weathered mortar (Grey-Brown)
+                        final var gray = (int) (100 * shadeFactor);
+                        g2d.setColor(new Color(gray, gray, (int) (gray * 0.9)));
                     } else {
-                        var r = (int) (165 * shadeFactor);
+                        // Castle Brick Palette: Earthy Reds/Browns from image
+                        var r = (int) (110 * shadeFactor);
                         var g = (int) (55 * shadeFactor);
-                        var b = (int) (45 * shadeFactor);
-                        if (side == 1) { r /= 1.35; g /= 1.35; b /= 1.35; }
+                        var b = (int) (40 * shadeFactor);
+                        
+                        // Add some color variance based on texture coordinate to simulate weathered stone
+                        if ((texX ^ texY) % 7 == 0) { r -= 10; g -= 5; }
+
+                        if (side == 1) { r /= 1.4; g /= 1.4; b /= 1.4; }
                         g2d.setColor(new Color(Math.clamp(r, 0, 255), Math.clamp(g, 0, 255), Math.clamp(b, 0, 255)));
                     }
                     g2d.drawLine(x, y, x, y);
@@ -168,32 +177,32 @@ public class Raytrace extends Base {
 
             oled.drawImage(getImage());
 
-            // --- Random Walk Navigation ---
-            final var moveSpeed = 0.08;
-            final var rotSpeed = 0.06;
+            // --- Movement Logic ---
+            final var mSpeed = 0.07;
+            final var rSpeed = 0.05;
 
             if (stateTicks <= 0) {
                 moveState = random.nextInt(4);
-                stateTicks = 15 + random.nextInt(40);
+                stateTicks = 20 + random.nextInt(40);
             }
 
             switch (moveState) {
                 case 0 -> { // Forward
-                    if (worldMap[(int) (posX + dirX * moveSpeed)][(int) posY] == 0) posX += dirX * moveSpeed;
-                    if (worldMap[(int) posX][(int) (posY + dirY * moveSpeed)] == 0) posY += dirY * moveSpeed;
+                    if (worldMap[(int) (posX + dirX * mSpeed)][(int) posY] == 0) posX += dirX * mSpeed;
+                    if (worldMap[(int) posX][(int) (posY + dirY * mSpeed)] == 0) posY += dirY * mSpeed;
                 }
                 case 1 -> { // Backward
-                    if (worldMap[(int) (posX - dirX * moveSpeed)][(int) posY] == 0) posX -= dirX * moveSpeed;
-                    if (worldMap[(int) posX][(int) (posY - dirY * moveSpeed)] == 0) posY -= dirY * moveSpeed;
+                    if (worldMap[(int) (posX - dirX * mSpeed)][(int) posY] == 0) posX -= dirX * mSpeed;
+                    if (worldMap[(int) posX][(int) (posY - dirY * mSpeed)] == 0) posY -= dirY * mSpeed;
                 }
                 case 2, 3 -> { // Rotation
                     final var rot = (moveState == 2) ? 1.0 : -1.0;
                     final var oldDirX = dirX;
-                    dirX = dirX * Math.cos(rot * rotSpeed) - dirY * Math.sin(rot * rotSpeed);
-                    dirY = oldDirX * Math.sin(rot * rotSpeed) + dirY * Math.cos(rot * rotSpeed);
+                    dirX = dirX * Math.cos(rot * rSpeed) - dirY * Math.sin(rot * rSpeed);
+                    dirY = oldDirX * Math.sin(rot * rSpeed) + dirY * Math.cos(rot * rSpeed);
                     final var oldPlaneX = planeX;
-                    planeX = planeX * Math.cos(rot * rotSpeed) - planeY * Math.sin(rot * rotSpeed);
-                    planeY = oldPlaneX * Math.sin(rot * rotSpeed) + planeY * Math.cos(rot * rotSpeed);
+                    planeX = planeX * Math.cos(rot * rSpeed) - planeY * Math.sin(rot * rSpeed);
+                    planeY = oldPlaneX * Math.sin(rot * rSpeed) + planeY * Math.cos(rot * rSpeed);
                 }
             }
             stateTicks--;
@@ -206,10 +215,10 @@ public class Raytrace extends Base {
     }
 
     /**
-     * Initializes hardware and executes the raytrace demo.
+     * Initializes the raytrace demo and handles CLI FPS overrides.
      *
      * @return Exit code.
-     * @throws Exception If hardware setup fails.
+     * @throws Exception Hardware exception.
      */
     @Override
     public Integer call() throws Exception {
