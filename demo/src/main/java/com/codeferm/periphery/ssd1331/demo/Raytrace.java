@@ -14,20 +14,20 @@ import picocli.CommandLine.Model.CommandSpec;
 import picocli.CommandLine.Spec;
 
 /**
- * 3D Raycasting demo for SSD1331 featuring irregular "Castle Brick" textures.
+ * 3D Raycasting demo for SSD1331 featuring procedural irregular castle stone facades.
  * <p>
- * This engine renders a weathered stone environment using randomized mortar offsets
- * to break up straight lines, mimicking an old castle facade. It utilizes a 
- * distance-compensated thickness model to ensure mortar remains visible on small screens.
+ * This engine generates a "Castle" look by using coordinate hashing to jitter mortar lines
+ * and randomize stone dimensions. It avoids the uniform red-brick grid by using an earthy 
+ * palette and distance-compensated line thickness.
  * </p>
  *
  * @author Steven P. Goldsmith
- * @version 1.4.0
+ * @version 1.5.0
  * @since 1.0.0
  */
 @Slf4j
-@Command(name = "Raytrace", mixinStandardHelpOptions = true, version = "1.4.0",
-        description = "Castle-style raycaster with irregular stone facades")
+@Command(name = "Raytrace", mixinStandardHelpOptions = true, version = "1.5.0",
+        description = "Castle stone raycaster with randomized irregular masonry")
 public class Raytrace extends Base {
 
     /**
@@ -42,17 +42,17 @@ public class Raytrace extends Base {
     private final Random random = new Random();
 
     /**
-     * World map: 1 represents a castle wall, 0 represents walkable space.
+     * World map: 1 represents a castle stone wall, 0 represents walkable space.
      */
     private final int[][] worldMap = {
         {1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
         {1, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-        {1, 0, 1, 1, 0, 0, 1, 1, 0, 1},
-        {1, 0, 1, 0, 0, 0, 0, 1, 0, 1},
-        {1, 0, 0, 0, 0, 1, 0, 0, 0, 1},
-        {1, 0, 1, 1, 0, 1, 1, 0, 0, 1},
+        {1, 0, 1, 0, 0, 0, 1, 1, 0, 1},
+        {1, 0, 1, 0, 1, 0, 0, 1, 0, 1},
+        {1, 0, 0, 0, 1, 1, 0, 0, 0, 1},
+        {1, 0, 1, 0, 0, 1, 0, 0, 0, 1},
         {1, 0, 1, 0, 0, 0, 0, 0, 0, 1},
-        {1, 0, 0, 0, 0, 1, 1, 0, 0, 1},
+        {1, 1, 1, 1, 0, 1, 1, 0, 0, 1},
         {1, 0, 0, 0, 0, 0, 0, 0, 0, 1},
         {1, 1, 1, 1, 1, 1, 1, 1, 1, 1}
     };
@@ -60,8 +60,8 @@ public class Raytrace extends Base {
     /**
      * Renders the scene and manages the random-walk navigation.
      * <p>
-     * Implements a "Facade Jitter" algorithm where mortar lines are offset by a 
-     * coordinate-based hash, breaking up the standard grid into a stone-like pattern.
+     * Implements a "Castle Facade" algorithm using bitwise hashing of map and texture 
+     * coordinates to create non-uniform stone blocks.
      * </p>
      *
      * @param oled SSD1331 hardware driver.
@@ -71,24 +71,22 @@ public class Raytrace extends Base {
         final var height = getHeight();
         final var g2d = getG2d();
 
-        // Player starting position and orientation
         var posX = 4.5; var posY = 4.5;
         var dirX = -1.0; var dirY = 0.0;
         var planeX = 0.0; var planeY = 0.66;
 
-        // Navigation state variables
         var moveState = 0;
         var stateTicks = 0;
 
         final var frameDelay = 1000 / getFps();
-        log.info("Starting Castle Raytrace at {} FPS", getFps());
+        log.info("Starting Castle Stone Raytrace at {} FPS", getFps());
 
         while (true) {
             final var startTime = System.currentTimeMillis();
 
-            // Render dark ambient ceiling and floor
-            g2d.setColor(new Color(10, 10, 10)); g2d.fillRect(0, 0, width, height / 2);
-            g2d.setColor(new Color(25, 25, 25)); g2d.fillRect(0, height / 2, width, height / 2);
+            // Background colors: very dark grey to near black
+            g2d.setColor(new Color(12, 12, 12)); g2d.fillRect(0, 0, width, height / 2);
+            g2d.setColor(new Color(22, 22, 22)); g2d.fillRect(0, height / 2, width, height / 2);
 
             for (var x = 0; x < width; x++) {
                 final var cameraX = 2.0 * x / (double) width - 1.0;
@@ -132,41 +130,51 @@ public class Raytrace extends Base {
                 wallX -= Math.floor(wallX);
 
                 final var texX = (int) (wallX * 128.0);
-                final var distIntensity = Math.clamp(1.4 / (1.0 + perpWallDist * 0.7), 0.1, 1.0);
+                final var distIntensity = Math.clamp(1.3 / (1.0 + perpWallDist * 0.7), 0.05, 1.0);
+                final var thickComp = (int) Math.max(1, perpWallDist / 2.0);
 
-                // Anti-break mortar compensation
-                final var thickComp = (int) Math.max(1, perpWallDist / 2.5);
-
-                // Facade Jitter: use map coordinates to shift brick alignment
-                final var jitter = (mapX * 37 + mapY * 11) % 64;
+                // Unique seed for this specific wall segment
+                final var wallSeed = (mapX * 73 + mapY * 31);
 
                 for (var y = drawStart; y <= drawEnd; y++) {
                     final var texY = (int) (128.0 * (y - (-lineHeight / 2.0 + height / 2.0)) / lineHeight);
                     
-                    // Old-school stone logic: varying row heights and offset jitter
-                    final var stoneRow = texY / 24;
-                    final var isHorizontalMortar = (texY % 24 < thickComp);
+                    // Create irregular stone rows by shifting texY with a bit of wallSeed noise
+                    final var noisyTexY = texY + ((wallSeed ^ (texY >> 4)) & 7);
+                    final var stoneRow = noisyTexY / 28; 
                     
-                    // Vertical mortar is shifted based on the specific wall block and stone row
-                    final var isVerticalMortar = ((texX + jitter + (stoneRow * 48)) % 64 < thickComp);
+                    // Jitter the vertical mortar lines based on which row we are in
+                    final var horizontalJitter = (wallSeed ^ (stoneRow * 127)) & 63;
+                    
+                    final var isHorizontalMortar = (noisyTexY % 28 < thickComp);
+                    final var isVerticalMortar = ((texX + horizontalJitter) % 48 < thickComp);
                     
                     final var isMortar = isHorizontalMortar || isVerticalMortar;
-                    
                     final var verticalFactor = (double) (y - drawStart) / (drawEnd - drawStart + 1);
-                    final var shadeFactor = (1.0 - (verticalFactor * 0.4)) * distIntensity;
+                    final var shadeFactor = (1.0 - (verticalFactor * 0.45)) * distIntensity;
 
                     if (isMortar) {
-                        // Darker, weathered mortar (Grey-Brown)
-                        final var gray = (int) (100 * shadeFactor);
-                        g2d.setColor(new Color(gray, gray, (int) (gray * 0.9)));
+                        // Dark mortar: Deep brownish-grey
+                        final var mVal = (int) (70 * shadeFactor);
+                        g2d.setColor(new Color(mVal, (int) (mVal * 0.9), (int) (mVal * 0.8)));
                     } else {
-                        // Castle Brick Palette: Earthy Reds/Browns from image
-                        var r = (int) (110 * shadeFactor);
-                        var g = (int) (55 * shadeFactor);
-                        var b = (int) (40 * shadeFactor);
+                        // Castle Palette: Brown, Tan, and Grey stone tones
+                        // Use a hash of the stone coordinates to vary the color of individual stones
+                        final var stoneHash = (wallSeed ^ (stoneRow * 53) ^ ((texX + horizontalJitter) / 48)) & 3;
                         
-                        // Add some color variance based on texture coordinate to simulate weathered stone
-                        if ((texX ^ texY) % 7 == 0) { r -= 10; g -= 5; }
+                        var r = 0; var g = 0; var b = 0;
+                        switch (stoneHash) {
+                            case 0 -> { r = 100; g = 80; b = 65; } // Brown stone
+                            case 1 -> { r = 90; g = 85; b = 80; }  // Grey stone
+                            case 2 -> { r = 115; g = 100; b = 80; } // Tan stone
+                            default -> { r = 80; g = 70; b = 60; }  // Darker stone
+                        }
+                        
+                        // Per-pixel noise for weathered look
+                        final var grain = ((texX ^ texY) & 3) * 5;
+                        r = (int) ((r - grain) * shadeFactor);
+                        g = (int) ((g - grain) * shadeFactor);
+                        b = (int) ((b - grain) * shadeFactor);
 
                         if (side == 1) { r /= 1.4; g /= 1.4; b /= 1.4; }
                         g2d.setColor(new Color(Math.clamp(r, 0, 255), Math.clamp(g, 0, 255), Math.clamp(b, 0, 255)));
@@ -180,12 +188,10 @@ public class Raytrace extends Base {
             // --- Movement Logic ---
             final var mSpeed = 0.07;
             final var rSpeed = 0.05;
-
             if (stateTicks <= 0) {
                 moveState = random.nextInt(4);
                 stateTicks = 20 + random.nextInt(40);
             }
-
             switch (moveState) {
                 case 0 -> { // Forward
                     if (worldMap[(int) (posX + dirX * mSpeed)][(int) posY] == 0) posX += dirX * mSpeed;
@@ -215,10 +221,10 @@ public class Raytrace extends Base {
     }
 
     /**
-     * Initializes the raytrace demo and handles CLI FPS overrides.
+     * Initializes hardware and executes the raytrace demo.
      *
      * @return Exit code.
-     * @throws Exception Hardware exception.
+     * @throws Exception If hardware setup fails.
      */
     @Override
     public Integer call() throws Exception {
@@ -232,9 +238,9 @@ public class Raytrace extends Base {
     }
 
     /**
-     * Application entry point.
+     * Entry point.
      *
-     * @param args Command line arguments.
+     * @param args CLI arguments.
      */
     public static void main(final String... args) {
         System.exit(new CommandLine(new Raytrace()).execute(args));
