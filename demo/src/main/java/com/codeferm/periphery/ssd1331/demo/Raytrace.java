@@ -14,11 +14,11 @@ import picocli.CommandLine.Model.CommandSpec;
 import picocli.CommandLine.Spec;
 
 /**
- * 3D Raycasting demo for SSD1331 featuring vertical wall gradients and autonomous navigation.
+ * 3D Raycasting demo for SSD1331 featuring procedural brick textures and autonomous navigation.
  * <p>
- * This engine uses the DDA algorithm to render a pseudo-3D world. Walls feature a vertical gradient
- * (lighter at the top) combined with distance-based shading. The "player" performs a random walk
- * with collision detection against the world map.
+ * This engine renders a Wolfenstein 3D-style environment. It uses the DDA algorithm for raycasting,
+ * applying a vertical gradient and a calculated brick/mortar pattern to wall surfaces. The navigation 
+ * system performs a random walk with collision detection to ensure the bot explores the map effectively.
  * </p>
  *
  * @author Steven P. Goldsmith
@@ -27,7 +27,7 @@ import picocli.CommandLine.Spec;
  */
 @Slf4j
 @Command(name = "Raytrace", mixinStandardHelpOptions = true, version = "1.0.0-SNAPSHOT",
-        description = "Raycaster with vertical gradients and random-walk navigation")
+        description = "Brick-wall raycaster with random-walk navigation for SSD1331")
 public class Raytrace extends Base {
 
     /**
@@ -42,7 +42,7 @@ public class Raytrace extends Base {
     private final Random random = new Random();
 
     /**
-     * World map grid: 1 represents a wall, 0 represents empty space.
+     * World map grid: 1 represents a brick wall, 0 represents empty space.
      */
     private final int[][] worldMap = {
         {1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
@@ -58,9 +58,10 @@ public class Raytrace extends Base {
     };
 
     /**
-     * Main rendering and navigation loop.
+     * Main rendering loop and autonomous navigation controller.
      * <p>
-     * Implements per-pixel vertical shading to simulate overhead ambient light.
+     * Implements a procedural brick texture by checking the intersection coordinates (wallX) 
+     * and vertical projection (texY) to draw mortar lines over a "Brick Red" gradient.
      * </p>
      *
      * @param oled SSD1331 driver instance.
@@ -80,14 +81,14 @@ public class Raytrace extends Base {
         var stateTicks = 0;
 
         final var frameDelay = 1000 / getFps();
-        log.info("Starting Raytrace Walkthrough at {} FPS", getFps());
+        log.info("Starting Brick Raytrace at {} FPS", getFps());
 
         while (true) {
             final var startTime = System.currentTimeMillis();
 
-            // Render ceiling and floor with flat colors
-            g2d.setColor(new Color(15, 15, 15)); g2d.fillRect(0, 0, width, height / 2);
-            g2d.setColor(new Color(30, 30, 30)); g2d.fillRect(0, height / 2, width, height / 2);
+            // Render ceiling and floor with static dark colors
+            g2d.setColor(new Color(20, 20, 20)); g2d.fillRect(0, 0, width, height / 2);
+            g2d.setColor(new Color(40, 40, 40)); g2d.fillRect(0, height / 2, width, height / 2);
 
             for (var x = 0; x < width; x++) {
                 final var cameraX = 2.0 * x / (double) width - 1.0;
@@ -102,6 +103,7 @@ public class Raytrace extends Base {
                 var stepX = 0; var stepY = 0;
                 var hit = 0; var side = 0;
 
+                // Calculate DDA steps
                 if (rayDirX < 0) {
                     stepX = -1; sideDistX = (posX - mapX) * deltaDistX;
                 } else {
@@ -113,6 +115,7 @@ public class Raytrace extends Base {
                     stepY = 1; sideDistY = (mapY + 1.0 - posY) * deltaDistY;
                 }
 
+                // Execute DDA
                 while (hit == 0) {
                     if (sideDistX < sideDistY) {
                         sideDistX += deltaDistX; mapX += stepX; side = 0;
@@ -122,39 +125,52 @@ public class Raytrace extends Base {
                     if (worldMap[mapX][mapY] > 0) hit = 1;
                 }
 
+                // Calculate distance and projected wall height
                 final var perpWallDist = (side == 0) ? (sideDistX - deltaDistX) : (sideDistY - deltaDistY);
                 final var lineHeight = (int) (height / perpWallDist);
                 final var drawStart = Math.max(0, -lineHeight / 2 + height / 2);
                 final var drawEnd = Math.min(height - 1, lineHeight / 2 + height / 2);
 
-                // Depth shading intensity
+                // Calculate horizontal wall hit position (0.0 to 1.0) for brick pattern
+                var wallX = (side == 0) ? posY + perpWallDist * rayDirY : posX + perpWallDist * rayDirX;
+                wallX -= Math.floor(wallX);
+
+                // Distance-based intensity scaling
                 final var distIntensity = Math.clamp(1.5 / (1.0 + perpWallDist * 0.8), 0.1, 1.0);
 
-                // Draw vertical gradient for the column
+                // Per-pixel column rendering
                 for (var y = drawStart; y <= drawEnd; y++) {
-                    // Normalize vertical position: 0.0 (top) to 1.0 (bottom)
+                    // Vertical texture coordinate for pattern generation
+                    final var texY = (int) (64 * (y - (-lineHeight / 2 + height / 2)) / lineHeight);
+                    
+                    // Procedural brick logic: Horizontal mortar every 16 units, vertical every 32 with row offset
+                    final var isMortar = (texY % 16 == 0) || ((int) (wallX * 64 + (texY / 16 % 2 * 16)) % 32 == 0);
+                    
                     final var verticalFactor = (double) (y - drawStart) / (drawEnd - drawStart + 1);
-                    
-                    // Light from top: 100% brightness at top, fading to 40% at bottom
-                    final var shadeFactor = (1.0 - (verticalFactor * 0.6)) * distIntensity;
-                    
-                    var r = (int) (40 * shadeFactor);
-                    var g = (int) (80 * shadeFactor);
-                    var b = (int) (200 * shadeFactor);
+                    final var shadeFactor = (1.0 - (verticalFactor * 0.5)) * distIntensity;
 
-                    // Apply side-shading for wall orientation contrast
-                    if (side == 1) { r /= 1.4; g /= 1.4; b /= 1.4; }
-
-                    g2d.setColor(new Color(Math.clamp(r, 0, 255), Math.clamp(g, 0, 255), Math.clamp(b, 0, 255)));
+                    if (isMortar) {
+                        // Light grey mortar color
+                        final var gray = (int) (160 * shadeFactor);
+                        g2d.setColor(new Color(gray, gray, gray));
+                    } else {
+                        // Brick Red color base
+                        var r = (int) (160 * shadeFactor);
+                        var g = (int) (55 * shadeFactor);
+                        var b = (int) (45 * shadeFactor);
+                        // Darken Y-axis walls for depth contrast
+                        if (side == 1) { r /= 1.3; g /= 1.3; b /= 1.3; }
+                        g2d.setColor(new Color(Math.clamp(r, 0, 255), Math.clamp(g, 0, 255), Math.clamp(b, 0, 255)));
+                    }
                     g2d.drawLine(x, y, x, y);
                 }
             }
 
             oled.drawImage(getImage());
 
-            // --- Movement Logic ---
-            final var moveSpeed = 0.07;
-            final var rotSpeed = 0.05;
+            // --- Autonomous Navigation Logic ---
+            final var moveSpeed = 0.08;
+            final var rotSpeed = 0.06;
 
             if (stateTicks <= 0) {
                 moveState = random.nextInt(4);
@@ -162,15 +178,15 @@ public class Raytrace extends Base {
             }
 
             switch (moveState) {
-                case 0 -> { // Forward with collision detection
+                case 0 -> { // Forward
                     if (worldMap[(int) (posX + dirX * moveSpeed)][(int) posY] == 0) posX += dirX * moveSpeed;
                     if (worldMap[(int) posX][(int) (posY + dirY * moveSpeed)] == 0) posY += dirY * moveSpeed;
                 }
-                case 1 -> { // Backward with collision detection
+                case 1 -> { // Backward
                     if (worldMap[(int) (posX - dirX * moveSpeed)][(int) posY] == 0) posX -= dirX * moveSpeed;
                     if (worldMap[(int) posX][(int) (posY - dirY * moveSpeed)] == 0) posY -= dirY * moveSpeed;
                 }
-                case 2, 3 -> { // Rotate Left or Right
+                case 2, 3 -> { // Rotation
                     final var rot = (moveState == 2) ? 1.0 : -1.0;
                     final var oldDirX = dirX;
                     dirX = dirX * Math.cos(rot * rotSpeed) - dirY * Math.sin(rot * rotSpeed);
@@ -182,6 +198,7 @@ public class Raytrace extends Base {
             }
             stateTicks--;
 
+            // Frame synchronization
             final var diff = System.currentTimeMillis() - startTime;
             if (diff < frameDelay) {
                 try {
@@ -195,10 +212,13 @@ public class Raytrace extends Base {
     }
 
     /**
-     * Executes the Raytrace demo with contextual FPS logic.
+     * Executes the Raytrace demo. 
+     * <p>
+     * Detects CLI-provided FPS; defaults to 30 FPS for this demo if not specified.
+     * </p>
      *
      * @return Exit code.
-     * @throws Exception If hardware init fails.
+     * @throws Exception Hardware exception.
      */
     @Override
     public Integer call() throws Exception {
@@ -213,9 +233,9 @@ public class Raytrace extends Base {
     }
 
     /**
-     * Main entry point.
+     * Main method.
      *
-     * @param args CLI arguments.
+     * @param args Command line arguments.
      */
     public static void main(final String... args) {
         System.exit(new CommandLine(new Raytrace()).execute(args));
