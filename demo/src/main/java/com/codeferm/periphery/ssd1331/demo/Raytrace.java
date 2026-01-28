@@ -14,36 +14,35 @@ import picocli.CommandLine.Model.CommandSpec;
 import picocli.CommandLine.Spec;
 
 /**
- * 3D Raycasting demo for SSD1331 featuring procedurally stable brick textures and autonomous navigation.
+ * 3D Raycasting demo for SSD1331 featuring distance-compensated mortar logic.
  * <p>
- * This engine utilizes a DDA (Digital Differential Analyzer) algorithm to render a pseudo-3D environment.
- * It implements stable mortar line logic using integer-scaled texture coordinates to prevent aliasing
- * artifacts at acute viewing angles. The navigation system uses a state-based random walk with 
- * collision detection against the world map.
+ * This version prevents mortar lines from "breaking" on small displays by scaling the 
+ * procedural hit-detection width based on the wall's distance from the camera. 
+ * It follows Java 25 standards and includes a full autonomous random-walk system.
  * </p>
  *
  * @author Steven P. Goldsmith
- * @version 1.2.0
+ * @version 1.3.0
  * @since 1.0.0
  */
 @Slf4j
-@Command(name = "Raytrace", mixinStandardHelpOptions = true, version = "1.2.0",
-        description = "Stable brick-wall raycaster with autonomous random-walk navigation")
+@Command(name = "Raytrace", mixinStandardHelpOptions = true, version = "1.3.0",
+        description = "Raycaster with distance-compensated mortar for low-res displays")
 public class Raytrace extends Base {
 
     /**
-     * Picocli command specification used to inspect matched CLI options.
+     * Picocli command spec for inspecting parse results.
      */
     @Spec
     private CommandSpec spec;
 
     /**
-     * Random number generator used for selecting movement states and durations.
+     * Random generator for autonomous movement.
      */
     private final Random random = new Random();
 
     /**
-     * World map defining the environment layout. 1 represents a brick wall, 0 is walkable space.
+     * World map: 1 represents a brick wall, 0 represents empty space.
      */
     private final int[][] worldMap = {
         {1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
@@ -59,36 +58,35 @@ public class Raytrace extends Base {
     };
 
     /**
-     * Executes the rendering loop and movement state machine.
+     * Main rendering and navigation loop.
      * <p>
-     * Performs per-pixel raycasting. For each wall hit, it calculates fixed-point 
-     * texture coordinates to ensure the brick-and-mortar pattern remains visually 
-     * consistent as the camera moves.
+     * Applies a distance-based thickness multiplier to mortar detection to ensure 
+     * lines don't vanish due to sub-pixel aliasing on the 96x64 display.
      * </p>
      *
-     * @param oled SSD1331 driver instance used for frame pushing.
+     * @param oled SSD1331 driver instance.
      */
     public void runDemo(final Ssd1331 oled) {
         final var width = getWidth();
         final var height = getHeight();
         final var g2d = getG2d();
 
-        // Player initial position and FOV vectors
+        // Player starting position and FOV
         var posX = 4.5; var posY = 4.5;
         var dirX = -1.0; var dirY = 0.0;
         var planeX = 0.0; var planeY = 0.66;
 
-        // Navigation state: 0=Forward, 1=Back, 2=Left, 3=Right
+        // Navigation state
         var moveState = 0;
         var stateTicks = 0;
 
         final var frameDelay = 1000 / getFps();
-        log.info("Starting Stable Brick Raytrace at {} FPS", getFps());
+        log.info("Starting Compensated Raytrace at {} FPS", getFps());
 
         while (true) {
             final var startTime = System.currentTimeMillis();
 
-            // Render ceiling and floor with ambient dark tones
+            // Render ceiling and floor
             g2d.setColor(new Color(15, 15, 15)); g2d.fillRect(0, 0, width, height / 2);
             g2d.setColor(new Color(30, 30, 30)); g2d.fillRect(0, height / 2, width, height / 2);
 
@@ -105,7 +103,6 @@ public class Raytrace extends Base {
                 var stepX = 0; var stepY = 0;
                 var hit = 0; var side = 0;
 
-                // Determine DDA step direction and initial side distances
                 if (rayDirX < 0) {
                     stepX = -1; sideDistX = (posX - mapX) * deltaDistX;
                 } else {
@@ -117,7 +114,6 @@ public class Raytrace extends Base {
                     stepY = 1; sideDistY = (mapY + 1.0 - posY) * deltaDistY;
                 }
 
-                // Ray-casting loop (DDA)
                 while (hit == 0) {
                     if (sideDistX < sideDistY) {
                         sideDistX += deltaDistX; mapX += stepX; side = 0;
@@ -127,43 +123,42 @@ public class Raytrace extends Base {
                     if (worldMap[mapX][mapY] > 0) hit = 1;
                 }
 
-                // Project distance onto camera plane to avoid fisheye effect
                 final var perpWallDist = (side == 0) ? (sideDistX - deltaDistX) : (sideDistY - deltaDistY);
                 final var lineHeight = (int) (height / perpWallDist);
                 final var drawStart = Math.max(0, -lineHeight / 2 + height / 2);
                 final var drawEnd = Math.min(height - 1, lineHeight / 2 + height / 2);
 
-                // Calculate horizontal texture coordinate (0.0 to 1.0)
                 var wallX = (side == 0) ? posY + perpWallDist * rayDirY : posX + perpWallDist * rayDirX;
                 wallX -= Math.floor(wallX);
-                
-                // Fixed-point horizontal coordinate for stable vertical lines
+
                 final var texX = (int) (wallX * 64.0);
                 final var distIntensity = Math.clamp(1.5 / (1.0 + perpWallDist * 0.8), 0.1, 1.0);
 
+                // THICKNESS COMPENSATION: Increase the mortar "hit zone" as distance increases
+                // to prevent the line from falling between pixels.
+                final var thickComp = (int) Math.max(1, perpWallDist / 2.0);
+
                 for (var y = drawStart; y <= drawEnd; y++) {
-                    // Fixed-point vertical coordinate for stable horizontal lines
                     final var texY = (int) (64.0 * (y - (-lineHeight / 2.0 + height / 2.0)) / lineHeight);
                     
-                    // Procedural brick pattern logic:
-                    // Stretcher bond pattern (offset vertical lines based on row)
                     final var brickRow = texY / 16;
-                    final var isHorizontalMortar = (texY % 16 == 0);
-                    final var isVerticalMortar = ((texX + (brickRow % 2 * 16)) % 32 == 0);
+                    // Check horizontal mortar with thickness compensation
+                    final var isHorizontalMortar = (texY % 16 < thickComp);
+                    // Check vertical mortar with thickness compensation
+                    final var isVerticalMortar = ((texX + (brickRow % 2 * 16)) % 32 < thickComp);
+                    
                     final var isMortar = isHorizontalMortar || isVerticalMortar;
                     
-                    // Apply lighting: Top is 100% light, bottom is 50%, scaled by distance
                     final var verticalFactor = (double) (y - drawStart) / (drawEnd - drawStart + 1);
                     final var shadeFactor = (1.0 - (verticalFactor * 0.5)) * distIntensity;
 
                     if (isMortar) {
-                        final var gray = (int) (150 * shadeFactor);
+                        final var gray = (int) (140 * shadeFactor);
                         g2d.setColor(new Color(gray, gray, gray));
                     } else {
                         var r = (int) (165 * shadeFactor);
                         var g = (int) (55 * shadeFactor);
                         var b = (int) (45 * shadeFactor);
-                        // Darken Y-axis walls for orientation depth
                         if (side == 1) { r /= 1.35; g /= 1.35; b /= 1.35; }
                         g2d.setColor(new Color(Math.clamp(r, 0, 255), Math.clamp(g, 0, 255), Math.clamp(b, 0, 255)));
                     }
@@ -171,10 +166,9 @@ public class Raytrace extends Base {
                 }
             }
 
-            // Flush the back-buffer to the OLED display
             oled.drawImage(getImage());
 
-            // --- Autonomous Navigation State Machine ---
+            // --- Random Walk Navigation ---
             final var moveSpeed = 0.08;
             final var rotSpeed = 0.06;
 
@@ -184,15 +178,15 @@ public class Raytrace extends Base {
             }
 
             switch (moveState) {
-                case 0 -> { // Forward move with collision check
+                case 0 -> { // Forward
                     if (worldMap[(int) (posX + dirX * moveSpeed)][(int) posY] == 0) posX += dirX * moveSpeed;
                     if (worldMap[(int) posX][(int) (posY + dirY * moveSpeed)] == 0) posY += dirY * moveSpeed;
                 }
-                case 1 -> { // Backward move with collision check
+                case 1 -> { // Backward
                     if (worldMap[(int) (posX - dirX * moveSpeed)][(int) posY] == 0) posX -= dirX * moveSpeed;
                     if (worldMap[(int) posX][(int) (posY - dirY * moveSpeed)] == 0) posY -= dirY * moveSpeed;
                 }
-                case 2, 3 -> { // Rotation (Left/Right)
+                case 2, 3 -> { // Rotation
                     final var rot = (moveState == 2) ? 1.0 : -1.0;
                     final var oldDirX = dirX;
                     dirX = dirX * Math.cos(rot * rotSpeed) - dirY * Math.sin(rot * rotSpeed);
@@ -204,33 +198,22 @@ public class Raytrace extends Base {
             }
             stateTicks--;
 
-            // Maintain target framerate
             final var diff = System.currentTimeMillis() - startTime;
             if (diff < frameDelay) {
-                try {
-                    TimeUnit.MILLISECONDS.sleep(frameDelay - diff);
-                } catch (InterruptedException e) {
-                    Thread.currentThread().interrupt();
-                    break;
-                }
+                try { TimeUnit.MILLISECONDS.sleep(frameDelay - diff); } catch (Exception ignored) {}
             }
         }
     }
 
     /**
-     * Initializes hardware and starts the Raytrace demo.
-     * <p>
-     * Implements context-aware FPS: Defaults to 30 FPS for this CPU-intensive task 
-     * unless the user explicitly passes the {@code -f} option.
-     * </p>
+     * Initializes hardware and executes the raytrace demo.
      *
-     * @return Exit code (0 for success).
-     * @throws Exception If SPI or GPIO initialization fails.
+     * @return Exit code.
+     * @throws Exception If hardware setup fails.
      */
     @Override
     public Integer call() throws Exception {
-        final var fpsMatched = spec.commandLine().getParseResult().hasMatchedOption("f");
-        if (!fpsMatched) {
+        if (!spec.commandLine().getParseResult().hasMatchedOption("f")) {
             setFps(30);
         }
         super.call();
@@ -240,7 +223,7 @@ public class Raytrace extends Base {
     }
 
     /**
-     * Entry point for the Raytrace application.
+     * Application entry point.
      *
      * @param args Command line arguments.
      */
