@@ -14,22 +14,21 @@ import picocli.CommandLine.Model.CommandSpec;
 import picocli.CommandLine.Spec;
 
 /**
- * AI-controlled Ballistic Combat simulation for SSD1331.
+ * AI-driven Artillery Combat simulation for SSD1331.
  * <p>
- * This class implements a closed-loop control system where a turret AI adjusts 
- * its firing velocity based on the landing position of previous shells relative 
- * to a moving tank. Physics are calculated using standard projectile motion:
+ * This class simulates a turret defending against an advancing tank. 
+ * The turret features a dynamic barrel that adjusts its elevation ($\theta$) 
+ * and muzzle velocity ($v$) based on a feedback loop. To simulate human-like 
+ * error, the AI includes a randomized variance in its adjustments.
  * </p>
- * $$x(t) = v_0 \cos(\theta) t$$
- * $$y(t) = v_0 \sin(\theta) t - \frac{1}{2} g t^2$$
  *
  * @author Steven P. Goldsmith
- * @version 1.3.0
+ * @version 1.4.0
  * @since 1.0.0
  */
 @Slf4j
-@Command(name = "Artillery", mixinStandardHelpOptions = true, version = "1.3.0",
-        description = "Turret AI vs Moving Tank with ballistic feedback loop")
+@Command(name = "Artillery", mixinStandardHelpOptions = true, version = "1.4.0",
+        description = "AI Artillery with dynamic barrel, scoring, and life system")
 public class Artillery extends Base {
 
     /**
@@ -39,24 +38,21 @@ public class Artillery extends Base {
     private CommandSpec spec;
 
     /**
-     * Random number generator for tank respawn logic.
+     * Random number generator for AI error and target respawn positions.
      */
     private final Random random = new Random();
 
     /**
-     * Fixed gravitational constant ($m/s^2$).
+     * Gravitational constant in $m/s^2$.
      */
     private static final double GRAVITY = 9.81;
-
+    
     /**
-     * Heavy Turret Sprite (9x8).
-     * 1: Dark Steel, 2: Light Chrome, 3: Black.
+     * Turret Base Sprite (9x5).
+     * 1: Dark Steel, 2: Highlight, 3: Black.
      */
-    private final int[][] TURRET_SPRITE = {
-        {0, 0, 0, 3, 3, 3, 0, 0, 0},
-        {0, 0, 3, 2, 2, 2, 3, 0, 0},
-        {0, 3, 2, 2, 2, 2, 2, 3, 0},
-        {3, 2, 2, 2, 2, 2, 2, 2, 3},
+    private final int[][] TURRET_BASE = {
+        {0, 3, 3, 3, 3, 3, 3, 3, 0},
         {3, 1, 1, 1, 1, 1, 1, 1, 3},
         {3, 1, 1, 1, 1, 1, 1, 1, 3},
         {3, 3, 3, 3, 3, 3, 3, 3, 3},
@@ -64,8 +60,8 @@ public class Artillery extends Base {
     };
 
     /**
-     * Combat Tank Sprite (12x6).
-     * 1: Olive Drab, 2: Forest Camo, 3: Black.
+     * Tank Target Sprite (12x6).
+     * 1: Olive, 2: Forest Camo, 3: Black.
      */
     private final int[][] TANK_SPRITE = {
         {0, 0, 3, 3, 3, 3, 0, 0, 0, 0, 0, 0},
@@ -77,12 +73,12 @@ public class Artillery extends Base {
     };
 
     /**
-     * Renders a multi-color bitmapped sprite to the back buffer.
+     * Renders a bitmapped sprite to the graphics buffer.
      *
-     * @param sprite  2D integer array defining the bitmap.
-     * @param x       Screen X offset.
-     * @param y       Screen Y offset.
-     * @param palette Array of Colors mapped to sprite indices (1-indexed).
+     * @param sprite  2D pixel array defining the bitmap.
+     * @param x       Top-left X coordinate.
+     * @param y       Top-left Y coordinate.
+     * @param palette Array of Colors mapped to sprite indices.
      */
     private void drawSprite(final int[][] sprite, final int x, final int y, final Color[] palette) {
         final var g2d = getG2d();
@@ -98,81 +94,102 @@ public class Artillery extends Base {
     }
 
     /**
-     * Executes the Artillery AI simulation.
+     * Executes the main simulation loop.
      * <p>
-     * Manages the state machine for shell flight, AI velocity adjustment, 
-     * and tank movement. Uses a fixed 45-degree angle for optimal range efficiency.
+     * Handles the iterative AI ranging, 3D-to-2D projectile projection, 
+     * and on-screen HUD rendering.
      * </p>
      *
-     * @param oled SSD1331 driver instance.
+     * @param oled SSD1331 hardware driver.
      */
     public void runDemo(final Ssd1331 oled) {
         final var width = getWidth();
         final var g2d = getG2d();
 
-        final var turretPal = new Color[]{new Color(45, 45, 50), new Color(140, 145, 155), Color.BLACK};
-        final var tankPal = new Color[]{new Color(75, 85, 45), new Color(40, 50, 25), Color.BLACK};
+        final var turretPal = new Color[]{new Color(55, 55, 65), new Color(140, 140, 150), Color.BLACK};
+        final var tankPal = new Color[]{new Color(85, 95, 55), new Color(45, 55, 35), Color.BLACK};
 
-        // Tank initial state
+        var score = 0;
+        var lives = 3;
         var tankX = 82.0;
         final var tankY = 52;
-        final var tankSpeed = 0.12;
-
-        // Ballistic state
-        var velocity = 32.0; // Initial guess for AI
-        final var angle = Math.toRadians(45);
+        
+        var velocity = 30.0;
+        var angle = Math.toRadians(35); 
         var shellX = 0.0; var shellY = 0.0;
         var time = 0.0;
         var shellActive = true;
 
         final var frameDelay = 1000 / getFps();
-        log.info("Artillery AI initialized. Target engaged.");
 
-        while (true) {
+        while (lives > 0) {
             final var startTime = System.currentTimeMillis();
 
             // Render Environment
-            g2d.setColor(new Color(15, 20, 35)); g2d.fillRect(0, 0, width, 58); // Night
-            g2d.setColor(new Color(25, 20, 15)); g2d.fillRect(0, 58, width, 6);  // Ground
+            g2d.setColor(new Color(12, 18, 28)); g2d.fillRect(0, 0, width, 58);
+            g2d.setColor(new Color(22, 28, 22)); g2d.fillRect(0, 58, width, 6);
 
-            drawSprite(TURRET_SPRITE, 2, 50, turretPal);
+            // Render HUD
+            g2d.setColor(Color.WHITE);
+            g2d.drawString(String.format("SCORE:%03d L:%d", score, lives), 2, 10);
+
+            // Render Turret Base
+            drawSprite(TURRET_BASE, 2, 53, turretPal);
+
+            // Render Dynamic Barrel
+            final var barrelLen = 9;
+            final var pivotX = 6;
+            final var pivotY = 54;
+            final var endX = pivotX + (int)(Math.cos(angle) * barrelLen);
+            final var endY = pivotY - (int)(Math.sin(angle) * barrelLen);
+            g2d.setColor(new Color(110, 110, 120));
+            g2d.drawLine(pivotX, pivotY, endX, endY);
+            g2d.drawLine(pivotX, pivotY - 1, endX, endY - 1); 
+
+            // Render Tank
             drawSprite(TANK_SPRITE, (int) tankX, tankY, tankPal);
 
             if (shellActive) {
-                // Projectile Physics
-                shellX = (velocity * Math.cos(angle) * time) + 9;
-                shellY = 50 - (velocity * Math.sin(angle) * time - 0.5 * GRAVITY * time * time);
+                // Ballistic Equation
+                shellX = (velocity * Math.cos(angle) * time) + endX;
+                shellY = endY - (velocity * Math.sin(angle) * time - 0.5 * GRAVITY * time * time);
 
-                // Draw Shell with tracer
-                g2d.setColor(Color.WHITE);
+                g2d.setColor(Color.YELLOW);
                 g2d.fillRect((int) shellX, (int) shellY, 2, 2);
 
-                // Hit Detection
+                // Check for Hit
                 if (shellX >= tankX && shellX <= tankX + 12 && shellY >= tankY && shellY <= tankY + 6) {
                     performExplosion((int) tankX + 6, tankY + 3, oled);
-                    tankX = 75 + random.nextInt(15); // Respawn tank
+                    score += 10;
+                    tankX = 75 + random.nextInt(15);
                     shellActive = false; time = 0;
                 } 
-                // Miss Detection (Ground collision)
+                // Check for Miss (Ground or Out of Bounds)
                 else if (shellY > 58 || shellX > width) {
-                    // AI FEEDBACK LOOP: Adjust velocity for next shot
+                    // AI Adjustment with nerf (randomized error)
+                    final var error = (random.nextDouble() - 0.5) * 1.8;
                     if (shellX < tankX) {
-                        velocity += 1.2; // Increase power if short
+                        velocity += 1.4 + error;
+                        angle += Math.toRadians(2.5 + error);
                     } else {
-                        velocity -= 1.2; // Decrease power if long
+                        velocity -= 1.4 + error;
+                        angle -= Math.toRadians(2.5 + error);
                     }
+                    // Constrain barrel elevation
+                    angle = Math.clamp(angle, Math.toRadians(15), Math.toRadians(75));
                     shellActive = false; time = 0;
                 }
-                time += 0.18;
+                time += 0.20;
             } else {
-                shellActive = true; // Reloading
+                shellActive = true; 
             }
 
-            // Move Tank toward base
-            tankX -= tankSpeed;
+            // Tank Movement logic
+            tankX -= 0.18;
             if (tankX < 11) {
-                handleBaseLost(oled);
-                tankX = 82; velocity = 32; // Reset simulation
+                lives--;
+                triggerDamageEffect(oled);
+                tankX = 82;
             }
 
             oled.drawImage(getImage());
@@ -182,19 +199,20 @@ public class Artillery extends Base {
                 try { TimeUnit.MILLISECONDS.sleep(frameDelay - diff); } catch (Exception ignored) {}
             }
         }
+        log.info("Game Over. Score: {}", score);
     }
 
     /**
-     * Triggers a procedural explosion effect on the display.
+     * Renders a procedural expanding explosion at the specified coordinates.
      *
-     * @param x    Center X coordinate.
-     * @param y    Center Y coordinate.
-     * @param oled Hardware driver for real-time frame pushing.
+     * @param x    Center X position.
+     * @param y    Center Y position.
+     * @param oled Hardware driver for real-time frame buffer updates.
      */
     private void performExplosion(final int x, final int y, final Ssd1331 oled) {
         final var g2d = getG2d();
-        for (var i = 2; i < 18; i += 2) {
-            g2d.setColor(i % 4 == 0 ? Color.YELLOW : Color.RED);
+        for (var i = 2; i < 20; i += 2) {
+            g2d.setColor(i % 4 == 0 ? Color.WHITE : Color.ORANGE);
             g2d.drawOval(x - i / 2, y - i / 2, i, i);
             oled.drawImage(getImage());
             try { TimeUnit.MILLISECONDS.sleep(12); } catch (Exception ignored) {}
@@ -202,23 +220,23 @@ public class Artillery extends Base {
     }
 
     /**
-     * Visual sequence for when the tank reaches the turret.
+     * Triggers a full-screen red flash when the base is breached.
      *
      * @param oled Hardware driver.
      */
-    private void handleBaseLost(final Ssd1331 oled) {
+    private void triggerDamageEffect(final Ssd1331 oled) {
         final var g2d = getG2d();
-        g2d.setColor(new Color(150, 0, 0));
+        g2d.setColor(new Color(180, 0, 0));
         g2d.fillRect(0, 0, getWidth(), getHeight());
         oled.drawImage(getImage());
-        try { TimeUnit.SECONDS.sleep(1); } catch (Exception ignored) {}
+        try { TimeUnit.MILLISECONDS.sleep(400); } catch (Exception ignored) {}
     }
 
     /**
-     * Initializes hardware and starts the Artillery demo.
+     * Initializes the demo and starts the simulation.
      *
      * @return Exit code.
-     * @throws Exception Hardware initialization error.
+     * @throws Exception If hardware communication fails.
      */
     @Override
     public Integer call() throws Exception {
@@ -232,7 +250,7 @@ public class Artillery extends Base {
     }
 
     /**
-     * Main entry point.
+     * Application entry point.
      *
      * @param args CLI arguments.
      */
