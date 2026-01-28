@@ -5,6 +5,7 @@ package com.codeferm.periphery.ssd1331.demo;
 
 import com.codeferm.periphery.device.Ssd1331;
 import java.awt.Color;
+import java.util.Random;
 import java.util.concurrent.TimeUnit;
 import lombok.extern.slf4j.Slf4j;
 import picocli.CommandLine;
@@ -13,10 +14,11 @@ import picocli.CommandLine.Model.CommandSpec;
 import picocli.CommandLine.Spec;
 
 /**
- * 3D Raycasting demo for SSD1331 featuring distance-based color scaling and shading.
+ * 3D Raycasting demo for SSD1331 featuring vertical wall gradients and autonomous navigation.
  * <p>
- * This "Doom-style" engine renders a pseudo-3D environment using the Digital Differential Analyzer (DDA) algorithm.
- * It utilizes the SSD1331's 65k color depth to provide smooth gradients for depth shading and lighting contrast.
+ * This engine uses the DDA algorithm to render a pseudo-3D world. Walls feature a vertical gradient
+ * (lighter at the top) combined with distance-based shading. The "player" performs a random walk
+ * with collision detection against the world map.
  * </p>
  *
  * @author Steven P. Goldsmith
@@ -25,7 +27,7 @@ import picocli.CommandLine.Spec;
  */
 @Slf4j
 @Command(name = "Raytrace", mixinStandardHelpOptions = true, version = "1.0.0-SNAPSHOT",
-        description = "Doom-style raycaster with color depth shading for SSD1331")
+        description = "Raycaster with vertical gradients and random-walk navigation")
 public class Raytrace extends Base {
 
     /**
@@ -35,39 +37,47 @@ public class Raytrace extends Base {
     private CommandSpec spec;
 
     /**
-     * World map: 1-4 represent different wall colors, 0 represents empty space.
+     * Random generator for autonomous movement logic.
+     */
+    private final Random random = new Random();
+
+    /**
+     * World map grid: 1 represents a wall, 0 represents empty space.
      */
     private final int[][] worldMap = {
         {1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
         {1, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-        {1, 0, 2, 2, 0, 3, 3, 0, 0, 1},
-        {1, 0, 2, 0, 0, 0, 3, 0, 0, 1},
+        {1, 0, 1, 1, 0, 0, 0, 0, 0, 1},
+        {1, 0, 1, 0, 0, 1, 1, 0, 0, 1},
+        {1, 0, 0, 0, 0, 1, 1, 0, 0, 1},
         {1, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-        {1, 0, 0, 4, 0, 0, 4, 0, 0, 1},
-        {1, 0, 0, 4, 4, 4, 4, 0, 0, 1},
-        {1, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+        {1, 0, 1, 1, 1, 1, 0, 0, 0, 1},
+        {1, 0, 0, 0, 0, 0, 0, 1, 0, 1},
         {1, 0, 0, 0, 0, 0, 0, 0, 0, 1},
         {1, 1, 1, 1, 1, 1, 1, 1, 1, 1}
     };
 
     /**
-     * Renders a single frame of the 3D world.
+     * Main rendering and navigation loop.
      * <p>
-     * Uses DDA to calculate wall distances and applies a shading model based on distance
-     * and wall orientation (side shading).
+     * Implements per-pixel vertical shading to simulate overhead ambient light.
      * </p>
      *
      * @param oled SSD1331 driver instance.
      */
-    public void render(final Ssd1331 oled) {
+    public void runDemo(final Ssd1331 oled) {
         final var width = getWidth();
         final var height = getHeight();
         final var g2d = getG2d();
 
         // Player starting position and direction
-        var posX = 4.0; var posY = 4.0;
+        var posX = 4.5; var posY = 4.5;
         var dirX = -1.0; var dirY = 0.0;
-        var planeX = 0.0; var planeY = 0.66; // Camera plane (FOV)
+        var planeX = 0.0; var planeY = 0.66;
+
+        // Navigation state: 0:Forward, 1:Back, 2:Left, 3:Right
+        var moveState = 0;
+        var stateTicks = 0;
 
         final var frameDelay = 1000 / getFps();
         log.info("Starting Raytrace Walkthrough at {} FPS", getFps());
@@ -75,20 +85,16 @@ public class Raytrace extends Base {
         while (true) {
             final var startTime = System.currentTimeMillis();
 
-            // Clear frame with basic ceiling and floor colors
-            g2d.setColor(new Color(25, 25, 25)); // Ceiling
-            g2d.fillRect(0, 0, width, height / 2);
-            g2d.setColor(new Color(45, 45, 45)); // Floor
-            g2d.fillRect(0, height / 2, width, height / 2);
+            // Render ceiling and floor with flat colors
+            g2d.setColor(new Color(15, 15, 15)); g2d.fillRect(0, 0, width, height / 2);
+            g2d.setColor(new Color(30, 30, 30)); g2d.fillRect(0, height / 2, width, height / 2);
 
             for (var x = 0; x < width; x++) {
                 final var cameraX = 2.0 * x / (double) width - 1.0;
                 final var rayDirX = dirX + planeX * cameraX;
                 final var rayDirY = dirY + planeY * cameraX;
 
-                var mapX = (int) posX;
-                var mapY = (int) posY;
-
+                var mapX = (int) posX; var mapY = (int) posY;
                 final var deltaDistX = Math.abs(1 / rayDirX);
                 final var deltaDistY = Math.abs(1 / rayDirY);
 
@@ -96,7 +102,6 @@ public class Raytrace extends Base {
                 var stepX = 0; var stepY = 0;
                 var hit = 0; var side = 0;
 
-                // Step and initial side distances
                 if (rayDirX < 0) {
                     stepX = -1; sideDistX = (posX - mapX) * deltaDistX;
                 } else {
@@ -108,7 +113,6 @@ public class Raytrace extends Base {
                     stepY = 1; sideDistY = (mapY + 1.0 - posY) * deltaDistY;
                 }
 
-                // DDA search
                 while (hit == 0) {
                     if (sideDistX < sideDistY) {
                         sideDistX += deltaDistX; mapX += stepX; side = 0;
@@ -118,50 +122,66 @@ public class Raytrace extends Base {
                     if (worldMap[mapX][mapY] > 0) hit = 1;
                 }
 
-                // Calculate wall distance and projection height
                 final var perpWallDist = (side == 0) ? (sideDistX - deltaDistX) : (sideDistY - deltaDistY);
                 final var lineHeight = (int) (height / perpWallDist);
+                final var drawStart = Math.max(0, -lineHeight / 2 + height / 2);
+                final var drawEnd = Math.min(height - 1, lineHeight / 2 + height / 2);
 
-                var drawStart = Math.max(0, -lineHeight / 2 + height / 2);
-                var drawEnd = Math.min(height - 1, lineHeight / 2 + height / 2);
+                // Depth shading intensity
+                final var distIntensity = Math.clamp(1.5 / (1.0 + perpWallDist * 0.8), 0.1, 1.0);
 
-                // Determine base color from map
-                final var mapValue = worldMap[mapX][mapY];
-                var color = switch (mapValue) {
-                    case 1 -> new Color(220, 0, 0);   // Red
-                    case 2 -> new Color(0, 220, 0);   // Green
-                    case 3 -> new Color(0, 0, 220);   // Blue
-                    default -> new Color(220, 220, 0); // Yellow
-                };
+                // Draw vertical gradient for the column
+                for (var y = drawStart; y <= drawEnd; y++) {
+                    // Normalize vertical position: 0.0 (top) to 1.0 (bottom)
+                    final var verticalFactor = (double) (y - drawStart) / (drawEnd - drawStart + 1);
+                    
+                    // Light from top: 100% brightness at top, fading to 40% at bottom
+                    final var shadeFactor = (1.0 - (verticalFactor * 0.6)) * distIntensity;
+                    
+                    var r = (int) (40 * shadeFactor);
+                    var g = (int) (80 * shadeFactor);
+                    var b = (int) (200 * shadeFactor);
 
-                // --- Depth Shading / Scaling ---
-                // Diminish intensity based on distance
-                final var intensity = Math.clamp(1.2 / (1.0 + perpWallDist * 0.7), 0.1, 1.0);
-                
-                var r = (int) (color.getRed() * intensity);
-                var g = (int) (color.getGreen() * intensity);
-                var b = (int) (color.getBlue() * intensity);
+                    // Apply side-shading for wall orientation contrast
+                    if (side == 1) { r /= 1.4; g /= 1.4; b /= 1.4; }
 
-                // Darken Y-aligned walls for 3D shadowing/contrast
-                if (side == 1) { r /= 1.5; g /= 1.5; b /= 1.5; }
-
-                g2d.setColor(new Color(r, g, b));
-                g2d.drawLine(x, drawStart, x, drawEnd);
+                    g2d.setColor(new Color(Math.clamp(r, 0, 255), Math.clamp(g, 0, 255), Math.clamp(b, 0, 255)));
+                    g2d.drawLine(x, y, x, y);
+                }
             }
 
-            // Render to OLED
             oled.drawImage(getImage());
 
-            // Rotation for walkthrough effect
-            final var rotSpeed = 0.045;
-            final var oldDirX = dirX;
-            dirX = dirX * Math.cos(rotSpeed) - dirY * Math.sin(rotSpeed);
-            dirY = oldDirX * Math.sin(rotSpeed) + dirY * Math.cos(rotSpeed);
-            final var oldPlaneX = planeX;
-            planeX = planeX * Math.cos(rotSpeed) - planeY * Math.sin(rotSpeed);
-            planeY = oldPlaneX * Math.sin(rotSpeed) + planeY * Math.cos(rotSpeed);
+            // --- Movement Logic ---
+            final var moveSpeed = 0.07;
+            final var rotSpeed = 0.05;
 
-            // Frame synchronization
+            if (stateTicks <= 0) {
+                moveState = random.nextInt(4);
+                stateTicks = 10 + random.nextInt(35);
+            }
+
+            switch (moveState) {
+                case 0 -> { // Forward with collision detection
+                    if (worldMap[(int) (posX + dirX * moveSpeed)][(int) posY] == 0) posX += dirX * moveSpeed;
+                    if (worldMap[(int) posX][(int) (posY + dirY * moveSpeed)] == 0) posY += dirY * moveSpeed;
+                }
+                case 1 -> { // Backward with collision detection
+                    if (worldMap[(int) (posX - dirX * moveSpeed)][(int) posY] == 0) posX -= dirX * moveSpeed;
+                    if (worldMap[(int) posX][(int) (posY - dirY * moveSpeed)] == 0) posY -= dirY * moveSpeed;
+                }
+                case 2, 3 -> { // Rotate Left or Right
+                    final var rot = (moveState == 2) ? 1.0 : -1.0;
+                    final var oldDirX = dirX;
+                    dirX = dirX * Math.cos(rot * rotSpeed) - dirY * Math.sin(rot * rotSpeed);
+                    dirY = oldDirX * Math.sin(rot * rotSpeed) + dirY * Math.cos(rot * rotSpeed);
+                    final var oldPlaneX = planeX;
+                    planeX = planeX * Math.cos(rot * rotSpeed) - planeY * Math.sin(rot * rotSpeed);
+                    planeY = oldPlaneX * Math.sin(rot * rotSpeed) + planeY * Math.cos(rot * rotSpeed);
+                }
+            }
+            stateTicks--;
+
             final var diff = System.currentTimeMillis() - startTime;
             if (diff < frameDelay) {
                 try {
@@ -175,31 +195,28 @@ public class Raytrace extends Base {
     }
 
     /**
-     * Executes the raytrace demo.
-     * <p>
-     * Overrides the default FPS to 30 if not specified via CLI, maintaining standard behavior
-     * for other demos via {@link Base}.
-     * </p>
+     * Executes the Raytrace demo with contextual FPS logic.
      *
      * @return Exit code.
-     * @throws Exception Hardware exception.
+     * @throws Exception If hardware init fails.
      */
     @Override
     public Integer call() throws Exception {
-        // Detect if user specifically requested an FPS value
         final var fpsMatched = spec.commandLine().getParseResult().hasMatchedOption("f");
-        
-        // Default to 30 FPS for Raytrace if no argument provided
         if (!fpsMatched) {
             setFps(30);
         }
-
         super.call();
-        render(getOled());
+        runDemo(getOled());
         done();
         return 0;
     }
 
+    /**
+     * Main entry point.
+     *
+     * @param args CLI arguments.
+     */
     public static void main(final String... args) {
         System.exit(new CommandLine(new Raytrace()).execute(args));
     }
