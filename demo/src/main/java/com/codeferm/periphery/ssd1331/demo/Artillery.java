@@ -14,71 +14,69 @@ import picocli.CommandLine.Model.CommandSpec;
 import picocli.CommandLine.Spec;
 
 /**
- * Combat simulation featuring an AI-controlled turret defending against a realistic tank.
+ * Artillery Duel featuring a fast-advancing tank and bracketing AI.
  * <p>
- * This class simulates ballistic trajectories with a mechanical barrel that articulates 
- * based on the firing solution. The AI incorporates "human" error and random reload 
- * times to prevent perfect accuracy. The HUD is minimalist, mirroring retro arcade 
- * aesthetics.
+ * This version increases the tank's movement speed, requiring the turret to adjust its trajectory more rapidly. Both units
+ * physically pivot their barrels to find the ballistic solution while maintaining a 50/50 win ratio through balanced jitter.
  * </p>
  *
  * @author Steven P. Goldsmith
- * @version 1.6.0
+ * @version 1.0.0
  * @since 1.0.0
  */
 @Slf4j
-@Command(name = "Artillery", mixinStandardHelpOptions = true, version = "1.6.0",
-        description = "AI Artillery vs Realistic Tank with randomized firing loops")
+@Command(name = "Artillery", mixinStandardHelpOptions = true, version = "1.0.0",
+        description = "Artillery Duel with fast-moving tank and balanced AI")
 public class Artillery extends Base {
 
     /**
-     * Picocli command specification for CLI parsing.
+     * Picocli command specification for CLI option handling.
      */
     @Spec
     private CommandSpec spec;
 
     /**
-     * Random generator for AI jitter, reload timing, and tank spawning.
+     * Random generator for AI jitter and reload timing.
      */
     private final Random random = new Random();
 
     /**
-     * Earth's gravity constant in $m/s^2$.
+     * Gravitational constant ($9.81 m/s^2$) for ballistic math.
      */
-    private static final double GRAVITY = 9.81;
+    private static final double G = 9.81;
 
     /**
-     * Minimalist Turret Base (5x4).
-     * 1: Steel Grey, 2: Deep Shadow.
+     * Turret Sprite (10x6) bitmap.
      */
     private final int[][] TURRET_SPRITE = {
-        {0, 1, 1, 1, 0},
-        {1, 1, 1, 1, 1},
-        {1, 2, 2, 2, 1},
-        {1, 1, 1, 1, 1}
+        {0, 0, 3, 3, 3, 3, 3, 0, 0, 0},
+        {0, 3, 1, 1, 1, 1, 1, 3, 0, 0},
+        {3, 1, 1, 1, 2, 1, 1, 1, 3, 0},
+        {3, 1, 1, 1, 1, 1, 1, 1, 3, 0},
+        {3, 3, 3, 3, 3, 3, 3, 3, 3, 0},
+        {0, 3, 3, 3, 3, 3, 3, 3, 0, 0}
     };
 
     /**
-     * Realistic Combat Tank Sprite (13x7).
-     * 1: Olive Drab, 2: Dark Camo, 3: Black, 4: Highlight.
+     * Tank Sprite (14x7) bitmap.
      */
     private final int[][] TANK_SPRITE = {
-        {0, 0, 0, 0, 3, 3, 3, 0, 0, 0, 0, 0, 0},
-        {3, 3, 3, 3, 1, 4, 1, 3, 3, 0, 0, 0, 0},
-        {0, 3, 1, 1, 1, 1, 1, 1, 1, 3, 3, 3, 3},
-        {3, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 3},
-        {3, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 3},
-        {3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3},
-        {0, 3, 0, 3, 0, 3, 0, 3, 0, 3, 0, 3, 0}
+        {0, 0, 0, 0, 3, 3, 3, 3, 0, 0, 0, 0, 0, 0},
+        {0, 0, 3, 3, 1, 1, 4, 1, 3, 3, 0, 0, 0, 0},
+        {3, 3, 1, 1, 1, 1, 1, 1, 1, 1, 3, 3, 3, 3},
+        {3, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 3},
+        {3, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 3},
+        {3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3},
+        {0, 3, 0, 3, 0, 3, 0, 3, 0, 3, 0, 3, 0, 0}
     };
 
     /**
-     * Draws a pixel-mapped sprite to the G2D buffer.
+     * Renders bitmapped sprites using a color palette.
      *
-     * @param sprite  2D array representing pixel indices.
-     * @param x       Horizontal screen offset.
-     * @param y       Vertical screen offset.
-     * @param palette Color array mapped to indices.
+     * @param sprite 2D array of pixel color indices.
+     * @param x The horizontal pixel offset on screen.
+     * @param y The vertical pixel offset on screen.
+     * @param palette Array of Color objects for the sprite.
      */
     private void drawSprite(final int[][] sprite, final int x, final int y, final Color[] palette) {
         final var g2d = getG2d();
@@ -94,151 +92,209 @@ public class Artillery extends Base {
     }
 
     /**
-     * Main simulation loop for the Artillery combat.
+     * Primary loop handling physics, AI logic, and hardware rendering.
      *
-     * @param oled SSD1331 hardware device instance.
+     * @param oled The SSD1331 driver instance.
      */
     public void runDemo(final Ssd1331 oled) {
         final var width = getWidth();
         final var g2d = getG2d();
-
-        final var turretPal = new Color[]{new Color(100, 100, 110), Color.BLACK};
-        final var tankPal = new Color[]{new Color(65, 80, 35), new Color(30, 40, 20), Color.BLACK, new Color(110, 130, 70)};
+        final var tPal = new Color[]{new Color(70, 70, 75), new Color(160, 160, 170), Color.BLACK};
+        final var ePal = new Color[]{new Color(85, 107, 47), new Color(40, 50, 20), Color.BLACK, new Color(130, 150, 90)};
 
         var score = 0;
         var lives = 3;
-        var tankX = 80.0;
-        final var tankY = 53;
-        
-        var velocity = 29.0;
-        var angle = Math.toRadians(35); 
-        var shellX = 0.0; var shellY = 0.0;
-        var time = 0.0;
-        
-        var shellActive = false;
-        var reloadTicks = 20;
+        var tankX = 82.0;
+        final double jitter = 14.0;
+
+        // Turret: Adjusted for higher fire rate
+        var tVel = 22.0;
+        var tAng = Math.toRadians(25);
+        var tShellX = 0.0;
+        var tShellY = 0.0;
+        var tTime = 0.0;
+        var tActive = false;
+        var tWait = 25;
+        var tFlash = 0;
+
+        // Tank: Fast attack parameters
+        var eVel = 22.0;
+        var eAng = Math.toRadians(155);
+        var eShellX = 0.0;
+        var eShellY = 0.0;
+        var eTime = 0.0;
+        var eActive = false;
+        var eWait = 50;
+        var eFlash = 0;
 
         final var frameDelay = 1000 / getFps();
 
         while (lives > 0) {
-            final var startTime = System.currentTimeMillis();
+            final var start = System.currentTimeMillis();
+            g2d.setColor(Color.BLACK);
+            g2d.fillRect(0, 0, width, 64);
+            g2d.setColor(new Color(25, 25, 25));
+            g2d.fillRect(0, 60, width, 4);
 
-            // Clear buffer: Deep space black with a thin ground line
-            g2d.setColor(Color.BLACK); g2d.fillRect(0, 0, width, 64);
-            g2d.setColor(new Color(30, 30, 30)); g2d.fillRect(0, 60, width, 4);
-
-            // Small HUD
+            // HUD
             g2d.setColor(Color.WHITE);
-            g2d.drawString(score + " | " + lives, 2, 8);
+            g2d.drawString(String.valueOf(score), 4, 11);
+            g2d.setColor(Color.GREEN);
+            for (var i = 0; i < lives; i++) {
+                g2d.fillRect(width - 12 - (i * 6), 5, 3, 3);
+            }
 
-            // Calculate barrel articulation
-            final var pivotX = 4;
-            final var pivotY = 56;
-            final var barrelLength = 7;
-            final var endX = pivotX + (int)(Math.cos(angle) * barrelLength);
-            final var endY = pivotY - (int)(Math.sin(angle) * barrelLength);
-            
-            // Draw articulating barrel
-            g2d.setColor(Color.WHITE);
-            g2d.drawLine(pivotX, pivotY, endX, endY);
+            // 1. Pivot Turret Cannon (8px)
+            final int tpX = 7, tpY = 54;
+            int teX = tpX + (int) (Math.cos(tAng) * 8), teY = tpY - (int) (Math.sin(tAng) * 8);
+            g2d.setColor(Color.LIGHT_GRAY);
+            g2d.drawLine(tpX, tpY, teX, teY);
+            if (tFlash > 0) {
+                g2d.setColor(Color.YELLOW);
+                g2d.drawOval(teX - 2, teY - 2, 4, 4);
+                tFlash--;
+            }
 
-            // Draw Turret and Tank
-            drawSprite(TURRET_SPRITE, 2, 56, turretPal);
-            drawSprite(TANK_SPRITE, (int) tankX, tankY, tankPal);
-
-            if (shellActive) {
-                // Ballistic Calculation
-                shellX = (velocity * Math.cos(angle) * time) + endX;
-                shellY = endY - (velocity * Math.sin(angle) * time - 0.5 * GRAVITY * time * time);
-
+            // 2. Pivot Tank Cannon (6px)
+            final int epX = (int) tankX + 5, epY = 54;
+            int eeX = epX + (int) (Math.cos(eAng) * 6), eeY = epY - (int) (Math.sin(eAng) * 6);
+            g2d.setColor(new Color(130, 150, 90));
+            g2d.drawLine(epX, epY, eeX, eeY);
+            if (eFlash > 0) {
                 g2d.setColor(Color.ORANGE);
-                g2d.fillRect((int) shellX, (int) shellY, 1, 1);
+                g2d.drawOval(eeX - 2, eeY - 2, 4, 4);
+                eFlash--;
+            }
 
-                // Hit logic
-                if (shellX >= tankX && shellX <= tankX + 13 && shellY >= tankY && shellY <= tankY + 7) {
-                    triggerExplosion((int) tankX + 6, tankY + 3, oled);
-                    score++;
-                    tankX = 75 + random.nextInt(15);
-                    shellActive = false;
-                    reloadTicks = 10 + random.nextInt(40); // Random reload delay
-                } 
-                // Miss logic (Ground hit or off-screen)
-                else if (shellY > 60 || shellX > width) {
-                    final var jitter = (random.nextDouble() - 0.5) * 3.5; 
-                    if (shellX < tankX) {
-                        velocity += 1.2 + jitter;
-                        angle += Math.toRadians(2.0 + jitter);
+            drawSprite(TURRET_SPRITE, 2, 54, tPal);
+            drawSprite(TANK_SPRITE, (int) tankX, 53, ePal);
+
+            // 3. Turret AI Logic (Faster reload to counter fast tank)
+            if (tActive) {
+                tShellX = (tVel * Math.cos(tAng) * tTime) + teX;
+                tShellY = teY - (tVel * Math.sin(tAng) * tTime - 0.5 * G * tTime * tTime);
+                g2d.setColor(Color.WHITE);
+                g2d.fillRect((int) tShellX, (int) tShellY, 1, 1);
+
+                if (tShellX >= tankX && tShellX <= tankX + 14 && tShellY >= 53 && tShellY <= 61) {
+                    performExplosion((int) tankX + 7, 56, oled);
+                    score += 100;
+                    tankX = 82;
+                    tActive = false;
+                    tWait = 40;
+                } else if (tShellY > 60 || tShellX > width || tShellX < 0) {
+                    double j = (random.nextDouble() - 0.5) * jitter;
+                    if (tShellX < tankX) {
+                        tAng += Math.toRadians(4 + j);
+                        tVel += 1.4;
                     } else {
-                        velocity -= 1.2 + jitter;
-                        angle -= Math.toRadians(2.0 + jitter);
+                        tAng -= Math.toRadians(4 + j);
+                        tVel -= 1.4;
                     }
-                    angle = Math.clamp(angle, Math.toRadians(15), Math.toRadians(80));
-                    shellActive = false;
-                    reloadTicks = 5 + random.nextInt(25);
+                    tAng = Math.clamp(tAng, Math.toRadians(5), Math.toRadians(80));
+                    tActive = false;
+                    tWait = 20 + random.nextInt(25);
                 }
-                time += 0.22;
-            } else {
-                if (reloadTicks > 0) {
-                    reloadTicks--;
-                } else {
-                    shellActive = true;
-                    time = 0;
-                }
+                tTime += 0.32;
+            } else if (tWait-- <= 0) {
+                tActive = true;
+                tTime = 0;
+                tFlash = 3;
             }
 
-            // Tank progression
-            tankX -= 0.16;
-            if (tankX < 10) {
+            // 4. Tank AI Logic
+            if (eActive) {
+                eShellX = (eVel * Math.cos(eAng) * eTime) + eeX;
+                eShellY = eeY - (eVel * Math.sin(eAng) * eTime - 0.5 * G * eTime * eTime);
+                g2d.setColor(Color.YELLOW);
+                g2d.fillRect((int) eShellX, (int) eShellY, 1, 1);
+
+                if (eShellX <= 12 && eShellX >= 0 && eShellY >= 54 && eShellY <= 61) {
+                    lives--;
+                    performExplosion(6, 56, oled);
+                    eActive = false;
+                    tankX = 82;
+                    eWait = 60;
+                } else if (eShellY > 60 || eShellX < 0 || eShellX > width) {
+                    double j = (random.nextDouble() - 0.5) * jitter;
+                    if (eShellX > 12) {
+                        eAng -= Math.toRadians(4 + j);
+                        eVel += 1.2;
+                    } else {
+                        eAng += Math.toRadians(4 + j);
+                        eVel -= 1.2;
+                    }
+                    eAng = Math.clamp(eAng, Math.toRadians(100), Math.toRadians(175));
+                    eActive = false;
+                    eWait = 30 + random.nextInt(30);
+                }
+                eTime += 0.32;
+            } else if (eWait-- <= 0) {
+                eActive = true;
+                eTime = 0;
+                eFlash = 3;
+            }
+
+            // Faster advancement: Tank now moves at 0.12 pixels per frame
+            tankX -= 0.12;
+            if (tankX < 12) {
                 lives--;
-                tankX = 80;
-                flashScreen(oled);
+                tankX = 82;
+                flashDamage(oled);
             }
 
             oled.drawImage(getImage());
-
-            final var diff = System.currentTimeMillis() - startTime;
+            final var diff = System.currentTimeMillis() - start;
             if (diff < frameDelay) {
-                try { TimeUnit.MILLISECONDS.sleep(frameDelay - diff); } catch (Exception ignored) {}
+                try {
+                    TimeUnit.MILLISECONDS.sleep(frameDelay - diff);
+                } catch (Exception ignored) {
+                }
             }
         }
-        log.info("Simulation Terminated. Score: {}", score);
     }
 
     /**
-     * Visual effect for shell detonation.
+     * Renders a circular expanding explosion sequence.
      *
-     * @param x    Center X.
-     * @param y    Center Y.
-     * @param oled Device instance for immediate feedback.
+     * @param x Center X coordinate.
+     * @param y Center Y coordinate.
+     * @param oled SSD1331 hardware driver.
      */
-    private void triggerExplosion(final int x, final int y, final Ssd1331 oled) {
+    private void performExplosion(final int x, final int y, final Ssd1331 oled) {
         final var g2d = getG2d();
-        for (var i = 1; i < 12; i += 2) {
-            g2d.setColor(i % 3 == 0 ? Color.WHITE : Color.RED);
-            g2d.drawRect(x - i / 2, y - i / 2, i, i);
+        for (var r = 1; r < 20; r += 3) {
+            g2d.setColor(r % 2 == 0 ? Color.ORANGE : Color.WHITE);
+            g2d.drawOval(x - r / 2, y - r / 2, r, r);
             oled.drawImage(getImage());
-            try { TimeUnit.MILLISECONDS.sleep(15); } catch (Exception ignored) {}
+            try {
+                TimeUnit.MILLISECONDS.sleep(10);
+            } catch (Exception ignored) {
+            }
         }
     }
 
     /**
-     * Full-screen flash effect for base damage.
+     * Flashes the display red when damage is taken.
      *
-     * @param oled Hardware driver.
+     * @param oled hardware driver.
      */
-    private void flashScreen(final Ssd1331 oled) {
+    private void flashDamage(final Ssd1331 oled) {
         final var g2d = getG2d();
         g2d.setColor(new Color(150, 0, 0));
         g2d.fillRect(0, 0, getWidth(), getHeight());
         oled.drawImage(getImage());
-        try { TimeUnit.MILLISECONDS.sleep(250); } catch (Exception ignored) {}
+        try {
+            TimeUnit.MILLISECONDS.sleep(250);
+        } catch (Exception ignored) {
+        }
     }
 
     /**
-     * Entry point for the Picocli command.
+     * Picocli command entry point.
      *
-     * @return Execution status.
-     * @throws Exception Hardware errors.
+     * @return 0 on success.
+     * @throws Exception hardware/IO failure.
      */
     @Override
     public Integer call() throws Exception {
@@ -252,7 +308,7 @@ public class Artillery extends Base {
     }
 
     /**
-     * Application main.
+     * Application entry point.
      *
      * @param args Command line arguments.
      */
