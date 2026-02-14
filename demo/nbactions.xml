@@ -11,7 +11,7 @@
         </goals>
         <properties>              
             <exec.vmArgs>--enable-native-access=ALL-UNNAMED --add-opens java.base/java.lang=ALL-UNNAMED</exec.vmArgs>
-            <exec.appArgs>--type=SDL --setup=SSD1306_I2C_128X64_NONAME</exec.appArgs>
+            <exec.appArgs>--type=SDL --setup=SSD1363_256X128</exec.appArgs>
             <exec.classpath>${user.home}/NetBeansProjects/javauio/u8g2/target/u8g2-1.0.0-SNAPSHOT-linux64.jar</exec.classpath>
             <exec.args>${exec.vmArgs} -classpath ${exec.classpath}:%classpath ${exec.mainClass} ${exec.appArgs}</exec.args>
             <exec.executable>java</exec.executable>

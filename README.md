@@ -8,7 +8,7 @@
 
 ### 🌍 The 32-bit & FFM Reality
 With Java 25, there is no more support for X86_32, and ARM32 has limited JDKs available. While **FFM (Foreign Function & Memory API)** is the future, it is **not supported** on X86_32 or ARM32. For now, JavaUIO moves into the future providing a high-performance path for **ARM32**, while fully supporting **ARM64** and **X86_64**.
-
+Check out [Java UIO 2](https://github.com/sgjava/javauio2) if you are interested in Java 25 and FFM approach.
 ### Architecture Support Matrix (JDK 25)
 
 | Architecture | JNI (Java UIO) | FFM (Project Panama) |

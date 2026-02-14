@@ -11,9 +11,9 @@
     <url>https://github.com/sgjava/javauio</url>
     
     <modules>
-        <module>periphery</module>
         <module>u8g2</module>
         <module>tools</module>
+        <module>periphery</module>
         <module>demo</module>
     </modules>    
     
