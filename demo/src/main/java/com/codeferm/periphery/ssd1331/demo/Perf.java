@@ -15,8 +15,8 @@ import picocli.CommandLine.Option;
 /**
  * drawImage performance demo refactored to use Ssd1331Base.
  * <p>
- * This class measures the transfer speed of a static image to the SSD1331 display,
- * calculating frames per second (FPS) based on a configurable number of samples.
+ * This class measures the transfer speed of a static image to the SSD1331 display, calculating frames per second (FPS) based on a
+ * configurable number of samples.
  * </p>
  *
  * @author Steven P. Goldsmith
@@ -47,7 +47,7 @@ public class Perf extends Base {
     public Integer call() throws Exception {
         // super.call() initializes hardware and caches width/height in Base
         super.call();
-        
+
         final var w = getWidth();
         final var h = getHeight();
         final var oled = getOled();
@@ -60,7 +60,7 @@ public class Perf extends Base {
         g2d.dispose();
 
         log.info("Timing {} drawImage transfers at {} Hz", samples, getSpeed());
-        
+
         final var start = Instant.now();
         for (var i = 0; i < samples; i++) {
             oled.drawImage(image);
@@ -74,7 +74,7 @@ public class Perf extends Base {
 
         log.info("Total time: {} seconds", String.format("%.2f", seconds));
         log.info("{} drawImage per second (FPS)", String.format("%.2f", fps));
-        
+
         done();
         return 0;
     }
