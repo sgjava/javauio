@@ -1,86 +1,141 @@
-# Java UIO 2 (FFM)
-
 ![Title](images/title.png)
 
 [![JDK 25 LTS](https://img.shields.io/badge/JDK-25_LTS-orange.svg)](https://openjdk.java.net/projects/jdk/25/)
 [![Ubuntu 24.04](https://img.shields.io/badge/Ubuntu-24.04_Noble-blue.svg)](https://ubuntu.com/blog/whats-new-in-security-for-ubuntu-24-04-lts)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![API: FFM/Panama](https://img.shields.io/badge/API-FFM%2FPanama-red.svg)](https://openjdk.org/projects/panama/)
 
-**Java UIO 2** is the next-generation evolution of the Java UIO project, rebuilt from the ground up to leverage the **Foreign Function & Memory API (FFM)**. By moving beyond traditional JNI, Java UIO 2 achieves unprecedented performance and hardware-level accuracy for Linux Userspace IO. Engineered for **JDK 25**, it provides a cutting-edge cross-platform solution for modern embedded systems.
+**Java UIO** offers robust Java interfaces optimized for Linux Userspace IO, emphasizing high performance. Engineered from scratch, it leverages contemporary kernel APIs, libraries, and cutting-edge code generation methodologies, embodying a state-of-the-art cross-platform solution. Rather than reinventing established paradigms, Java UIO harnesses existing standards, avoiding redundant development commonly observed in other IO libraries. Seamlessly supporting **JDK 25 LTS**, this framework integrates **Project Lombok** to streamline code, enhancing readability and conciseness.
 
-## 🚀 The New Standard
-This project adheres to rigorous development standards to ensure production-grade reliability and performance:
-* **Modern Java:** Full utilization of `var`, `final`, and the latest FFM features.
-* **Zero Allocation:** Frame-based operations (like SSD1331 rendering) use pre-allocated buffers to eliminate GC pressure during high-speed I/O.
-* **Clean Architecture:** **No native loaders in device classes.** Native loading is handled at the application level, keeping core logic decoupled and lean.
-* **Complete Documentation:** 100% Javadoc coverage for all public APIs.
+### 🌍 The 32-bit & FFM Reality
+With Java 25, there is no more support for X86_32, and ARM32 has limited JDKs available. While **FFM (Foreign Function & Memory API)** is the future, it is **not supported** on X86_32 or ARM32. For now, JavaUIO moves into the future providing a high-performance path for **ARM32**, while fully supporting **ARM64** and **X86_64**.
+Check out [Java UIO 2](https://github.com/sgjava/javauio2) if you are interested in Java 25 and FFM approach.
+### Architecture Support Matrix (JDK 25)
 
----
-
-## 🏗️ Architectural Contrast: Why Java UIO 2?
-
-| Feature | Pi4J (v4.0+) | diozero (v1.4+) | **Java UIO 2** |
-| :--- | :--- | :--- | :--- |
-| **Model** | **Provider-Centric.** Relies on a plugin architecture to map hardware. | **Device-Centric.** Uses a "Factory" abstraction to wrap pins in objects. | **Kernel-Direct.** Treats the Linux Kernel ABI as the only provider. |
-| **FFM Integration** | **Plugin Level.** FFM is an optional provider module. | **JNI Core.** Primarily utilizes JNI/JNA for native access. | **Native FFM.** Built specifically for Project Panama as the core engine. |
-| **Board Support** | Board-specific definitions/configs often required. | Broad, but requires factory logic for each SoC. | **Universal.** If it runs a standard Linux kernel, it works instantly. |
-| **Graphics** | Community-ported Java drivers. | High-level/basic shape support. | **Deep u8g2 Binding.** Full C-performance for **SSD1331** OLEDs. |
-| **Portability** | Heavyweight (Core + Provider + Config). | Lightweight core, but SoC-specific factories. | **Ultra-Lightweight.** Zero-dependency bridge to Linux interfaces. |
-
-### 1. Universal Kernel-Standardized I/O
-Most libraries require a "Provider" or specific plugin for every new board. **Java UIO 2** bypasses this middleman. By targeting the **Standard Linux Kernel ABI** (Character Devices and UIO), any board running a modern kernel is supported immediately. The Kernel is the only "Provider" you need.
-
-### 2. Deep Graphics with u8g2 & SSD1331
-While other libraries stop at "Blinky," Java UIO 2 provides a professional-grade graphics stack. By binding the industry-standard **u8g2** library via FFM, you gain access to hundreds of fonts and optimized drawing routines at near-native speeds.
-
-### 3. Hardware-Accurate Native Sizing
-A major weakness in traditional libraries is their reliance on manual JNI headers. Java UIO 2 uses a **Native Sizer** during the build process (via QEMU emulation). This guarantees that `MemoryLayout` offsets are byte-perfect for the target CPU architecture (ARM64, ARM32, or x86_64), preventing alignment traps and crashes.
-
----
-
-## 🛠️ Performance Benchmark (Pine64 ARM64)
-In raw performance testing on the Pine A64 (Cortex-A53), the FFM implementation demonstrated a massive leap over established JNI methods:
-
-| Operation | HawtJNI (Legacy) | **Java UIO 2 (FFM)** | **Improvement** |
-| :--- | :--- | :--- | :--- |
-| **GPIO Writes** | ~292k ops/sec | **~561k ops/sec** | **+91.5%** |
-| **GPIO Reads** | ~400k ops/sec | **~582k ops/sec** | **+45.5%** |
-
-*Note: Benchmarks were performed on single-core execution. With FFM, the Java-to-Native bridge is no longer the bottleneck; the performance limit is now defined by the Linux Kernel's ioctl latency.*
-
----
-
-## 🌍 Architecture Support Matrix (JDK 25)
-
-| Architecture | JNI (Java UIO) | **FFM (Java UIO 2)** |
+| Architecture | JNI (Java UIO) | FFM (Project Panama) |
 | :--- | :---: | :---: |
-| **ARM32 (v7)** | ✅ Supported | ⏳ Pending Linker |
-| **ARM64 (v8)** | ✅ Supported | ✅ **Recommended** |
-| **X86_64** | ✅ Supported | ✅ **Recommended** |
+| **ARM32 (v7)** | ✅ Supported | ❌ Not Supported |
+| **ARM64 (v8)** | ✅ Supported | ✅ Supported |
+| **X86_32** | ❌ Not Supported | ❌ Not Supported |
+| **X86_64** | ✅ Supported | ✅ Supported |
+***
+<img src="periphery/images/periphery.png" width="100"/><img src="u8g2/images/u8g2.jpg" width="100"/><img src="u8g2/images/ssd1331.png" width="100"/><img src="u8g2/images/java.png" width="100"/><img src="u8g2/images/sdl.png" width="100"/>
+***
+## 📦 Project Modules
+* [Periphery](https://github.com/sgjava/javauio/tree/main/periphery) API for
+GPIO, LED, PWM, SPI, I2C, MMIO and Serial peripheral I/O interface access. Based
+on [c-periphery](https://github.com/vsergeev/c-periphery) API which also covers
+C, C++, Python, Lua and Dart. Cross platform high speed MMIO based GPIO included.
+Recently added color OLED SSD1331.
+* [U8g2](https://github.com/sgjava/javauio/tree/main/u8g2) API for monochrome
+displays. Based on [U8g2](https://github.com/olikraus/u8g2): Library for
+monochrome displays, version 2. I added ability to use multiple displays in a
+thread safe way and dramatically improved software driven I2C and SPI performance
+at the C level. You can also use SDL 2 based display to develop on a desktop without
+physical display attached. You can choose display type and fonts at runtime.
+* [Tools](https://github.com/sgjava/javauio/tree/main/tools) provides tools
+for mapping MMIO GPIO register mapping, code generation, etc.
+* [Demo](https://github.com/sgjava/javauio/tree/main/demo) provides CLI based
+demos instead of using mocks or hard coded pins, busses, etc. The selection of
+OLED demos goes beyond simple drawing routines.
 
----
+## 🛠 Technical Foundation
+* An install script gives you a complete install of [JDK](https://www.azul.com/products/core),
+[Maven](https://maven.apache.org), [HawtJNI](https://github.com/fusesource/hawtjni)
+fork and any required projects, so there is no guessing. This can be run on the target platform
+such as [Armbian](https://www.armbian.com) using Ubuntu. All testing has been done on
+Armbian and Ubuntu targets while development is done on x86 and Ubuntu.
+* HawtJNI generates JNI code to reduce errors and time hand coding. Updating code
+is also much easier.
+    * Generates JNI source code.
+    * Generates an autoconf and msbuild source project to build the native library.
+This gets attached to the Maven project as as the native source zip file.
+    * Builds the native source tar for the current platform.
+    * Built native library is stored in a platform specific jar. This gets attached
+to the Maven project as a platform specific jar file.
+* Why Linux userspace? This is really the only way to get cross platform
+libraries to work since most SBCs have different chip sets. The trade off is
+performance compared to native C written to specific chip sets. However, since
+I'm wrapping C with JNI it guarantees the fastest userspace experience for Java.
+* Why Armbian? Because Armbian supports many SBCs and the idea is to be truly
+SBC cross platform. See [downloads](https://www.armbian.com/download).
+* Why Java 25? Because Java 25 is the current LTS version of Java.I'm only moving
+forward with Java. You can always create a fork and make a version of Java UIO
+based on another version.
+* Why OpenJDK? Because it's easy to download without all the crap Oracle puts you
+through. You can always use another JDK 25 vendor, but you will have to do that
+manually.
 
-## 📦 Project Depth
-This repository contains more than just a library; it includes exhaustive demos demonstrating real-world complexity:
-* **SSD1331 OLED:** Full-color graphics, custom fonts, and buffer rotations.
-* **Game Logic:** Atari-style Centipede clones showcasing memory-efficient movement controllers.
-* **Native Demos:** Direct ports of JNI demos to the modern FFM era.
+## 🔧 SBC Configuration
+* If you are using Armbian then use `armbian-config` or edit `/boot/armbianEnv.txt`
+to configure various devices. Userspace devices are exposed through /dev or
+/sys. Verify the device is showing up prior to trying demo apps.
+    * `sudo apt install armbian-config`
+* If you are not using Armbian then you will need to know how to configure
+devices to be exposed to userspace for your Linux distribution and SBC model.
+Check each log in scripts directory to be sure there were no errors after running
+install.sh.
+* Since linux 4.8 the GPIO sysfs interface is [deprecated](https://www.kernel.org/doc/html/latest/admin-guide/gpio/sysfs.html).
+Userspace should use the character device instead.
+* I have tested 32 bit and 64 bit boards using the latest Armbian release or in
+the case of the Raspberry Pi Ubuntu Server. The ability to switch seamlessly
+between boards gives you a wide range of SBC choices.
 
-### Download and Build
-```bash
-# Download project
-sudo apt install git
-cd ~/
-git clone --depth 1 [https://github.com/sgjava/javauio2.git](https://github.com/sgjava/javauio2.git)
+## Non-root access
+Non-root access is provided by a systemd service called [uio-permissions](https://github.com/sgjava/javauio/blob/6ea3ef5155f3158d92eb16b5f428372ec8adda3d/scripts/install.sh#L44) that
+applies permissions for GPIO, I2C, SPI, serial and system LEDs. GPIO
+sysfs (deprecated) and PWM permissions are provided by udev rules. Tweak [uio-permissions.sh](https://github.com/sgjava/javauio/blob/main/scripts/uio-permissions.sh)
+[98-sysfs.rules](https://github.com/sgjava/javauio/blob/main/scripts/98-sysfs.rules) and
+[99-pwm.rules](https://github.com/sgjava/javauio/blob/main/scripts/99-pwm.rules)
+as needed.
 
-# Setup and Install
-cd ~/javauio2/scripts
-./install-java.sh
-./setup-permissions.sh # ARM only
-sudo reboot
+## Download project
+* `sudo apt install git`
+* `cd ~/`
+* `git clone --depth 1 https://github.com/sgjava/javauio.git`
 
-# Build with Maven
-cd ~/javauio2
-mvn clean install # X86_64 default
-# Use -P arm64 (aarch64) or -P arm32 (armhf) for profiles
+## 🚀 Install script
+The install script assumes a clean OS install. If you would like to install on
+a OS with your own version of Java 25, etc. then you can look at what install-java.sh
+does and do it manually. What do the scripts do?
+* Install Java 25 JDK, Maven and Ant using SDKMAN
+* Install build dependencies
+* Install UIO Permissions Service and udev rules
+* Build HawtJNI (using my fork that works with JDK 25)
+* Download and copy c-periphery source to Maven module
+* Download and copy U8g2 source to Maven module
+* Build Java UIO
+
+### Run script
+* `cd ~/javauio/scripts`
+* `./install-java.sh`
+* `./install.sh`
+* Check various log files if you have issues running the demo code. Something
+could have gone wrong during the build/bindings generation processes.
+    * `tail -n 1 install.log` total build time
+    * `tail -n 12 javauio.log` make sure all modules show SUCCESS
+* Make sure you use latest [gpio.h](https://github.com/sgjava/javauio/tree/main/periphery#build-periphery-with-proper-gpioh)
+* If you need to recompile use
+    * `cd ~/javauio`
+    * `mvn clean install`
+
+## 💻 Developer Guide
+I'm using NetBeans to develop, but this is a standard Maven multi-module project.
+The easiest way to setup your environment is create a Ubuntu 24.04 desktop VM
+(VirtualBox, etc.) and follow install process since it installs JVM, Maven, all
+projects, etc. Then you just need to install NetBeans (or Eclipse, etc.).
+Since Java UIO relies on c-periphery and u8g2 those files are not included in the
+project. You can see them ignored in .gitignore.
+* Copy the c-periphery files to `javauio/periphery/src/main/native-package/src`
+* Copy u8g2 files to `javauio/u8g2/src/main/native-package/src`
+
+Now you should be ready to compile the project with `mvn clean install`. To use
+NetBeans right-click Run on a program in Demo project modify project properties:
+* Click actions
+* Click Run file via main()
+    * `exec.classpath=/home/youruser/NetBeansProjects/javauio/u8g2/target/u8g2-1.0.0-SNAPSHOT-linux64.jar:/home/youruser/NetBeansProjects/javauio/periphery/target/periphery-1.0.0-SNAPSHOT-linux64.jar`
+    * `exec.appArgs=--type=SDL`
+ * Click OK
+
+Now if you run SimpleText it will use SDL instead of a real display. You will
+need to tweak for Periphery demo programs as well. Basically look at the command
+line arguments in the examples provided.
